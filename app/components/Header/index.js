@@ -63,6 +63,8 @@ function Header() {
             color="inherit"
             noWrap
             className={classes.toolbarTitle}
+            component={RouterLink}
+            to="/"
           >
             ImpGG
           </Typography>
