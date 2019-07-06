@@ -8,7 +8,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -20,9 +19,6 @@ import messages from './messages';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
     ul: {
       margin: 0,
       padding: 0,
@@ -50,7 +46,6 @@ function Header() {
 
   return (
     <React.Fragment>
-      <CssBaseline />
       <AppBar
         position="static"
         color="default"
@@ -110,10 +105,19 @@ function Header() {
             component={RouterLink}
             to="/login"
             color="primary"
-            variant="outlined"
+            variant="contained"
             className={classes.link}
           >
-            Login
+            Sign in
+          </Button>
+          <Button
+            component={RouterLink}
+            to="/register"
+            color="primary"
+            variant="contained"
+            className={classes.link}
+          >
+            Register an account
           </Button>
         </Toolbar>
       </AppBar>
