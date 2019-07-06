@@ -8,6 +8,9 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
+import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
+import BrightnessMedium from '@material-ui/icons/BrightnessMedium';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -26,6 +29,13 @@ const useStyles = makeStyles(theme => ({
     li: {
       listStyle: 'none',
     },
+  },
+  iconbutton: {
+    padding: 0,
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
   },
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -101,6 +111,11 @@ function Header() {
               <FormattedMessage {...messages.resources} />
             </Link>
           </nav>
+          <IconButton className={classes.iconbutton}>
+            <Avatar className={classes.avatar}>
+              <BrightnessMedium />
+            </Avatar>
+          </IconButton>
           <Button
             component={RouterLink}
             to="/login"
