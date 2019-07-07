@@ -8,9 +8,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
-import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
-import BrightnessMedium from '@material-ui/icons/BrightnessMedium';
+import DarkToggle from 'components/DarkToggle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -111,11 +109,7 @@ function Header() {
               <FormattedMessage {...messages.resources} />
             </Link>
           </nav>
-          <IconButton className={classes.iconbutton}>
-            <Avatar className={classes.avatar}>
-              <BrightnessMedium />
-            </Avatar>
-          </IconButton>
+          <DarkToggle />
           <Button
             component={RouterLink}
             to="/login"
@@ -139,7 +133,5 @@ function Header() {
     </React.Fragment>
   );
 }
-
-Header.propTypes = {};
 
 export default Header;

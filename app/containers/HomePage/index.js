@@ -18,7 +18,7 @@ export default function HomePage() {
         <title>ImpGG - Mischievously Short</title>
         <meta name="description" content="Description of PricingPage" />
       </Helmet>
-      <Header />;
+      <Header />
     </div>
   );
 }
