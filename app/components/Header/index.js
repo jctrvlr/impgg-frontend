@@ -8,6 +8,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
+import DarkToggle from 'components/DarkToggle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -27,6 +28,9 @@ const useStyles = makeStyles(theme => ({
       listStyle: 'none',
     },
   },
+  iconbutton: {
+    padding: 0,
+  },
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
@@ -39,11 +43,13 @@ const useStyles = makeStyles(theme => ({
   link: {
     margin: theme.spacing(1, 1.5),
   },
+  menu: {
+    margin: 0,
+  },
 }));
 
 function Header() {
   const classes = useStyles();
-
   return (
     <React.Fragment>
       <AppBar
@@ -101,6 +107,7 @@ function Header() {
               <FormattedMessage {...messages.resources} />
             </Link>
           </nav>
+          <DarkToggle />
           <Button
             component={RouterLink}
             to="/login"
@@ -124,7 +131,5 @@ function Header() {
     </React.Fragment>
   );
 }
-
-Header.propTypes = {};
 
 export default Header;

@@ -25,7 +25,7 @@ import App from 'containers/App';
 import LanguageProvider from 'containers/LanguageProvider';
 
 // Import theme
-import { ThemeProvider } from '@material-ui/styles';
+import { ThemeProvider } from 'themeProvider';
 import theme from './theme';
 
 // Load the favicon and the .htaccess file
@@ -46,16 +46,18 @@ const MOUNT_NODE = document.getElementById('app');
 
 const render = messages => {
   ReactDOM.render(
-    <Provider store={store}>
-      <LanguageProvider messages={messages}>
-        <ConnectedRouter history={history}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
-          </ThemeProvider>
-        </ConnectedRouter>
-      </LanguageProvider>
-    </Provider>,
+    <div>
+      <CssBaseline />
+      <Provider store={store}>
+        <LanguageProvider messages={messages}>
+          <ConnectedRouter history={history}>
+            <ThemeProvider theme={theme}>
+              <App />
+            </ThemeProvider>
+          </ConnectedRouter>
+        </LanguageProvider>
+      </Provider>
+    </div>,
     MOUNT_NODE,
   );
 };

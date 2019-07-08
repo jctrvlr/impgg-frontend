@@ -1,5 +1,11 @@
-import { createSelector } from 'reselect';
+/**
+ * The global state selectors
+ */
 
+import { createSelector } from 'reselect';
+import { initialState } from './reducer';
+
+const selectGlobal = state => state.global || initialState;
 const selectRouter = state => state.router;
 
 const makeSelectLocation = () =>
@@ -8,4 +14,4 @@ const makeSelectLocation = () =>
     routerState => routerState.location,
   );
 
-export { makeSelectLocation };
+export { selectGlobal, makeSelectLocation };
