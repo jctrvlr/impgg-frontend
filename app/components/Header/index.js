@@ -31,10 +31,6 @@ const useStyles = makeStyles(theme => ({
   iconbutton: {
     padding: 0,
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
@@ -47,11 +43,13 @@ const useStyles = makeStyles(theme => ({
   link: {
     margin: theme.spacing(1, 1.5),
   },
+  menu: {
+    margin: 0,
+  },
 }));
 
 function Header() {
   const classes = useStyles();
-
   return (
     <React.Fragment>
       <AppBar
