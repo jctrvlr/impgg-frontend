@@ -6,3 +6,60 @@
  * add it to the switch statement in the reducer function
  *
  */
+import produce from 'immer';
+import {
+  AUTHENTICATE_USER_SUCCESS,
+  AUTHENTICATE_USER,
+  AUTHENTICATE_USER_ERROR,
+  REGISTER_USER,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_ERROR,
+} from './constants';
+
+// The initial state of the App
+export const initialState = {
+  currentUser: false,
+  userData: false,
+};
+
+/* eslint-disable default-case, no-param-reassign */
+const appReducer = (state = initialState, action) =>
+  produce(state, draft => {
+    switch (action.type) {
+      case AUTHENTICATE_USER:
+        draft.loading = true;
+        draft.error = false;
+        draft.userData = false;
+        break;
+
+      case AUTHENTICATE_USER_SUCCESS:
+        draft.userData = action.userData;
+        draft.loading = false;
+        draft.currentUser = action.username;
+        break;
+
+      case AUTHENTICATE_USER_ERROR:
+        draft.error = action.error;
+        draft.loading = false;
+        break;
+
+      case REGISTER_USER:
+        draft.loading = true;
+        draft.error = false;
+        draft.userData = false;
+        break;
+
+      case REGISTER_USER_SUCCESS:
+        draft.userData = action.userData;
+        draft.loading = false;
+        draft.currentUser = action.username;
+        break;
+
+      case REGISTER_USER_ERROR:
+        draft.error = action.error;
+        draft.loading = false;
+        break;
+    }
+  });
+
+export default appReducer;

@@ -10,6 +10,17 @@ const selectRegisterPageDomain = state => state.registerPage || initialState;
 /**
  * Other specific selectors
  */
+const makeSelectEmail = () =>
+  createSelector(
+    selectRegisterPageDomain,
+    homeState => homeState.email,
+  );
+
+const makeSelectPassword = () =>
+  createSelector(
+    selectRegisterPageDomain,
+    homeState => homeState.password,
+  );
 
 /**
  * Default selector used by RegisterPage
@@ -22,4 +33,4 @@ const makeSelectRegisterPage = () =>
   );
 
 export default makeSelectRegisterPage;
-export { selectRegisterPageDomain };
+export { selectRegisterPageDomain, makeSelectEmail, makeSelectPassword };
