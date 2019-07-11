@@ -13,12 +13,15 @@ import PrivateRoute from 'utils/PrivateRoute';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+// Public routes
 import HomePage from 'containers/HomePage/Loadable';
 import PricingPage from 'containers/PricingPage';
 
+// Authentication routes
 import SigninPage from 'containers/SigninPage/Loadable';
 import RegisterPage from 'containers/RegisterPage/Loadable';
 
+// Protected routes
 import DashboardPage from 'containers/DashboardPage/Loadable';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
