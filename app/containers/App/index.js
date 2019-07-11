@@ -9,13 +9,17 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import HomePage from 'containers/HomePage/Loadable';
+import PrivateRoute from 'utils/PrivateRoute';
 
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+import HomePage from 'containers/HomePage/Loadable';
 import PricingPage from 'containers/PricingPage';
 
 import SigninPage from 'containers/SigninPage/Loadable';
 import RegisterPage from 'containers/RegisterPage/Loadable';
+
+import DashboardPage from 'containers/DashboardPage/Loadable';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
@@ -32,6 +36,7 @@ export default function App() {
         <Route exact path="/login" component={SigninPage} />
         <Route exact path="/register" component={RegisterPage} />
 
+        <PrivateRoute exact path="/dashboard" component={DashboardPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

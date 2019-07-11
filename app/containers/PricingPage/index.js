@@ -15,6 +15,7 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
+import Header from 'components/Header/index';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -28,7 +29,6 @@ import Container from '@material-ui/core/Container';
 import makeSelectPricingPage from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import Header from '../../components/Header/index';
 
 const useStyles = makeStyles(theme => ({
   '@global': {

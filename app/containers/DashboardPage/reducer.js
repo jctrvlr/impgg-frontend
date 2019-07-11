@@ -1,19 +1,15 @@
 /*
  *
- * SigninPage reducer
+ * Dashboard reducer
  *
  */
 import produce from 'immer';
 import { DEFAULT_ACTION } from './constants';
 
-export const initialState = {
-  email: '',
-  password: '',
-  login_success: false,
-};
+export const initialState = {};
 
 /* eslint-disable default-case, no-param-reassign */
-const signinPageReducer = (state = initialState, action) =>
+const dashboardReducer = (state = initialState, action) =>
   produce(state, (/* draft */) => {
     switch (action.type) {
       case DEFAULT_ACTION:
@@ -21,4 +17,4 @@ const signinPageReducer = (state = initialState, action) =>
     }
   });
 
-export default signinPageReducer;
+export default dashboardReducer;
