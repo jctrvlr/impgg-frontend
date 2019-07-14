@@ -4,10 +4,16 @@
  *
  */
 
-import { DEFAULT_ACTION } from './constants';
+import { CHANGE_EMAIL, CHANGE_PASSWORD } from './constants';
 
-export function defaultAction() {
+export function changeEmail() {
   return {
-    type: DEFAULT_ACTION,
+    type: CHANGE_EMAIL,
+  };
+}
+
+export function changePassword() {
+  return {
+    type: CHANGE_PASSWORD,
   };
 }

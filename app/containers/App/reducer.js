@@ -18,8 +18,10 @@ import {
 
 // The initial state of the App
 export const initialState = {
+  loading: false,
   currentUser: false,
   userData: false,
+  error: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */

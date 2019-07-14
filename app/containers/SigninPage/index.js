@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  *
  * SigninPage
@@ -19,8 +20,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import ErrorMessageHolder from 'components/ErrorMessageHolder';
 
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 // import { FormattedMessage } from 'react-intl';
@@ -29,9 +31,18 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectSigninPage from './selectors';
+
+import {
+  makeSelectSigninPage,
+  makeSelectEmail,
+  makeSelectPassword,
+  makeSelectError,
+  makeSelectLoading,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { changeEmail, changePassword } from './actions';
+import { authUser } from '../App/actions';
 // import messages from './messages';
 
 function MadeWithLove() {
@@ -66,10 +77,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function SigninPage() {
+export function SigninPage({
+  email,
+  password,
+  loading,
+  error,
+  userData,
+  onSubmitForm,
+  onChangeEmail,
+  onChangePassword,
+}) {
   useInjectReducer({ key: 'signinPage', reducer });
   useInjectSaga({ key: 'signinPage', saga });
   const classes = useStyles();
+
+  const errorMessageProps = { error };
 
   return (
     <div>
@@ -121,9 +143,11 @@ export function SigninPage() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => onSubmitForm()}
             >
               Log In
             </Button>
+            <ErrorMessageHolder {...errorMessageProps} />
             <Grid container>
               <Grid item xs>
                 <Link
@@ -151,16 +175,32 @@ export function SigninPage() {
 }
 
 SigninPage.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  email: PropTypes.string,
+  password: PropTypes.string,
+  loading: PropTypes.bool,
+  onSubmitForm: PropTypes.func,
+  onChangeEmail: PropTypes.func,
+  onChangePassword: PropTypes.func,
+  userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
 
 const mapStateToProps = createStructuredSelector({
   signinPage: makeSelectSigninPage(),
+  loading: makeSelectLoading(),
+  email: makeSelectEmail(),
+  password: makeSelectPassword(),
+  error: makeSelectError(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    onChangeEmail: evt => dispatch(changeEmail(evt.target.value)),
+    onChangePassword: evt => dispatch(changePassword(evt.target.value)),
+    onSubmitForm: evt => {
+      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
+      dispatch(authUser());
+    },
   };
 }
 
