@@ -11,9 +11,9 @@ import PropTypes from 'prop-types';
 // import { FormattedMessage } from 'react-intl';
 // import messages from './messages';
 
-function ErrorMessageHolder({ error }) {
-  if (error !== false) {
-    return <div>{{ Error }}</div>;
+function ErrorMessageHolder(props) {
+  if (props.error !== false) {
+    return <div>There was a problem</div>;
   }
   return null;
 }

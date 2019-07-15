@@ -13,6 +13,8 @@ import PrivateRoute from 'utils/PrivateRoute';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+import { useInjectReducer } from 'utils/injectReducer';
+
 // Public routes
 import HomePage from 'containers/HomePage/Loadable';
 import PricingPage from 'containers/PricingPage';
@@ -26,9 +28,12 @@ import DashboardPage from 'containers/DashboardPage/Loadable';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
+import reducer from './reducer';
+
 import GlobalStyle from '../../global-styles';
 
 export default function App() {
+  useInjectReducer({ key: 'App', reducer });
   return (
     <React.Fragment>
       <CssBaseline />

@@ -40,5 +40,9 @@ function checkStatus(response) {
 export default function request(url, options) {
   return fetch(url, options)
     .then(checkStatus)
-    .then(parseJSON);
+    .then(parseJSON)
+    .catch(err => {
+      const error = new Error(err);
+      throw error;
+    });
 }

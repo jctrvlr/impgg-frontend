@@ -4,16 +4,32 @@
  *
  */
 
-import { CHANGE_EMAIL, CHANGE_PASSWORD } from './constants';
+import { CHANGE_EMAIL, CHANGE_PASSWORD, EMAIL_VALIDATION } from './constants';
 
-export function changeEmail() {
+export function validateEmail(email) {
+  const emailRegex =
+    '/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/';
+  let emailValidation = '';
+  if (email.match(emailRegex)) {
+    emailValidation = 0;
+  } else {
+    emailValidation = 'Enter a valid email';
+  }
+  return {
+    type: EMAIL_VALIDATION,
+    emailValidation,
+  };
+}
+export function changeEmail(email) {
   return {
     type: CHANGE_EMAIL,
+    email,
   };
 }
 
-export function changePassword() {
+export function changePassword(password) {
   return {
     type: CHANGE_PASSWORD,
+    password,
   };
 }

@@ -33,6 +33,12 @@ const makeSelectPassword = () =>
     selectSigninPageDomain,
     homeState => homeState.password,
   );
+
+const makeSelectEmailValidation = () =>
+  createSelector(
+    selectSigninPageDomain,
+    homeState => homeState.emailValidation,
+  );
 /**
  * Default selector used by SigninPage
  */
@@ -51,4 +57,5 @@ export {
   makeSelectEmail,
   makeSelectPassword,
   makeSelectSigninPage,
+  makeSelectEmailValidation,
 };

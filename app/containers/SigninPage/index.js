@@ -36,12 +36,17 @@ import {
   makeSelectSigninPage,
   makeSelectEmail,
   makeSelectPassword,
+  makeSelectEmailValidation,
+} from './selectors';
+import {
   makeSelectError,
   makeSelectLoading,
-} from './selectors';
+  makeSelectUserData,
+} from '../App/selectors';
+
 import reducer from './reducer';
 import saga from './saga';
-import { changeEmail, changePassword } from './actions';
+import { changeEmail, changePassword, validateEmail } from './actions';
 import { authUser } from '../App/actions';
 // import messages from './messages';
 
@@ -86,12 +91,11 @@ export function SigninPage({
   onSubmitForm,
   onChangeEmail,
   onChangePassword,
+  emailValidation,
 }) {
   useInjectReducer({ key: 'signinPage', reducer });
   useInjectSaga({ key: 'signinPage', saga });
   const classes = useStyles();
-
-  const errorMessageProps = { error };
 
   return (
     <div>
@@ -110,7 +114,7 @@ export function SigninPage({
           <Typography component="h1" variant="h5">
             Log in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} noValidate onSubmit={onSubmitForm}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -121,6 +125,9 @@ export function SigninPage({
               name="email"
               autoComplete="email"
               autoFocus
+              error={emailValidation === 0 ? 0 : 1}
+              helperText={emailValidation}
+              onChange={onChangeEmail}
             />
             <TextField
               variant="outlined"
@@ -132,6 +139,7 @@ export function SigninPage({
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={onChangePassword}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -143,11 +151,10 @@ export function SigninPage({
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={() => onSubmitForm()}
             >
               Log In
             </Button>
-            <ErrorMessageHolder {...errorMessageProps} />
+            <ErrorMessageHolder error={error} />
             <Grid container>
               <Grid item xs>
                 <Link
@@ -181,6 +188,7 @@ SigninPage.propTypes = {
   onSubmitForm: PropTypes.func,
   onChangeEmail: PropTypes.func,
   onChangePassword: PropTypes.func,
+  emailValidation: PropTypes.string,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
@@ -188,14 +196,19 @@ SigninPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   signinPage: makeSelectSigninPage(),
   loading: makeSelectLoading(),
+  userData: makeSelectUserData(),
   email: makeSelectEmail(),
   password: makeSelectPassword(),
   error: makeSelectError(),
+  emailValidation: makeSelectEmailValidation(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeEmail: evt => dispatch(changeEmail(evt.target.value)),
+    onChangeEmail: evt => {
+      dispatch(validateEmail(evt.target.value));
+      dispatch(changeEmail(evt.target.value));
+    },
     onChangePassword: evt => dispatch(changePassword(evt.target.value)),
     onSubmitForm: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
