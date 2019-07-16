@@ -4,38 +4,53 @@
  *
  */
 
-import { DEFAULT_ACTION } from './constants';
+import {
+  CHANGE_FIRSTNAME,
+  CHANGE_LASTNAME,
+  CHANGE_EMAIL,
+  CHANGE_PASSWORD,
+  EMAIL_VALIDATION,
+} from './constants';
 
-/* function register(user) {
-  return dispatch => {
-    dispatch(request(user));
-
-    userService.register(user).then(
-      user => {
-        dispatch(success());
-        history.push('/login');
-        dispatch(alertActions.success('Registration successful'));
-      },
-      error => {
-        dispatch(failure(error));
-        dispatch(alertActions.error(error));
-      },
-    );
-  };
-
-  function request(user) {
-    return { type: userConstants.REGISTER_REQUEST, user };
+export function validateEmail(email) {
+  /* eslint-disable no-useless-escape */
+  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let emailValidation = '';
+  if (emailRegex.test(email)) {
+    emailValidation = false;
+  } else {
+    emailValidation = 'Enter a valid email';
   }
-  function success(user) {
-    return { type: userConstants.REGISTER_SUCCESS, user };
-  }
-  function failure(error) {
-    return { type: userConstants.REGISTER_FAILURE, error };
-  }
-} */
-
-export function defaultAction() {
   return {
-    type: DEFAULT_ACTION,
+    type: EMAIL_VALIDATION,
+    emailValidation,
+  };
+}
+
+export function changeFirstName(firstName) {
+  return {
+    type: CHANGE_FIRSTNAME,
+    firstName,
+  };
+}
+
+export function changeLastName(lastName) {
+  return {
+    type: CHANGE_LASTNAME,
+    lastName,
+  };
+}
+
+export function changeEmail(email) {
+  return {
+    type: CHANGE_EMAIL,
+    email,
+  };
+}
+
+export function changePassword(password) {
+  return {
+    type: CHANGE_PASSWORD,
+    password,
   };
 }

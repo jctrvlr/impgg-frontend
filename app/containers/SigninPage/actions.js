@@ -7,11 +7,12 @@
 import { CHANGE_EMAIL, CHANGE_PASSWORD, EMAIL_VALIDATION } from './constants';
 
 export function validateEmail(email) {
-  const emailRegex =
-    '/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/';
+  /* eslint-disable no-useless-escape */
+  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   let emailValidation = '';
-  if (email.match(emailRegex)) {
-    emailValidation = 0;
+
+  if (emailRegex.test(email)) {
+    emailValidation = false;
   } else {
     emailValidation = 'Enter a valid email';
   }
@@ -20,6 +21,7 @@ export function validateEmail(email) {
     emailValidation,
   };
 }
+
 export function changeEmail(email) {
   return {
     type: CHANGE_EMAIL,

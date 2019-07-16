@@ -38,6 +38,7 @@ import {
   makeSelectPassword,
   makeSelectEmailValidation,
 } from './selectors';
+
 import {
   makeSelectError,
   makeSelectLoading,
@@ -125,7 +126,7 @@ export function SigninPage({
               name="email"
               autoComplete="email"
               autoFocus
-              error={emailValidation === 0 ? 0 : 1}
+              error={!!emailValidation}
               helperText={emailValidation}
               onChange={onChangeEmail}
             />
@@ -188,7 +189,7 @@ SigninPage.propTypes = {
   onSubmitForm: PropTypes.func,
   onChangeEmail: PropTypes.func,
   onChangePassword: PropTypes.func,
-  emailValidation: PropTypes.string,
+  emailValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };

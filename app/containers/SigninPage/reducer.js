@@ -14,11 +14,8 @@ import {
 export const initialState = {
   email: '',
   password: '',
-  loading: false,
-  currentUser: false,
   userData: false,
-  error: false,
-  login_success: false,
+  emailValidation: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */

@@ -10,17 +10,6 @@ const selectSigninPageDomain = state => state.signinPage || initialState;
 /**
  * Other specific selectors
  */
-const makeSelectLoading = () =>
-  createSelector(
-    selectSigninPageDomain,
-    homeState => homeState.loading,
-  );
-
-const makeSelectError = () =>
-  createSelector(
-    selectSigninPageDomain,
-    homeState => homeState.error,
-  );
 
 const makeSelectEmail = () =>
   createSelector(
@@ -52,8 +41,6 @@ const makeSelectSigninPage = () =>
 export default makeSelectSigninPage;
 export {
   selectSigninPageDomain,
-  makeSelectLoading,
-  makeSelectError,
   makeSelectEmail,
   makeSelectPassword,
   makeSelectSigninPage,

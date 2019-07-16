@@ -10,9 +10,11 @@ import { registerUserSuccess, registerUserError } from 'containers/App/actions';
 import request from 'utils/request';
 
 import {
+  makeSelectFirstName,
+  makeSelectLastName,
   makeSelectEmail,
   makeSelectPassword,
-} from 'containers/RegisterPage/selectors';
+} from './selectors';
 
 const baseUrl = 'https://api.imp.gg';
 
@@ -21,15 +23,22 @@ const baseUrl = 'https://api.imp.gg';
  */
 export function* registerUser() {
   // Select email/password from store
+  const firstName = yield select(makeSelectFirstName());
+  const lastName = yield select(makeSelectLastName());
   const email = yield select(makeSelectEmail());
   const password = yield select(makeSelectPassword());
+  const profile = {
+    firstName,
+    lastName,
+  };
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, profile }),
   };
 
   const requestURL = `${baseUrl}/v1/auth/register`;
+  console.log(requestOptions);
 
   try {
     // Call our request helper (see 'utils/request')
