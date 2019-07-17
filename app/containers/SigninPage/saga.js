@@ -33,6 +33,10 @@ export function* authUser() {
   try {
     // Call our request helper (see 'utils/request')
     const user = yield call(request, requestURL, requestOptions);
+
+    // Store user details and jwt token in local storage to keep user logged in between page refreshes
+    localStorage.setItem('user', JSON.stringify(user));
+
     yield put(authUserSuccess(user, email));
   } catch (err) {
     yield put(authUserError(err));

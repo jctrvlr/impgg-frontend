@@ -22,6 +22,7 @@ import {
   REGISTER_USER,
   REGISTER_USER_SUCCESS,
   REGISTER_USER_ERROR,
+  LOGOUT_USER,
 } from './constants';
 
 /**
@@ -103,5 +104,17 @@ export function authUserError(error) {
   return {
     type: AUTHENTICATE_USER_ERROR,
     error,
+  };
+}
+
+/**
+ * Log out user, this action starts the request saga
+ *
+ * @return {object} An action object with a type of LOGOUT_USER
+ */
+export function logoutUser() {
+  localStorage.removeItem('user');
+  return {
+    type: LOGOUT_USER,
   };
 }

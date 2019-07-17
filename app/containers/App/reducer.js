@@ -14,6 +14,7 @@ import {
   REGISTER_USER,
   REGISTER_USER_SUCCESS,
   REGISTER_USER_ERROR,
+  LOGOUT_USER,
 } from './constants';
 
 // The initial state of the App
@@ -60,6 +61,12 @@ const appReducer = (state = initialState, action) =>
       case REGISTER_USER_ERROR:
         draft.error = action.error;
         draft.loading = false;
+        break;
+
+      case LOGOUT_USER:
+        draft.loading = true;
+        draft.error = false;
+        draft.userData = false;
         break;
     }
   });
