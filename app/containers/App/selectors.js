@@ -20,6 +20,12 @@ const makeSelectLoading = () =>
     globalState => globalState.loading,
   );
 
+const makeSelectLoggedIn = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.loggedIn,
+  );
+
 const makeSelectError = () =>
   createSelector(
     selectGlobal,
@@ -36,6 +42,7 @@ export {
   selectGlobal,
   makeSelectLocation,
   makeSelectLoading,
+  makeSelectLoggedIn,
   makeSelectError,
   makeSelectUserData,
 };

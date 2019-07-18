@@ -2,6 +2,7 @@
  * Registers user
  */
 
+import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { AUTHENTICATE_USER } from 'containers/App/constants';
 import { authUserSuccess, authUserError } from 'containers/App/actions';
@@ -32,12 +33,14 @@ export function* authUser() {
 
   try {
     // Call our request helper (see 'utils/request')
-    const user = yield call(request, requestURL, requestOptions);
+    const ret = yield call(request, requestURL, requestOptions);
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(ret.user));
+    localStorage.setItem('token', JSON.stringify(ret.token));
 
-    yield put(authUserSuccess(user, email));
+    yield put(authUserSuccess(ret, email));
+    yield put(push('/'));
   } catch (err) {
     yield put(authUserError(err));
   }

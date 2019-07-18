@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import { push } from 'connected-react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -45,6 +46,7 @@ import {
   makeSelectError,
   makeSelectLoading,
   makeSelectUserData,
+  makeSelectLoggedIn,
 } from '../App/selectors';
 
 import {
@@ -99,9 +101,11 @@ export function RegisterPage({
   email,
   password,
   loading,
+  loggedIn,
   error,
   userData,
   onSubmitForm,
+  loggedInRedirect,
   onChangeFirstName,
   onChangeLastName,
   onChangeEmail,
@@ -111,6 +115,10 @@ export function RegisterPage({
   useInjectReducer({ key: 'registerPage', reducer });
   useInjectSaga({ key: 'registerPage', saga });
   const classes = useStyles();
+
+  if (loggedIn) {
+    loggedInRedirect();
+  }
 
   return (
     <div>
@@ -222,6 +230,8 @@ RegisterPage.propTypes = {
   email: PropTypes.string,
   password: PropTypes.string,
   loading: PropTypes.bool,
+  loggedIn: PropTypes.bool,
+  loggedInRedirect: PropTypes.func,
   onSubmitForm: PropTypes.func,
   onChangeFirstName: PropTypes.func,
   onChangeLastName: PropTypes.func,
@@ -235,6 +245,7 @@ RegisterPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   registerPage: makeSelectRegisterPage(),
   loading: makeSelectLoading(),
+  loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
   firstName: makeSelectFirstName(),
   lastName: makeSelectLastName(),
@@ -246,6 +257,9 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
+    loggedInRedirect: evt => {
+      dispatch(push('/'));
+    },
     onChangeEmail: evt => {
       dispatch(validateEmail(evt.target.value));
       dispatch(changeEmail(evt.target.value));

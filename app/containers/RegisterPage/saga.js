@@ -2,6 +2,7 @@
  * Gets the repositories of the user from Github
  */
 
+import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 
 import { REGISTER_USER } from 'containers/App/constants';
@@ -42,12 +43,14 @@ export function* registerUser() {
 
   try {
     // Call our request helper (see 'utils/request')
-    const user = yield call(request, requestURL, requestOptions);
+    const ret = yield call(request, requestURL, requestOptions);
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(ret.user));
+    localStorage.setItem('token', JSON.stringify(ret.token));
 
-    yield put(registerUserSuccess(user, email));
+    yield put(registerUserSuccess(ret, email));
+    yield put(push('/'));
   } catch (err) {
     yield put(registerUserError(err));
   }

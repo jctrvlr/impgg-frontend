@@ -19,6 +19,7 @@ import {
 
 // The initial state of the App
 export const initialState = {
+  loggedIn: false,
   loading: false,
   currentUser: false,
   userData: false,
@@ -30,12 +31,14 @@ const appReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
       case AUTHENTICATE_USER:
+        draft.loggedIn = false;
         draft.loading = true;
         draft.error = false;
         draft.userData = false;
         break;
 
       case AUTHENTICATE_USER_SUCCESS:
+        draft.loggedIn = true;
         draft.userData = action.userData;
         draft.loading = false;
         draft.currentUser = action.username;
@@ -47,12 +50,14 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case REGISTER_USER:
+        draft.loggedIn = false;
         draft.loading = true;
         draft.error = false;
         draft.userData = false;
         break;
 
       case REGISTER_USER_SUCCESS:
+        draft.loggedIn = true;
         draft.userData = action.userData;
         draft.loading = false;
         draft.currentUser = action.username;
