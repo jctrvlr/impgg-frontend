@@ -5,7 +5,8 @@
  */
 
 import React from 'react';
-// import PropTypes from 'prop-types';
+
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 // import { FormattedMessage } from 'react-intl';
@@ -26,7 +27,11 @@ import StarIcon from '@material-ui/icons/StarBorder';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
 import makeSelectPricingPage from './selectors';
+
+import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
+
 import reducer from './reducer';
 import saga from './saga';
 
@@ -116,7 +121,7 @@ const tiers = [
   },
 ];
 
-export function PricingPage() {
+export function PricingPage({ userData, loggedIn }) {
   useInjectReducer({ key: 'pricingPage', reducer });
   useInjectSaga({ key: 'pricingPage', saga });
   const classes = useStyles();
@@ -127,7 +132,7 @@ export function PricingPage() {
         <title>ImpGG - Pricing</title>
         <meta name="description" content="Description of PricingPage" />
       </Helmet>
-      <Header />
+      <Header userData={userData} loggedIn={loggedIn} />
       {/* Hero unit */}
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         <Typography
@@ -212,11 +217,14 @@ export function PricingPage() {
 }
 
 PricingPage.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  loggedIn: PropTypes.bool,
 };
 
 const mapStateToProps = createStructuredSelector({
   pricingPage: makeSelectPricingPage(),
+  loggedIn: makeSelectLoggedIn(),
+  userData: makeSelectUserData(),
 });
 
 function mapDispatchToProps(dispatch) {
