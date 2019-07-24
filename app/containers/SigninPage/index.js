@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  *
  * SigninPage
@@ -5,6 +6,7 @@
  */
 
 import React from 'react';
+import { push } from 'connected-react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -15,12 +17,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Logo from 'images/logo-withouttext.png';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import ErrorMessageHolder from 'components/ErrorMessageHolder';
 
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 // import { FormattedMessage } from 'react-intl';
@@ -29,9 +32,25 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import makeSelectSigninPage from './selectors';
+
+import {
+  makeSelectSigninPage,
+  makeSelectEmail,
+  makeSelectPassword,
+  makeSelectEmailValidation,
+} from './selectors';
+
+import {
+  makeSelectError,
+  makeSelectLoading,
+  makeSelectUserData,
+  makeSelectLoggedIn,
+} from '../App/selectors';
+
 import reducer from './reducer';
 import saga from './saga';
+import { changeEmail, changePassword, validateEmail } from './actions';
+import { authUser } from '../App/actions';
 // import messages from './messages';
 
 function MadeWithLove() {
@@ -53,9 +72,10 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+  logo: {
+    height: 100,
+    margin: 10,
+    marginBottom: 33,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -66,10 +86,26 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function SigninPage() {
+export function SigninPage({
+  email,
+  password,
+  loading,
+  loggedIn,
+  error,
+  userData,
+  loggedInRedirect,
+  onSubmitForm,
+  onChangeEmail,
+  onChangePassword,
+  emailValidation,
+}) {
   useInjectReducer({ key: 'signinPage', reducer });
   useInjectSaga({ key: 'signinPage', saga });
   const classes = useStyles();
+
+  if (loggedIn) {
+    loggedInRedirect();
+  }
 
   return (
     <div>
@@ -82,13 +118,17 @@ export function SigninPage() {
       </Helmet>
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
+            <img
+              alt="ImpGG logo. Your friendly neighborhood link shortener"
+              src={Logo}
+              className={classes.logo}
+            />
+          </Link>
           <Typography component="h1" variant="h5">
             Log in
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} noValidate onSubmit={onSubmitForm}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -99,6 +139,9 @@ export function SigninPage() {
               name="email"
               autoComplete="email"
               autoFocus
+              error={!!emailValidation}
+              helperText={emailValidation}
+              onChange={onChangeEmail}
             />
             <TextField
               variant="outlined"
@@ -110,6 +153,7 @@ export function SigninPage() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={onChangePassword}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -124,6 +168,7 @@ export function SigninPage() {
             >
               Log In
             </Button>
+            <ErrorMessageHolder error={error} />
             <Grid container>
               <Grid item xs>
                 <Link
@@ -151,16 +196,44 @@ export function SigninPage() {
 }
 
 SigninPage.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  email: PropTypes.string,
+  password: PropTypes.string,
+  loading: PropTypes.bool,
+  loggedIn: PropTypes.bool,
+  loggedInRedirect: PropTypes.func,
+  onSubmitForm: PropTypes.func,
+  onChangeEmail: PropTypes.func,
+  onChangePassword: PropTypes.func,
+  emailValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
 
 const mapStateToProps = createStructuredSelector({
   signinPage: makeSelectSigninPage(),
+  loading: makeSelectLoading(),
+  loggedIn: makeSelectLoggedIn(),
+  userData: makeSelectUserData(),
+  email: makeSelectEmail(),
+  password: makeSelectPassword(),
+  error: makeSelectError(),
+  emailValidation: makeSelectEmailValidation(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    loggedInRedirect: evt => {
+      dispatch(push('/'));
+    },
+    onChangeEmail: evt => {
+      dispatch(validateEmail(evt.target.value));
+      dispatch(changeEmail(evt.target.value));
+    },
+    onChangePassword: evt => dispatch(changePassword(evt.target.value)),
+    onSubmitForm: evt => {
+      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
+      dispatch(authUser());
+    },
   };
 }
 

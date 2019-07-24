@@ -1,6 +1,6 @@
 /**
  *
- * Asynchronously loads the component for SigninPage
+ * Asynchronously loads the component for Signin
  *
  */
 

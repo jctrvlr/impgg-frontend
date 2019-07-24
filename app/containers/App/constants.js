@@ -8,3 +8,15 @@
  * Follow this format:
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
+
+export const AUTHENTICATE_USER = 'impgg/App/AUTHENTICATE_USER';
+export const AUTHENTICATE_USER_SUCCESS = 'impgg/App/AUTHENTICATE_USER_SUCCESS';
+export const AUTHENTICATE_USER_ERROR = 'impgg/App/AUTHENTICATE_USER_ERROR';
+
+export const REGISTER_USER = 'impgg/App/REGISTER_USER';
+export const REGISTER_USER_SUCCESS = 'impgg/App/REGISTER_USER_SUCCESS';
+export const REGISTER_USER_ERROR = 'impgg/App/REGISTER_USER_ERROR';
+
+export const LOGOUT_USER = 'impgg/App/LOGOUT_USER';
+
+export const EMAIL_VALIDATION = 'impgg/App/EMAIL_VALIDATION';

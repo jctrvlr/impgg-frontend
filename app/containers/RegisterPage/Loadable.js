@@ -1,6 +1,6 @@
 /**
  *
- * Asynchronously loads the component for RegisterPage
+ * Asynchronously loads the component for Register
  *
  */
 

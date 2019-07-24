@@ -9,19 +9,31 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import HomePage from 'containers/HomePage/Loadable';
+import PrivateRoute from 'utils/PrivateRoute';
 
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+import { useInjectReducer } from 'utils/injectReducer';
+
+// Public routes
+import HomePage from 'containers/HomePage/Loadable';
 import PricingPage from 'containers/PricingPage';
 
+// Authentication routes
 import SigninPage from 'containers/SigninPage/Loadable';
 import RegisterPage from 'containers/RegisterPage/Loadable';
 
+// Protected routes
+import DashboardPage from 'containers/DashboardPage/Loadable';
+
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
+
+import reducer from './reducer';
 
 import GlobalStyle from '../../global-styles';
 
 export default function App() {
+  useInjectReducer({ key: 'App', reducer });
   return (
     <React.Fragment>
       <CssBaseline />
@@ -32,6 +44,7 @@ export default function App() {
         <Route exact path="/login" component={SigninPage} />
         <Route exact path="/register" component={RegisterPage} />
 
+        <PrivateRoute exact path="/dashboard" component={DashboardPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
