@@ -17,7 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Logo from 'images/logo-withouttext.png';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -82,9 +82,10 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+  logo: {
+    height: 100,
+    margin: 10,
+    marginBottom: 33,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -128,9 +129,13 @@ export function RegisterPage({
       </Helmet>
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
+            <img
+              alt="ImpGG logo. Your friendly neighborhood link shortener"
+              src={Logo}
+              className={classes.logo}
+            />
+          </Link>
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
