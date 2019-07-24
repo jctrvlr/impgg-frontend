@@ -12,8 +12,8 @@ import DarkToggle from 'components/DarkToggle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-// import Menu from '@material-ui/core/Menu';
-// import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
@@ -55,6 +55,9 @@ const useStyles = makeStyles(theme => ({
   menu: {
     margin: 0,
   },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
   avatar: {
     margin: theme.spacing(1, 1.5),
     width: 60,
@@ -62,11 +65,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Header({ loggedIn, userData }) {
+function Header({ loggedIn, userData, logoutUser }) {
   const classes = useStyles();
 
   const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
   const userName = userData.name || userData.email || 'Placeholder';
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  function handleMenu(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleClose() {
+    setAnchorEl(null);
+  }
 
   return (
     <React.Fragment>
@@ -134,13 +147,51 @@ function Header({ loggedIn, userData }) {
               >
                 Dashboard
               </Button>
-              <IconButton className={classes.iconbutton}>
+              <IconButton
+                className={classes.iconbutton}
+                aria-label="Account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+              >
                 <Avatar
                   src={userAvatar}
                   alt={userName}
                   className={classes.avatar}
                 />
               </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                getContentAnchorEl={null}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  component={RouterLink}
+                  to="/profile"
+                  onClick={handleClose}
+                >
+                  Profile
+                </MenuItem>
+                <MenuItem
+                  component={RouterLink}
+                  to="/account"
+                  onClick={handleClose}
+                >
+                  My account
+                </MenuItem>
+                <MenuItem onClick={logoutUser}>Log out</MenuItem>
+              </Menu>
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -173,6 +224,7 @@ function Header({ loggedIn, userData }) {
 Header.propTypes = {
   loggedIn: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  logoutUser: PropTypes.func,
 };
 
 export default Header;

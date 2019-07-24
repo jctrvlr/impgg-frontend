@@ -24,9 +24,10 @@ import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
+import { logoutUser } from '../App/actions';
 // import messages from './messages';
 
-export function HomePage({ userData, loggedIn }) {
+export function HomePage({ userData, loggedIn, onLogoutClick }) {
   useInjectReducer({ key: 'homePage', reducer });
   useInjectSaga({ key: 'homePage', saga });
 
@@ -36,7 +37,11 @@ export function HomePage({ userData, loggedIn }) {
         <title>ImpGG - Home</title>
         <meta name="description" content="ImpGG " />
       </Helmet>
-      <Header userData={userData} loggedIn={loggedIn} />
+      <Header
+        userData={userData}
+        loggedIn={loggedIn}
+        logoutUser={onLogoutClick}
+      />
     </div>
   );
 }
@@ -44,6 +49,7 @@ export function HomePage({ userData, loggedIn }) {
 HomePage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
+  onLogoutClick: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -54,7 +60,9 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    onLogoutClick: () => {
+      dispatch(logoutUser());
+    },
   };
 }
 

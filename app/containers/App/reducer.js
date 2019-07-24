@@ -73,9 +73,10 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case LOGOUT_USER:
-        draft.loading = true;
+        draft.loading = false;
         draft.error = false;
         draft.userData = false;
+        draft.loggedIn = false;
         break;
     }
   });
