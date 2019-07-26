@@ -18,9 +18,11 @@ import Header from 'components/Header/index';
 
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
+import { logoutUser } from '../App/actions';
+
 import messages from './messages';
 
-export function NotFound({ userData, loggedIn }) {
+export function NotFound({ userData, loggedIn, onLogoutClick }) {
   return (
     <div>
       <Helmet>
@@ -30,7 +32,11 @@ export function NotFound({ userData, loggedIn }) {
           content="Oops! Somethin' went wrong somewhere. Sorry about that! ImpGG is your one stop shop for all things... short links. Mischievously short."
         />
       </Helmet>
-      <Header userData={userData} loggedIn={loggedIn} />
+      <Header
+        userData={userData}
+        loggedIn={loggedIn}
+        logoutUser={onLogoutClick}
+      />
       <h1>
         <FormattedMessage {...messages.header} />
       </h1>
@@ -40,6 +46,7 @@ export function NotFound({ userData, loggedIn }) {
 NotFound.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
+  onLogoutClick: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -49,7 +56,9 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    onLogoutClick: () => {
+      dispatch(logoutUser());
+    },
   };
 }
 
