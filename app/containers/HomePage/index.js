@@ -24,6 +24,7 @@ import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
+
 import { logoutUser } from '../App/actions';
 // import messages from './messages';
 

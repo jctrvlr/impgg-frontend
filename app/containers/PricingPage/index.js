@@ -31,6 +31,7 @@ import Container from '@material-ui/core/Container';
 import makeSelectPricingPage from './selectors';
 
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
+import { logoutUser } from '../App/actions';
 
 import reducer from './reducer';
 import saga from './saga';
@@ -121,7 +122,7 @@ const tiers = [
   },
 ];
 
-export function PricingPage({ userData, loggedIn }) {
+export function PricingPage({ userData, loggedIn, onLogoutClick }) {
   useInjectReducer({ key: 'pricingPage', reducer });
   useInjectSaga({ key: 'pricingPage', saga });
   const classes = useStyles();
@@ -132,7 +133,11 @@ export function PricingPage({ userData, loggedIn }) {
         <title>ImpGG - Pricing</title>
         <meta name="description" content="Description of PricingPage" />
       </Helmet>
-      <Header userData={userData} loggedIn={loggedIn} />
+      <Header
+        userData={userData}
+        loggedIn={loggedIn}
+        logoutUser={onLogoutClick}
+      />
       {/* Hero unit */}
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         <Typography
@@ -219,6 +224,7 @@ export function PricingPage({ userData, loggedIn }) {
 PricingPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
+  onLogoutClick: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -229,7 +235,9 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    onLogoutClick: () => {
+      dispatch(logoutUser());
+    },
   };
 }
 
