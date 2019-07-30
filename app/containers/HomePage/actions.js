@@ -38,10 +38,10 @@ export function validateURI(uri) {
  *
  * @return {object} An action object with a type of URI_VALIDATION
  */
-export function changeURI(email) {
+export function changeURI(uri) {
   return {
     type: CHANGE_URI,
-    email,
+    uri,
   };
 }
 

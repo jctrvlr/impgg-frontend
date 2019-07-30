@@ -20,7 +20,7 @@ const makeSelectURI = () =>
 const makeSelectURIHistory = () =>
   createSelector(
     selectHomePageDomain,
-    homeState => homeState.uri,
+    homeState => homeState.uriHistory,
   );
 
 const makeSelectURIValidation = () =>

@@ -8,7 +8,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-
+import { Link as RouterLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 // import { FormattedMessage } from 'react-intl';
@@ -18,15 +18,19 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
+import LinkList from 'components/LinkList';
 import Header from 'components/Header';
+import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
+import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import makeSelectHomePage, {
   makeSelectURI,
   makeSelectURIValidation,
+  makeSelectURIHistory,
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
@@ -77,6 +81,7 @@ export function HomePage({
   onSubmitForm,
   onChangeURI,
   uriValidation,
+  uriHistory,
 }) {
   useInjectReducer({ key: 'homePage', reducer });
   useInjectSaga({ key: 'homePage', saga });
@@ -108,6 +113,16 @@ export function HomePage({
             helperText={uriValidation}
             onChange={onChangeURI}
           />
+          <Typography variant="caption" align="right" color="textSecondary">
+            {"By shortening a link, you are agreeing to ImpGG's "}
+            <Link to="/terms" color="textSecondary" component={RouterLink}>
+              Terms of Service
+            </Link>
+            {' and '}
+            <Link to="/privacy" color="textSecondary" component={RouterLink}>
+              Privacy Policy
+            </Link>
+          </Typography>
           <Button
             type="submit"
             fullWidth
@@ -117,6 +132,7 @@ export function HomePage({
           >
             Shorten it!
           </Button>
+          {uriHistory.length >= 1 && <LinkList uriHistory={uriHistory} />}
         </form>
       </Container>
     </div>
@@ -124,10 +140,11 @@ export function HomePage({
 }
 
 HomePage.propTypes = {
-  uri: PropTypes.string,
+  uri: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   uriValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  uriHistory: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   onLogoutClick: PropTypes.func,
   onSubmitForm: PropTypes.func,
   onChangeURI: PropTypes.func,
@@ -138,6 +155,7 @@ const mapStateToProps = createStructuredSelector({
   loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
   uri: makeSelectURI(),
+  uriHistory: makeSelectURIHistory(),
   uriValidation: makeSelectURIValidation(),
 });
 

@@ -45,6 +45,7 @@ export function* fetchLink() {
 
   try {
     // Call our request helper (see 'utils/request')
+    console.log(requestOptions);
     const ret = yield call(request, requestURL, requestOptions);
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
