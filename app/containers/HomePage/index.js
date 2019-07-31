@@ -129,6 +129,7 @@ export function HomePage({
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={!!uriValidation}
           >
             Shorten it!
           </Button>
