@@ -133,8 +133,10 @@ export function HomePage({
           >
             Shorten it!
           </Button>
-          {uriHistory.length >= 1 && <LinkList uriHistory={uriHistory} />}
         </form>
+      </Container>
+      <Container maxWidth="md" component="main">
+        {uriHistory.length >= 1 && <LinkList uriHistory={uriHistory} />}
       </Container>
     </div>
   );
