@@ -27,6 +27,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     textAlign: 'inherit',
+    borderRadius: '5px',
     backgroundColor: theme.palette.background.paper,
   },
   lItemText: {

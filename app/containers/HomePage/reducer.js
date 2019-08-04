@@ -12,6 +12,18 @@ import {
   CHANGE_URI,
 } from './constants';
 
+/**
+ * For testing uriHistory:
+ * {
+ *   url: 'http://google.com',
+ *   shortLink:
+ *     'http://localhost:3000/12344234234234234234234234234234234234234',
+ * },
+ * {
+ *   url: 'http://googldfae.com',
+ *   shortLink: 'http://localhost:3000/1234',
+ * },
+ */
 export const initialState = {
   uri: false,
   uriValidation: false,
