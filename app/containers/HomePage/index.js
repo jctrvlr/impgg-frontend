@@ -51,8 +51,17 @@ const useStyles = makeStyles(theme => ({
       listStyle: 'none',
     },
   },
-  heroContent: {
+  banner: {
+    width: '100%',
+  },
+  formContent: {
     padding: theme.spacing(8, 0, 6),
+  },
+  heroContent: {
+    [theme.breakpoints.up('sm')]: {
+      height: '500px',
+    },
+    paddingBottom: theme.spacing(12),
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -61,9 +70,22 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  heroHeadText: {
+    fontWeight: 'bold',
+    marginLeft: theme.spacing(50),
+    paddingTop: theme.spacing(23),
+  },
+  heroText: {
+    marginLeft: theme.spacing(50),
+    marginBottom: theme.spacing(3),
+  },
+  heroButton: {
+    marginLeft: theme.spacing(50),
+  },
   footer: {
     borderTop: `1px solid ${theme.palette.divider}`,
     marginTop: theme.spacing(8),
+    marginBottom: theme.spacing(8),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
     [theme.breakpoints.up('sm')]: {
@@ -86,7 +108,13 @@ export function HomePage({
   useInjectReducer({ key: 'homePage', reducer });
   useInjectSaga({ key: 'homePage', saga });
   const classes = useStyles();
-
+  /**
+   * <img
+          src="https://via.placeholder.com/1280x500"
+          alt="ImpGG banner"
+          className={classes.banner}
+        />
+   */
   return (
     <div>
       <Helmet>
@@ -98,8 +126,33 @@ export function HomePage({
         loggedIn={loggedIn}
         logoutUser={onLogoutClick}
       />
-      {/* TODO: Hero unit */}
-      <Container maxWidth="sm" component="main" className={classes.heroContent}>
+      <div className={classes.heroContent}>
+        <Typography
+          variant="h4"
+          align="left"
+          color="textPrimary"
+          className={classes.heroHeadText}
+        >
+          Mischievously short links that work for you
+        </Typography>
+        <Typography
+          variant="h4"
+          align="left"
+          color="textSecondary"
+          className={classes.heroText}
+        >
+          Start creating and sharing links today
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.heroButton}
+        >
+          Create a free account
+        </Button>
+      </div>
+      {/* TODO: Hero banner unit */}
+      <Container maxWidth="sm" component="main" className={classes.formContent}>
         <form className={classes.form} noValidate onSubmit={onSubmitForm}>
           <TextField
             variant="outlined"
@@ -135,7 +188,7 @@ export function HomePage({
           </Button>
         </form>
       </Container>
-      <Container maxWidth="md" component="main">
+      <Container maxWidth="md" component="div">
         {uriHistory.length >= 1 && <LinkList uriHistory={uriHistory} />}
       </Container>
     </div>
