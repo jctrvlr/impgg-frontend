@@ -12,7 +12,7 @@ import { fetchUrlSuccess, fetchUrlError } from './actions';
 
 import { makeSelectURI, makeSelectURIHistory } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
-const baseUrl = 'https://api.imp.gg';
+const baseUrl = 'http://localhost:3001';
 
 /**
  * Registration for user request/response handler
@@ -20,9 +20,10 @@ const baseUrl = 'https://api.imp.gg';
 export function* fetchLink() {
   // Select URL and userData from store
   const uri = yield select(makeSelectURI());
-  let uriHistory = yield select(makeSelectURIHistory());
+  const uriHistory = yield select(makeSelectURIHistory());
   const userData = yield select(makeSelectUserData());
   const loggedIn = yield select(makeSelectLoggedIn());
+  console.log(loggedIn);
 
   let requestOptions = {};
 
@@ -30,7 +31,7 @@ export function* fetchLink() {
     requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ creatorId: userData.id, uri }),
+      body: JSON.stringify({ CreatorId: userData.user.id, uri }),
     };
   } else {
     requestOptions = {
@@ -46,11 +47,11 @@ export function* fetchLink() {
   try {
     // Call our request helper (see 'utils/request')
     console.log(requestOptions);
+
     // ret should be ['creatorId', 'url', 'type', 'shortLink']
     const ret = yield call(request, requestURL, requestOptions);
-
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    uriHistory = uriHistory.push(ret);
+    uriHistory.push(ret);
     localStorage.setItem('uriHistory', JSON.stringify(uriHistory));
     // Return linkData
     yield put(fetchUrlSuccess(ret, uriHistory));

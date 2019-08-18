@@ -4,7 +4,7 @@
  *
  */
 
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -50,6 +50,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function LinkList({ uriHistory }) {
+  console.log('rendering');
   const classes = useStyles();
 
   const content = uriHistory.map((item, i) => {
@@ -135,4 +136,4 @@ LinkList.propTypes = {
   uriHistory: PropTypes.array,
 };
 
-export default memo(LinkList);
+export default LinkList;

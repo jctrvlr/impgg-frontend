@@ -58,8 +58,12 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(8, 0, 6),
   },
   heroContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#E31837',
     [theme.breakpoints.up('sm')]: {
-      height: '500px',
+      height: '768px',
     },
     paddingBottom: theme.spacing(12),
   },
@@ -72,15 +76,17 @@ const useStyles = makeStyles(theme => ({
   },
   heroHeadText: {
     fontWeight: 'bold',
-    marginLeft: theme.spacing(50),
     paddingTop: theme.spacing(23),
+    color: '#fff',
   },
   heroText: {
-    marginLeft: theme.spacing(50),
     marginBottom: theme.spacing(3),
+    color: 'rgba(255, 255, 255, 0.7)',
   },
   heroButton: {
     marginLeft: theme.spacing(50),
+    backgroundColor: theme.palette.caution,
+    color: '#111',
   },
   footer: {
     borderTop: `1px solid ${theme.palette.divider}`,
@@ -115,41 +121,52 @@ export function HomePage({
           className={classes.banner}
         />
    */
+
+  const linkListProps = {
+    uriHistory,
+  };
   return (
     <div>
       <Helmet>
         <title>ImpGG - Home</title>
         <meta name="description" content="ImpGG " />
       </Helmet>
-      <Header
-        userData={userData}
-        loggedIn={loggedIn}
-        logoutUser={onLogoutClick}
-      />
       <div className={classes.heroContent}>
-        <Typography
-          variant="h4"
-          align="left"
-          color="textPrimary"
-          className={classes.heroHeadText}
-        >
+        <Header
+          userData={userData}
+          loggedIn={loggedIn}
+          logoutUser={onLogoutClick}
+          background={false}
+        />
+        <Typography variant="h4" align="left" className={classes.heroHeadText}>
           Mischievously short links that work for you
         </Typography>
-        <Typography
-          variant="h4"
-          align="left"
-          color="textSecondary"
-          className={classes.heroText}
-        >
+        <Typography variant="h4" align="left" className={classes.heroText}>
           Start creating and sharing links today
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.heroButton}
-        >
-          Create a free account
-        </Button>
+        {loggedIn ? (
+          <React.Fragment>
+            <Button
+              component={RouterLink}
+              to="/dashboard"
+              variant="contained"
+              className={classes.heroButton}
+            >
+              Go to dashboard
+            </Button>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Button
+              component={RouterLink}
+              to="/register"
+              variant="contained"
+              className={classes.heroButton}
+            >
+              Create a free account
+            </Button>
+          </React.Fragment>
+        )}
       </div>
       {/* TODO: Hero banner unit */}
       <Container maxWidth="sm" component="main" className={classes.formContent}>
@@ -189,7 +206,7 @@ export function HomePage({
         </form>
       </Container>
       <Container maxWidth="md" component="div">
-        {uriHistory.length >= 1 && <LinkList uriHistory={uriHistory} />}
+        {uriHistory.length >= 1 && <LinkList {...linkListProps} />}
       </Container>
     </div>
   );
@@ -200,7 +217,7 @@ HomePage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   uriValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  uriHistory: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  uriHistory: PropTypes.array,
   onLogoutClick: PropTypes.func,
   onSubmitForm: PropTypes.func,
   onChangeURI: PropTypes.func,

@@ -137,6 +137,7 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
         userData={userData}
         loggedIn={loggedIn}
         logoutUser={onLogoutClick}
+        background
       />
       {/* Hero unit */}
       <Container maxWidth="sm" component="main" className={classes.heroContent}>

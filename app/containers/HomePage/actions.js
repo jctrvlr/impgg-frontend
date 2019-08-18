@@ -63,11 +63,11 @@ export function fetchUrl() {
  *
  * @return {object} An action object with a type of FETCH_URL_SUCCESS passing the URL's information along
  */
-export function fetchUrlSuccess(linkData, currentLink) {
+export function fetchUrlSuccess(currentLink, uriHistory) {
   return {
     type: FETCH_URL_SUCCESS,
-    linkData,
     currentLink,
+    uriHistory,
   };
 }
 
