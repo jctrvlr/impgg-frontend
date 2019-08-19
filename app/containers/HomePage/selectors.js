@@ -11,6 +11,24 @@ const selectHomePageDomain = state => state.homePage || initialState;
  * Other specific selectors
  */
 
+const makeSelectURI = () =>
+  createSelector(
+    selectHomePageDomain,
+    homeState => homeState.uri,
+  );
+
+const makeSelectURIHistory = () =>
+  createSelector(
+    selectHomePageDomain,
+    homeState => homeState.uriHistory,
+  );
+
+const makeSelectURIValidation = () =>
+  createSelector(
+    selectHomePageDomain,
+    homeState => homeState.uriValidation,
+  );
+
 /**
  * Default selector used by HomePage
  */
@@ -22,4 +40,9 @@ const makeSelectHomePage = () =>
   );
 
 export default makeSelectHomePage;
-export { selectHomePageDomain };
+export {
+  selectHomePageDomain,
+  makeSelectURI,
+  makeSelectURIHistory,
+  makeSelectURIValidation,
+};

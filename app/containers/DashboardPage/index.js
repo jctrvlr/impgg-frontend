@@ -34,7 +34,7 @@ export function DashboardPage({ userData, loggedIn }) {
         <title>ImpGG - Dashboard</title>
         <meta name="description" content="Description of Dashboard" />
       </Helmet>
-      <Header userData={userData} loggedIn={loggedIn} />
+      <Header userData={userData} loggedIn={loggedIn} background />
       <FormattedMessage {...messages.header} />
     </div>
   );

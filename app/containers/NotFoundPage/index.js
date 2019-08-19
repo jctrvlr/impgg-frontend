@@ -36,6 +36,7 @@ export function NotFound({ userData, loggedIn, onLogoutClick }) {
         userData={userData}
         loggedIn={loggedIn}
         logoutUser={onLogoutClick}
+        background
       />
       <h1>
         <FormattedMessage {...messages.header} />

@@ -19,6 +19,8 @@ import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Logo from 'images/logo.png';
+import DarkmodeLogo from 'images/logo-darkmode.png';
+
 import PropTypes from 'prop-types';
 
 import messages from './messages';
@@ -36,6 +38,10 @@ const useStyles = makeStyles(theme => ({
   iconbutton: {
     padding: 0,
   },
+  transparentAppbar: {
+    background: 'transparent',
+    boxShadow: 'none',
+  },
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
@@ -52,6 +58,10 @@ const useStyles = makeStyles(theme => ({
   link: {
     margin: theme.spacing(1, 1.5),
   },
+  linkNoBackground: {
+    margin: theme.spacing(1, 1.5),
+    color: '#fff',
+  },
   menu: {
     margin: 0,
   },
@@ -63,9 +73,15 @@ const useStyles = makeStyles(theme => ({
     width: 60,
     height: 60,
   },
+  avatarNoBackground: {
+    margin: theme.spacing(1, 1.5),
+    width: 60,
+    height: 60,
+    color: '#fff',
+  },
 }));
 
-function Header({ loggedIn, userData, logoutUser }) {
+function Header({ loggedIn, userData, logoutUser, background }) {
   const classes = useStyles();
 
   const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
@@ -81,19 +97,24 @@ function Header({ loggedIn, userData, logoutUser }) {
     setAnchorEl(null);
   }
 
+  const appBarClass = background ? classes.appBar : classes.transparentAppbar;
+  const fontBarClass = background ? classes.link : classes.linkNoBackground;
+  const avatarClass = background ? classes.avatar : classes.avatarNoBackground;
+  const logoB = background ? Logo : DarkmodeLogo;
+
   return (
     <React.Fragment>
       <AppBar
         position="static"
         color="default"
         elevation={0}
-        className={classes.appBar}
+        className={appBarClass}
       >
         <Toolbar className={classes.toolbar}>
           <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
             <img
               alt="ImpGG logo. Your friendly neighborhood link shortener"
-              src={Logo}
+              src={logoB}
               className={classes.logo}
             />
           </Link>
@@ -103,7 +124,7 @@ function Header({ loggedIn, userData, logoutUser }) {
               color="textPrimary"
               component={RouterLink}
               to="/about"
-              className={classes.link}
+              className={fontBarClass}
             >
               <FormattedMessage {...messages.about} />
             </Link>
@@ -112,7 +133,7 @@ function Header({ loggedIn, userData, logoutUser }) {
               color="textPrimary"
               component={RouterLink}
               to="/features"
-              className={classes.link}
+              className={fontBarClass}
             >
               <FormattedMessage {...messages.features} />
             </Link>
@@ -121,7 +142,7 @@ function Header({ loggedIn, userData, logoutUser }) {
               color="textPrimary"
               component={RouterLink}
               to="/pricing"
-              className={classes.link}
+              className={fontBarClass}
             >
               <FormattedMessage {...messages.pricing} />
             </Link>
@@ -130,7 +151,7 @@ function Header({ loggedIn, userData, logoutUser }) {
               color="textPrimary"
               component={RouterLink}
               to="/resources"
-              className={classes.link}
+              className={fontBarClass}
             >
               <FormattedMessage {...messages.resources} />
             </Link>
@@ -143,7 +164,7 @@ function Header({ loggedIn, userData, logoutUser }) {
                 to="/dashboard"
                 color="primary"
                 variant="contained"
-                className={classes.link}
+                className={fontBarClass}
               >
                 Dashboard
               </Button>
@@ -157,7 +178,7 @@ function Header({ loggedIn, userData, logoutUser }) {
                 <Avatar
                   src={userAvatar}
                   alt={userName}
-                  className={classes.avatar}
+                  className={avatarClass}
                 />
               </IconButton>
               <Menu
@@ -200,7 +221,7 @@ function Header({ loggedIn, userData, logoutUser }) {
                 to="/login"
                 color="primary"
                 variant="contained"
-                className={classes.link}
+                className={fontBarClass}
               >
                 Sign in
               </Button>
@@ -209,7 +230,7 @@ function Header({ loggedIn, userData, logoutUser }) {
                 to="/register"
                 color="primary"
                 variant="contained"
-                className={classes.link}
+                className={fontBarClass}
               >
                 Register an account
               </Button>
@@ -225,6 +246,7 @@ Header.propTypes = {
   loggedIn: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   logoutUser: PropTypes.func,
+  background: PropTypes.bool,
 };
 
 export default Header;
