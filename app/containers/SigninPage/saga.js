@@ -36,8 +36,7 @@ export function* authUser() {
     const ret = yield call(request, requestURL, requestOptions);
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('user', JSON.stringify(ret.user));
-    localStorage.setItem('token', JSON.stringify(ret.token));
+    localStorage.setItem('userData', JSON.stringify(ret));
 
     yield put(authUserSuccess(ret, email));
     yield put(push('/'));

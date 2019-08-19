@@ -23,26 +23,28 @@ export function* fetchLink() {
   const uriHistory = yield select(makeSelectURIHistory());
   const userData = yield select(makeSelectUserData());
   const loggedIn = yield select(makeSelectLoggedIn());
-  console.log(loggedIn);
 
   let requestOptions = {};
+  let requestURL = '';
 
   if (loggedIn) {
+    requestURL = `${baseUrl}/v1/link`;
     requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ CreatorId: userData.user.id, uri }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData.token.accessToken}`,
+      },
+      body: JSON.stringify({ uri }),
     };
   } else {
+    requestURL = `${baseUrl}/juliet/link`;
     requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ uri }),
     };
   }
-
-  const requestURL = `${baseUrl}/v1/link`;
-  // console.log(requestOptions);
 
   try {
     // Call our request helper (see 'utils/request')

@@ -50,8 +50,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function LinkList({ uriHistory }) {
-  console.log('rendering');
   const classes = useStyles();
+  const baseUrl = 'http://localhost:3001/';
 
   const content = uriHistory.map((item, i) => {
     if (uriHistory.length - 1 === i) {
@@ -66,7 +66,7 @@ function LinkList({ uriHistory }) {
             <ListItemText
               className={classes.lItemText}
               primary={
-                <a className={classes.a} href={item.shortLink}>
+                <a className={classes.a} href={baseUrl + item.shortLink}>
                   <Input
                     fullWidth
                     id={shortid.generate()}
@@ -100,7 +100,7 @@ function LinkList({ uriHistory }) {
           <ListItemText
             className={classes.lItemText}
             primary={
-              <a className={classes.a} href={item.shortLink}>
+              <a className={classes.a} href={baseUrl + item.shortLink}>
                 <Input
                   fullWidth
                   id={shortid.generate()}

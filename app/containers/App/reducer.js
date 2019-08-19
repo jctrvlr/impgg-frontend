@@ -19,10 +19,12 @@ import {
 
 // The initial state of the App TODO: CHANGE BACK TO FALSE AFTER TESTING
 export const initialState = {
-  loggedIn: false,
+  loggedIn: !!localStorage.getItem('userData'),
   loading: false,
   currentUser: false,
-  userData: {},
+  userData: localStorage.getItem('userData')
+    ? JSON.parse(localStorage.getItem('userData'))
+    : {},
   error: false,
 };
 
