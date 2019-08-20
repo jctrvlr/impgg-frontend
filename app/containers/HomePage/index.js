@@ -125,10 +125,11 @@ export function HomePage({
   const linkListProps = {
     uriHistory,
   };
+
   return (
     <div>
       <Helmet>
-        <title>ImpGG - Home</title>
+        <title>ImpGG - URL Shortener, Mischievous link helper</title>
         <meta name="description" content="ImpGG " />
       </Helmet>
       <div className={classes.heroContent}>
@@ -168,7 +169,6 @@ export function HomePage({
           </React.Fragment>
         )}
       </div>
-      {/* TODO: Hero banner unit */}
       <Container maxWidth="sm" component="main" className={classes.formContent}>
         <form className={classes.form} noValidate onSubmit={onSubmitForm}>
           <TextField
