@@ -8,6 +8,7 @@ import { AUTHENTICATE_USER } from 'containers/App/constants';
 import { authUserSuccess, authUserError } from 'containers/App/actions';
 
 import request from 'utils/request';
+import moment from 'moment';
 
 import {
   makeSelectEmail,
@@ -34,6 +35,12 @@ export function* authUser() {
   try {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
+
+    ret.expires = moment
+      .utc()
+      .add(1, 'day')
+      .toDate()
+      .toUTCString();
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
     localStorage.setItem('userData', JSON.stringify(ret));
