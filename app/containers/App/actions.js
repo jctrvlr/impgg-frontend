@@ -113,7 +113,7 @@ export function authUserError(error) {
  * @return {object} An action object with a type of LOGOUT_USER
  */
 export function logoutUser() {
-  localStorage.removeItem('user');
+  localStorage.removeItem('userData');
   return {
     type: LOGOUT_USER,
   };

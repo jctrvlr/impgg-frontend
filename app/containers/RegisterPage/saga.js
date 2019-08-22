@@ -9,6 +9,7 @@ import { REGISTER_USER } from 'containers/App/constants';
 import { registerUserSuccess, registerUserError } from 'containers/App/actions';
 
 import request from 'utils/request';
+import moment from 'moment';
 
 import {
   makeSelectFirstName,
@@ -45,9 +46,14 @@ export function* registerUser() {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
 
+    ret.expires = moment
+      .utc()
+      .add(1, 'day')
+      .toDate()
+      .toUTCString();
+
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('user', JSON.stringify(ret.user));
-    localStorage.setItem('token', JSON.stringify(ret.token));
+    localStorage.setItem('userData', JSON.stringify(ret));
 
     yield put(registerUserSuccess(ret, email));
     yield put(push('/'));

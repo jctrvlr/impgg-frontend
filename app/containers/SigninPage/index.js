@@ -57,8 +57,8 @@ function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Built with love by the '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
+      <Link color="inherit" href="https://imp.gg/">
+        ImpGG
       </Link>
       {' team.'}
     </Typography>
@@ -101,6 +101,7 @@ export function SigninPage({
 }) {
   useInjectReducer({ key: 'signinPage', reducer });
   useInjectSaga({ key: 'signinPage', saga });
+
   const classes = useStyles();
 
   if (loggedIn) {

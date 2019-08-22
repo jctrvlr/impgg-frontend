@@ -7,6 +7,7 @@
  *
  */
 import produce from 'immer';
+import moment from 'moment';
 import {
   AUTHENTICATE_USER_SUCCESS,
   AUTHENTICATE_USER,
@@ -16,15 +17,29 @@ import {
   REGISTER_USER_ERROR,
   LOGOUT_USER,
 } from './constants';
+let userDataR = {};
+let loggedInR = false;
 
-// The initial state of the App TODO: CHANGE BACK TO FALSE AFTER TESTING
+// The initial state of the App
+if (localStorage.getItem('userData')) {
+  userDataR = JSON.parse(localStorage.getItem('userData'));
+  loggedInR = !!localStorage.getItem('userData');
+  const today = moment.utc();
+  const expiresIn = moment.utc(userDataR.expires);
+  console.log(today);
+  console.log(expiresIn);
+  console.log(expiresIn.isAfter(today));
+  if (expiresIn.isBefore(today)) {
+    loggedInR = false;
+    userDataR = {};
+  }
+}
+
 export const initialState = {
-  loggedIn: !!localStorage.getItem('userData'),
+  loggedIn: loggedInR,
   loading: false,
   currentUser: false,
-  userData: localStorage.getItem('userData')
-    ? JSON.parse(localStorage.getItem('userData'))
-    : {},
+  userData: userDataR,
   error: false,
 };
 
