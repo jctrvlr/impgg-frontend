@@ -19,7 +19,7 @@ export default defineMessages({
   },
   features: {
     id: `${scope}.features`,
-    defaultMessage: 'features',
+    defaultMessage: 'Features',
   },
   pricing: {
     id: `${scope}.pricing`,
@@ -27,6 +27,6 @@ export default defineMessages({
   },
   resources: {
     id: `${scope}.resources`,
-    defaultMessage: 'resources',
+    defaultMessage: 'Resources',
   },
 });

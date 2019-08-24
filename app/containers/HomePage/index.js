@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(12),
     [theme.breakpoints.down(769)]: {
       paddingBottom: theme.spacing(0),
-      height: '600px',
+      height: '500px',
     },
   },
   form: {

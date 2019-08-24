@@ -69,7 +69,7 @@ function LinkList({ uriHistory }) {
                   <Input
                     fullWidth
                     id={shortid.generate()}
-                    value={item.shortLink}
+                    value={baseUrl + item.shortLink}
                     readOnly
                     disableUnderline
                     className={classes.inp}
@@ -99,7 +99,7 @@ function LinkList({ uriHistory }) {
                 <Input
                   fullWidth
                   id={shortid.generate()}
-                  value={item.shortLink}
+                  value={baseUrl + item.shortLink}
                   readOnly
                   disableUnderline
                   className={classes.inp}
