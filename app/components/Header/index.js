@@ -87,17 +87,15 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
   menuIconR: {
-    marginTop: 'auto',
+    marginRight: theme.spacing(5),
   },
   menuIconButton: {
     width: 40,
     height: 40,
-    marginRight: theme.spacing(2),
   },
   menuIconButtonNoBackground: {
     width: 40,
     height: 40,
-    marginRight: theme.spacing(2),
     color: '#fff',
   },
   avatar: {
@@ -415,7 +413,11 @@ function Header({ loggedIn, userData, logoutUser, background }) {
           >
             <MenuIcon className={menuButtonColor} />
           </IconButton>
-          <Drawer open={state.right} onClose={toggleDrawer('right', false)}>
+          <Drawer
+            anchor="right"
+            open={state.right}
+            onClose={toggleDrawer('right', false)}
+          >
             {sideList('right')}
           </Drawer>
         </Toolbar>
