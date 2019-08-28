@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     maxWidth: '400px',
+    [theme.breakpoints.up(768)]: {
+      marginLeft: '56px',
+    },
   },
   a: {
     color: 'transparent',
@@ -58,11 +61,7 @@ function LinkList({ uriHistory }) {
       return (
         <React.Fragment key={shortid.generate()}>
           <ListItem alignItems="flex-start" className={classes.li}>
-            <ListItemText
-              className={classes.lItemText}
-              inset
-              primary={item.url}
-            />
+            <ListItemText className={classes.lItemText} primary={item.url} />
             <ListItemText
               className={classes.lItemText}
               primary={
@@ -70,7 +69,7 @@ function LinkList({ uriHistory }) {
                   <Input
                     fullWidth
                     id={shortid.generate()}
-                    value={item.shortLink}
+                    value={baseUrl + item.shortLink}
                     readOnly
                     disableUnderline
                     className={classes.inp}
@@ -92,11 +91,7 @@ function LinkList({ uriHistory }) {
     return (
       <React.Fragment key={shortid.generate()}>
         <ListItem alignItems="flex-start" className={classes.li}>
-          <ListItemText
-            className={classes.lItemText}
-            inset
-            primary={item.url}
-          />
+          <ListItemText className={classes.lItemText} primary={item.url} />
           <ListItemText
             className={classes.lItemText}
             primary={
@@ -104,7 +99,7 @@ function LinkList({ uriHistory }) {
                 <Input
                   fullWidth
                   id={shortid.generate()}
-                  value={item.shortLink}
+                  value={baseUrl + item.shortLink}
                   readOnly
                   disableUnderline
                   className={classes.inp}
@@ -113,7 +108,7 @@ function LinkList({ uriHistory }) {
             }
           />
           <ListItemIcon>
-            <CopyToClipboard text={item.shortLink}>
+            <CopyToClipboard text={baseUrl + item.shortLink}>
               <IconButton aria-label="copy">
                 <FileCopy />
               </IconButton>

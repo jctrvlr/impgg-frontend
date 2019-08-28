@@ -62,14 +62,22 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#E31837',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('769')]: {
       height: '768px',
     },
     paddingBottom: theme.spacing(12),
+    [theme.breakpoints.down(769)]: {
+      paddingBottom: theme.spacing(0),
+      height: '500px',
+    },
   },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+    [theme.breakpoints.down(769)]: {
+      width: '80%',
+      margin: 'auto',
+    },
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -78,15 +86,25 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold',
     paddingTop: theme.spacing(23),
     color: '#fff',
+    [theme.breakpoints.down(769)]: {
+      fontSize: '1.725rem',
+      paddingTop: theme.spacing(10),
+    },
   },
   heroText: {
     marginBottom: theme.spacing(3),
     color: 'rgba(255, 255, 255, 0.7)',
+    [theme.breakpoints.down(769)]: {
+      fontSize: '1.725rem',
+    },
   },
   heroButton: {
     marginLeft: theme.spacing(50),
     backgroundColor: theme.palette.caution,
     color: '#111',
+    [theme.breakpoints.down(768)]: {
+      marginLeft: '0',
+    },
   },
   footer: {
     borderTop: `1px solid ${theme.palette.divider}`,
@@ -139,10 +157,14 @@ export function HomePage({
           logoutUser={onLogoutClick}
           background={false}
         />
-        <Typography variant="h4" align="left" className={classes.heroHeadText}>
+        <Typography
+          variant="h4"
+          align="center"
+          className={classes.heroHeadText}
+        >
           Mischievously short links that work for you
         </Typography>
-        <Typography variant="h4" align="left" className={classes.heroText}>
+        <Typography variant="h4" align="center" className={classes.heroText}>
           Start creating and sharing links today
         </Typography>
         {loggedIn ? (
