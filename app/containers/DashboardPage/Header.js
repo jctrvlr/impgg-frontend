@@ -12,8 +12,6 @@ import DarkToggle from 'components/DarkToggle';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
@@ -24,10 +22,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Logo from 'images/logo.png';
+import Logo from 'images/logo-withouttext.png';
 import DarkmodeLogo from 'images/logo-darkmode.png';
 
 import PropTypes from 'prop-types';
@@ -53,6 +54,8 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
+    justifyContent: 'flex-start',
+    position: 'relative',
   },
   toolbar: {
     flexWrap: 'wrap',
@@ -60,18 +63,15 @@ const useStyles = makeStyles(theme => ({
       display: 'none',
     },
   },
-  toolbarMobile: {
-    flexWrap: 'wrap',
-    [theme.breakpoints.up(1280)]: {
-      display: 'none',
-    },
-  },
   toolbarTitle: {
-    flexGrow: 1,
+    flex: '0 1 auto',
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
   },
   logo: {
-    height: 100,
-    margin: 15,
+    height: 65,
+    margin: 10,
   },
   link: {
     margin: theme.spacing(1, 1.5),
@@ -88,6 +88,9 @@ const useStyles = makeStyles(theme => ({
   },
   menuIconR: {
     marginRight: theme.spacing(5),
+    flex: '0 1 auto',
+    margin: 15,
+    marginLeft: 'auto',
   },
   menuIconButton: {
     width: 40,
@@ -109,6 +112,9 @@ const useStyles = makeStyles(theme => ({
     height: 60,
     color: '#fff',
   },
+  darkToggleButton: {
+    margin: 'auto',
+  },
 }));
 
 function Header({ loggedIn, userData, logoutUser, background }) {
@@ -116,8 +122,6 @@ function Header({ loggedIn, userData, logoutUser, background }) {
 
   const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
   const userName = userData.name || userData.email || 'Placeholder';
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
 
   const [state, setState] = React.useState({
     right: false,
@@ -142,38 +146,21 @@ function Header({ loggedIn, userData, logoutUser, background }) {
       onKeyDown={toggleDrawer(side, false)}
     >
       <List>
-        <ListItem button component={RouterLink} to="/about">
-          <ListItemText primary={<FormattedMessage {...messages.about} />} />
-        </ListItem>
-        <ListItem button component={RouterLink} to="/features">
-          <ListItemText primary={<FormattedMessage {...messages.features} />} />
-        </ListItem>
-        <ListItem button component={RouterLink} to="/pricing">
-          <ListItemText primary={<FormattedMessage {...messages.pricing} />} />
-        </ListItem>
-        <ListItem button component={RouterLink} to="/resources">
-          <ListItemText
-            primary={<FormattedMessage {...messages.resources} />}
-          />
-        </ListItem>
-      </List>
-      <Divider />
-      <List>
         <ListItem>
           <ListItemIcon>
-            <DarkToggle />
+            <DarkToggle className={classes.darkToggleButton} />
           </ListItemIcon>
         </ListItem>
         {loggedIn ? (
           <React.Fragment>
             <Button
               component={RouterLink}
-              to="/dashboard"
+              to="/"
               color="primary"
               variant="contained"
               className={fontBarClass}
             >
-              Dashboard
+              Back to home
             </Button>
             <IconButton
               className={classes.iconbutton}
@@ -185,18 +172,28 @@ function Header({ loggedIn, userData, logoutUser, background }) {
             >
               <Avatar src={userAvatar} alt={userName} className={avatarClass} />
             </IconButton>
+            <Divider />
             <List>
               <ListItem button component={RouterLink} to="/profile">
+                <ListItemIcon>
+                  <AccountBoxIcon />
+                </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.profile} />}
                 />
               </ListItem>
               <ListItem button component={RouterLink} to="/settings">
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.settings} />}
                 />
               </ListItem>
               <ListItem button onClick={logoutUser}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.logOut} />}
                 />
@@ -229,15 +226,6 @@ function Header({ loggedIn, userData, logoutUser, background }) {
     </div>
   );
 
-  function handleMenu(event) {
-    event.preventDefault();
-    setAnchorEl(event.currentTarget);
-  }
-
-  function handleClose() {
-    setAnchorEl(null);
-  }
-
   const appBarClass = background ? classes.appBar : classes.transparentAppbar;
   const fontBarClass = background ? classes.link : classes.linkNoBackground;
   const avatarClass = background ? classes.avatar : classes.avatarNoBackground;
@@ -256,134 +244,11 @@ function Header({ loggedIn, userData, logoutUser, background }) {
         className={appBarClass}
       >
         <Toolbar className={classes.toolbar}>
-          <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
-            <img
-              alt="ImpGG logo. Your friendly neighborhood link shortener"
-              src={logoB}
-              className={classes.logo}
-            />
-          </Link>
-          <nav>
-            <Link
-              variant="button"
-              color="textPrimary"
-              component={RouterLink}
-              to="/about"
-              className={fontBarClass}
-            >
-              <FormattedMessage {...messages.about} />
-            </Link>
-            <Link
-              variant="button"
-              color="textPrimary"
-              component={RouterLink}
-              to="/features"
-              className={fontBarClass}
-            >
-              <FormattedMessage {...messages.features} />
-            </Link>
-            <Link
-              variant="button"
-              color="textPrimary"
-              component={RouterLink}
-              to="/pricing"
-              className={fontBarClass}
-            >
-              <FormattedMessage {...messages.pricing} />
-            </Link>
-            <Link
-              variant="button"
-              color="textPrimary"
-              component={RouterLink}
-              to="/resources"
-              className={fontBarClass}
-            >
-              <FormattedMessage {...messages.resources} />
-            </Link>
-          </nav>
-          <DarkToggle />
-          {loggedIn ? (
-            <React.Fragment>
-              <Button
-                component={RouterLink}
-                to="/dashboard"
-                color="primary"
-                variant="contained"
-                className={fontBarClass}
-              >
-                Dashboard
-              </Button>
-              <IconButton
-                className={classes.iconbutton}
-                aria-label="Account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-              >
-                <Avatar
-                  src={userAvatar}
-                  alt={userName}
-                  className={avatarClass}
-                />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                getContentAnchorEl={null}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem
-                  component={RouterLink}
-                  to="/profile"
-                  onClick={handleClose}
-                >
-                  Profile
-                </MenuItem>
-                <MenuItem
-                  component={RouterLink}
-                  to="/account"
-                  onClick={handleClose}
-                >
-                  My account
-                </MenuItem>
-                <MenuItem onClick={logoutUser}>Log out</MenuItem>
-              </Menu>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <Button
-                component={RouterLink}
-                to="/login"
-                color="primary"
-                variant="contained"
-                className={fontBarClass}
-              >
-                Sign in
-              </Button>
-              <Button
-                component={RouterLink}
-                to="/register"
-                color="primary"
-                variant="contained"
-                className={fontBarClass}
-              >
-                Register an account
-              </Button>
-            </React.Fragment>
-          )}
-        </Toolbar>
-        <Toolbar className={classes.toolbarMobile}>
-          <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
+          <Link
+            component={RouterLink}
+            to="/dashboard"
+            className={classes.toolbarTitle}
+          >
             <img
               alt="ImpGG logo. Your friendly neighborhood link shortener"
               src={logoB}

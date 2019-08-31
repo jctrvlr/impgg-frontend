@@ -2,7 +2,7 @@
 /**
  *
  * HomePage
- *
+ * TODO: https://github.com/davidshimjs/qrcodejs --- QR CODES
  */
 
 import React from 'react';
@@ -148,7 +148,10 @@ export function HomePage({
     <div>
       <Helmet>
         <title>ImpGG - URL Shortener, Mischievous link helper</title>
-        <meta name="description" content="ImpGG " />
+        <meta
+          name="description"
+          content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
+        />
       </Helmet>
       <div className={classes.heroContent}>
         <Header
