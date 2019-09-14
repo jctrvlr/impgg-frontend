@@ -1,10 +1,11 @@
 /**
  *
  * Header
- * TODO: Update menu icon margins at top as well as popdown menu that extends from avatar in drawer
+ *
  */
 
 import React from 'react';
+import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -32,8 +33,9 @@ import Logo from 'images/logo-withouttext.png';
 import DarkmodeLogo from 'images/logo-darkmode.png';
 
 import PropTypes from 'prop-types';
-
 import messages from './messages';
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -52,16 +54,34 @@ const useStyles = makeStyles(theme => ({
     background: 'transparent',
     boxShadow: 'none',
   },
+  root: {
+    display: 'flex',
+  },
+  appBarShift: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  hide: {
+    display: 'none',
+  },
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
-    justifyContent: 'flex-start',
-    position: 'relative',
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   toolbar: {
     flexWrap: 'wrap',
-    [theme.breakpoints.down(1280)]: {
-      display: 'none',
-    },
   },
   toolbarTitle: {
     flex: '0 1 auto',
@@ -82,9 +102,6 @@ const useStyles = makeStyles(theme => ({
   },
   menu: {
     margin: 0,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
   },
   menuIconR: {
     marginRight: theme.spacing(5),
@@ -115,9 +132,36 @@ const useStyles = makeStyles(theme => ({
   darkToggleButton: {
     margin: 'auto',
   },
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9),
+    },
+  },
 }));
 
-function Header({ loggedIn, userData, logoutUser, background }) {
+function Header({
+  loggedIn,
+  userData,
+  logoutUser,
+  handleDrawerOpen,
+  open,
+  background,
+}) {
   const classes = useStyles();
 
   const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
@@ -125,6 +169,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
 
   const [state, setState] = React.useState({
     right: false,
+    left: true,
   });
 
   const toggleDrawer = (side, sideOpen) => event => {
@@ -226,7 +271,6 @@ function Header({ loggedIn, userData, logoutUser, background }) {
     </div>
   );
 
-  const appBarClass = background ? classes.appBar : classes.transparentAppbar;
   const fontBarClass = background ? classes.link : classes.linkNoBackground;
   const avatarClass = background ? classes.avatar : classes.avatarNoBackground;
   const logoB = background ? Logo : DarkmodeLogo;
@@ -241,9 +285,22 @@ function Header({ loggedIn, userData, logoutUser, background }) {
         position="static"
         color="default"
         elevation={0}
-        className={appBarClass}
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
       >
         <Toolbar className={classes.toolbar}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
           <Link
             component={RouterLink}
             to="/dashboard"
@@ -281,6 +338,8 @@ Header.propTypes = {
   loggedIn: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   logoutUser: PropTypes.func,
+  handleDrawerOpen: PropTypes.func,
+  open: PropTypes.bool,
   background: PropTypes.bool,
 };
 

@@ -24,6 +24,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -187,16 +190,25 @@ function Header({ loggedIn, userData, logoutUser, background }) {
             </IconButton>
             <List>
               <ListItem button component={RouterLink} to="/profile">
+                <ListItemIcon>
+                  <AccountBoxIcon />
+                </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.profile} />}
                 />
               </ListItem>
               <ListItem button component={RouterLink} to="/settings">
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.settings} />}
                 />
               </ListItem>
               <ListItem button onClick={logoutUser}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.logOut} />}
                 />
