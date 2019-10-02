@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -19,24 +18,19 @@ import { useInjectReducer } from 'utils/injectReducer';
 
 import Container from '@material-ui/core/Container';
 // import Typography from '@material-ui/core/Typography';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import Divider from '@material-ui/core/Divider';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Header from './Header';
+import Table from './table';
 
-import makeSelectDashboard from './selectors';
+import makeSelectDashboard, { makeSelectAlerts } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
 
 import { logoutUser } from '../App/actions';
-import { mainListItems } from './drawerListItems';
 // import messages from './messages';
 
 const drawerWidth = 240;
@@ -105,25 +99,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function DashboardPage({ userData, loggedIn, onLogoutClick }) {
+export function DashboardPage({ userData, loggedIn, onLogoutClick, alerts }) {
   useInjectReducer({ key: 'dashboard', reducer });
   useInjectSaga({ key: 'dashboard', saga });
   const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
 
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
-
-  function handleDrawerClose() {
-    setOpen(false);
+  if (!userData) {
+    push('/login');
   }
 
   return (
     <React.Fragment>
       <Helmet>
-        <title>ImpGG - Dashboard</title>
+        <title>Dashboard - ImpGG</title>
         <meta
           name="description"
           content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
@@ -133,40 +121,13 @@ export function DashboardPage({ userData, loggedIn, onLogoutClick }) {
         userData={userData}
         loggedIn={loggedIn}
         logoutUser={onLogoutClick}
-        handleDrawerOpen={handleDrawerOpen}
-        open={open}
         background
+        alerts={alerts}
       />
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbar}>
-          <IconButton className={classes.menuLeft} onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </div>
-        <Divider />
-        {mainListItems}
-      </Drawer>
 
       {/* Start of dashboard main */}
-      <Container maxWidth="lg" component="main" className={classes.formContent}>
-        Placeholder
+      <Container maxWidth="xl" component="main" className={classes.formContent}>
+        <Table />
       </Container>
     </React.Fragment>
   );
@@ -176,12 +137,14 @@ DashboardPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   onLogoutClick: PropTypes.func,
+  alerts: PropTypes.array,
 };
 
 const mapStateToProps = createStructuredSelector({
   dashboard: makeSelectDashboard(),
   loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
+  alerts: makeSelectAlerts(),
 });
 
 function mapDispatchToProps(dispatch) {

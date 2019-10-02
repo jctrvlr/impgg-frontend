@@ -10,6 +10,11 @@ const selectDashboardDomain = state => state.dashboard || initialState;
 /**
  * Other specific selectors
  */
+const makeSelectAlerts = () =>
+  createSelector(
+    selectDashboardDomain,
+    dashboardState => dashboardState.alerts,
+  );
 
 /**
  * Default selector used by Dashboard
@@ -22,4 +27,4 @@ const makeSelectDashboard = () =>
   );
 
 export default makeSelectDashboard;
-export { selectDashboardDomain };
+export { selectDashboardDomain, makeSelectAlerts };

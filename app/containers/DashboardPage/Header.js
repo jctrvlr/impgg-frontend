@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -26,6 +25,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -34,8 +35,6 @@ import DarkmodeLogo from 'images/logo-darkmode.png';
 
 import PropTypes from 'prop-types';
 import messages from './messages';
-
-const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -54,18 +53,6 @@ const useStyles = makeStyles(theme => ({
     background: 'transparent',
     boxShadow: 'none',
   },
-  root: {
-    display: 'flex',
-  },
-  appBarShift: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
   menuButton: {
     marginRight: 36,
   },
@@ -80,14 +67,9 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  toolbar: {
-    flexWrap: 'wrap',
-  },
   toolbarTitle: {
-    flex: '0 1 auto',
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
+    marginLeft: '50%',
+    flexGrow: '1',
   },
   logo: {
     height: 65,
@@ -103,11 +85,11 @@ const useStyles = makeStyles(theme => ({
   menu: {
     margin: 0,
   },
-  menuIconR: {
-    marginRight: theme.spacing(5),
-    flex: '0 1 auto',
+  alertsIcon: {
     margin: 15,
-    marginLeft: 'auto',
+  },
+  menuIconR: {
+    margin: 15,
   },
   menuIconButton: {
     width: 40,
@@ -132,36 +114,9 @@ const useStyles = makeStyles(theme => ({
   darkToggleButton: {
     margin: 'auto',
   },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
-    },
-  },
 }));
 
-function Header({
-  loggedIn,
-  userData,
-  logoutUser,
-  handleDrawerOpen,
-  open,
-  background,
-}) {
+function Header({ loggedIn, userData, logoutUser, background, alerts }) {
   const classes = useStyles();
 
   const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
@@ -279,28 +234,17 @@ function Header({
     ? classes.menuIconButton
     : classes.menuIconButtonNoBackground;
 
+  const alertsCount = alerts ? alerts.length() : 0;
+
   return (
     <React.Fragment>
       <AppBar
         position="static"
         color="default"
         elevation={0}
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={classes.appBar}
       >
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
+        <Toolbar>
           <Link
             component={RouterLink}
             to="/dashboard"
@@ -312,6 +256,16 @@ function Header({
               className={classes.logo}
             />
           </Link>
+          <IconButton
+            edge="end"
+            className={classes.alertsIcon}
+            color="inherit"
+            aria-label="alerts"
+          >
+            <Badge badgeContent={alertsCount} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
           <IconButton
             edge="end"
             className={classes.menuIconR}
@@ -338,9 +292,8 @@ Header.propTypes = {
   loggedIn: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   logoutUser: PropTypes.func,
-  handleDrawerOpen: PropTypes.func,
-  open: PropTypes.bool,
   background: PropTypes.bool,
+  alerts: PropTypes.array,
 };
 
 export default Header;
