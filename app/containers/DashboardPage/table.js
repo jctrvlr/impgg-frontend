@@ -17,99 +17,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 
-function createData(
-  url,
-  pageTitle,
-  createdAt,
-  type,
-  creatorId,
-  numClicks,
-  popLocation,
-  referrer,
-  lastClick,
-) {
-  return {
-    url,
-    pageTitle,
-    createdAt,
-    type,
-    creatorId,
-    numClicks,
-    popLocation,
-    referrer,
-    lastClick,
-  };
-}
-
-const rows = [
-  createData(
-    'http://facebook.com',
-    'Google',
-    '12/21/1995',
-    'Website',
-    'George Stafford',
-    12,
-    'New Jersey',
-    'Social Media',
-    '10/1/2019 9:29PM EST',
-  ),
-  createData(
-    'http://google.com',
-    'Google',
-    '12/20/1994',
-    'Website',
-    'George Stafford',
-    12,
-    'New Jersey',
-    'Social Media',
-    '10/1/2019 9:29PM EST',
-  ),
-  createData(
-    'http://typeracer.com',
-    'Google',
-    '12/31/1995',
-    'Website',
-    'George Stafford',
-    12,
-    'New Jersey',
-    'Social Media',
-    '10/1/2019 9:29PM EST',
-  ),
-  createData(
-    'http://jackc.com',
-    'Google',
-    '12/21/1993',
-    'Website',
-    'George Stafford',
-    12,
-    'New Jersey',
-    'Social Media',
-    '10/1/2019 9:29PM EST',
-  ),
-  createData(
-    'http://ubuntu.com',
-    'Google',
-    '2/21/1995',
-    'Website',
-    'George Stafford',
-    12,
-    'New Jersey',
-    'Social Media',
-    '10/1/2019 9:29PM EST',
-  ),
-  createData(
-    'http://njit.com',
-    'Google',
-    '1/21/1995',
-    'Website',
-    'George Stafford',
-    12,
-    'New Jersey',
-    'Social Media',
-    '10/1/2019 9:29PM EST',
-  ),
-];
-
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -178,7 +85,7 @@ const headCells = [
     id: 'referrer',
     numeric: false,
     disablePadding: false,
-    label: 'Most Popular User Location',
+    label: 'Referrer',
   },
   {
     id: 'lastClick',
@@ -375,14 +282,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable({ tableData }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');
   const [selected, setSelected] = React.useState([]);
-  const [searchValue, setSearchValue] = React.useState([]);
-  const [data] = React.useState(rows);
-  const [filteredData, setFilteredData] = React.useState(rows);
+  const [searchValue, setSearchValue] = React.useState('');
+  const [data] = React.useState(tableData);
+  const [filteredData, setFilteredData] = React.useState(tableData);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -394,7 +301,7 @@ export default function EnhancedTable() {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name);
+      const newSelecteds = tableData.map(n => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -442,10 +349,8 @@ export default function EnhancedTable() {
           retVal = ed.match(regex);
         }
       });
-      console.log(retVal);
       return retVal;
     });
-    console.log(filteredDatas);
     setFilteredData(filteredDatas);
     setSearchValue(event.target.value);
   }
@@ -456,6 +361,9 @@ export default function EnhancedTable() {
     rowsPerPage -
     Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
 
+  EnhancedTable.propTypes = {
+    tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+  };
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -477,10 +385,10 @@ export default function EnhancedTable() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={filteredData.length}
+              rowCount={tableData.length}
             />
             <TableBody>
-              {stableSort(filteredData, getSorting(order, orderBy))
+              {stableSort(tableData, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.url);
@@ -493,7 +401,7 @@ export default function EnhancedTable() {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.url}
+                      key={row.shortLink}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -510,14 +418,32 @@ export default function EnhancedTable() {
                       >
                         {row.url}
                       </TableCell>
-                      <TableCell>{row.pageTitle}</TableCell>
-                      <TableCell>{row.createdAt}</TableCell>
-                      <TableCell>{row.type}</TableCell>
-                      <TableCell>{row.creatorId}</TableCell>
-                      <TableCell align="right">{row.numClicks}</TableCell>
-                      <TableCell>{row.popLocation}</TableCell>
-                      <TableCell>{row.referrer}</TableCell>
-                      <TableCell>{row.lastClick}</TableCell>
+                      <TableCell>
+                        {row.pageTitle ? row.pageTitle : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        {row.createdAt ? row.createdAt : 'N/A'}
+                      </TableCell>
+                      <TableCell>{row.type ? row.type : 'N/A'}</TableCell>
+                      <TableCell>
+                        {row.creatorId ? row.creatorId : 'N/A'}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.numClicks.toString()
+                          ? row.numClicks.toString()
+                          : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        {row.popLocation ? row.popLocation : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        {row.referrer ? row.referrer : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        {row.lastClick.createdAt
+                          ? row.lastClick.createdAt
+                          : 'N/A'}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -532,7 +458,7 @@ export default function EnhancedTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={tableData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{

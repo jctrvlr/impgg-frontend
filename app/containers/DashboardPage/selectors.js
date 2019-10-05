@@ -16,6 +16,12 @@ const makeSelectAlerts = () =>
     dashboardState => dashboardState.alerts,
   );
 
+const makeSelectTableData = () =>
+  createSelector(
+    selectDashboardDomain,
+    dashboardState => dashboardState.tableData,
+  );
+
 /**
  * Default selector used by Dashboard
  */
@@ -27,4 +33,4 @@ const makeSelectDashboard = () =>
   );
 
 export default makeSelectDashboard;
-export { selectDashboardDomain, makeSelectAlerts };
+export { selectDashboardDomain, makeSelectAlerts, makeSelectTableData };

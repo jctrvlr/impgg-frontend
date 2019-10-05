@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -24,12 +24,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import Header from './Header';
 import Table from './table';
 
-import makeSelectDashboard, { makeSelectAlerts } from './selectors';
+import makeSelectDashboard, {
+  makeSelectAlerts,
+  makeSelectTableData,
+} from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
 
+import { getTableData } from './actions';
 import { logoutUser } from '../App/actions';
 // import messages from './messages';
 
@@ -99,13 +103,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function DashboardPage({ userData, loggedIn, onLogoutClick, alerts }) {
+export function DashboardPage({
+  userData,
+  tableData,
+  loggedIn,
+  onLogoutClick,
+  onLoadUnauth,
+  onLoad,
+  alerts,
+}) {
   useInjectReducer({ key: 'dashboard', reducer });
   useInjectSaga({ key: 'dashboard', saga });
   const classes = useStyles();
 
-  if (!userData) {
-    push('/login');
+  useEffect(() => {
+    onLoad();
+  }, []);
+
+  if (!loggedIn) {
+    onLoadUnauth();
   }
 
   return (
@@ -127,7 +143,7 @@ export function DashboardPage({ userData, loggedIn, onLogoutClick, alerts }) {
 
       {/* Start of dashboard main */}
       <Container maxWidth="xl" component="main" className={classes.formContent}>
-        <Table />
+        <Table tableData={tableData} />
       </Container>
     </React.Fragment>
   );
@@ -135,8 +151,11 @@ export function DashboardPage({ userData, loggedIn, onLogoutClick, alerts }) {
 
 DashboardPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   onLogoutClick: PropTypes.func,
+  onLoadUnauth: PropTypes.func,
+  onLoad: PropTypes.func,
   alerts: PropTypes.array,
 };
 
@@ -144,6 +163,7 @@ const mapStateToProps = createStructuredSelector({
   dashboard: makeSelectDashboard(),
   loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
+  tableData: makeSelectTableData(),
   alerts: makeSelectAlerts(),
 });
 
@@ -152,6 +172,13 @@ function mapDispatchToProps(dispatch) {
     onLogoutClick: () => {
       dispatch(logoutUser());
       dispatch(push('/'));
+    },
+    onLoadUnauth: () => {
+      dispatch(logoutUser());
+      dispatch(push('/'));
+    },
+    onLoad: () => {
+      dispatch(getTableData());
     },
   };
 }
