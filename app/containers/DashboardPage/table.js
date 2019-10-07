@@ -1,8 +1,12 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable indent */
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { PieChart, Pie, Cell } from 'recharts';
 import { lighten, fade, makeStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,6 +20,7 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import FileCopy from '@material-ui/icons/FileCopy';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -51,23 +56,16 @@ const headCells = [
     label: 'URL',
   },
   {
+    id: 'shortLink',
+    numeric: false,
+    disablePadding: false,
+    label: 'Generated Link',
+  },
+  {
     id: 'pageTitle',
     numeric: false,
     disablePadding: false,
     label: 'Page Title',
-  },
-  {
-    id: 'createdAt',
-    numeric: false,
-    disablePadding: false,
-    label: 'Created',
-  },
-  { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
-  {
-    id: 'creatorId',
-    numeric: false,
-    disablePadding: false,
-    label: 'Creator Name',
   },
   {
     id: 'numClicks',
@@ -76,22 +74,16 @@ const headCells = [
     label: 'Clicks (#)',
   },
   {
-    id: 'popLocation',
-    numeric: false,
-    disablePadding: false,
-    label: 'Most Popular User Location',
-  },
-  {
-    id: 'referrer',
-    numeric: false,
-    disablePadding: false,
-    label: 'Referrer',
-  },
-  {
     id: 'lastClick',
     numeric: false,
     disablePadding: false,
     label: 'Last Click',
+  },
+  {
+    id: 'createdAt',
+    numeric: false,
+    disablePadding: false,
+    label: 'Created',
   },
 ];
 
@@ -126,6 +118,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
+            className={classes.tableCell}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -254,6 +247,125 @@ EnhancedTableToolbar.propTypes = {
   searchValue: PropTypes.string,
 };
 
+const EnhancedTableGraphs = props => {
+  const { classes, selectedData } = props;
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  let referrerChart;
+  let popLocationChart;
+  console.log(selectedData);
+  console.log(classes);
+  if (selectedData[0]) {
+    referrerChart = (
+      <PieChart width={800} height={400}>
+        <Pie
+          data={selectedData[0].referrer}
+          cx={120}
+          cy={200}
+          innerRadius={60}
+          outerRadius={80}
+          fill="#8884d8"
+          paddingAngle={5}
+          dataKey="count"
+          label={({
+            cx,
+            cy,
+            midAngle,
+            innerRadius,
+            outerRadius,
+            value,
+            index,
+          }) => {
+            const RADIAN = Math.PI / 180;
+            const radius = 25 + innerRadius + (outerRadius - innerRadius);
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+              <text
+                x={x}
+                y={y}
+                fill="#fff"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+              >
+                {selectedData[0].referrer[index]._id} ({value})
+              </text>
+            );
+          }}
+          labelLine={false}
+        >
+          {selectedData[0].referrer.map((entry, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+      </PieChart>
+    );
+    popLocationChart = (
+      <PieChart width={800} height={400}>
+        <Pie
+          data={selectedData[0].referrer}
+          cx={120}
+          cy={200}
+          innerRadius={60}
+          outerRadius={80}
+          fill="#8884d8"
+          paddingAngle={5}
+          dataKey="count"
+          label={({
+            cx,
+            cy,
+            midAngle,
+            innerRadius,
+            outerRadius,
+            value,
+            index,
+          }) => {
+            const RADIAN = Math.PI / 180;
+            // eslint-disable-next-line
+            const radius = 25 + innerRadius + (outerRadius - innerRadius);
+            // eslint-disable-next-line
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            // eslint-disable-next-line
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+              <text
+                x={x}
+                y={y}
+                fill="#fff"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+              >
+                {selectedData[0].referrer[index]._id} ({value})
+              </text>
+            );
+          }}
+          labelLine={false}
+        >
+          {selectedData[0].referrer.map((entry, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+      </PieChart>
+    );
+  }
+
+  return (
+    <div>
+      {referrerChart}
+      {popLocationChart}
+    </div>
+  );
+};
+
+EnhancedTableGraphs.propTypes = {
+  classes: PropTypes.object.isRequired,
+  selectedData: PropTypes.array,
+};
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
@@ -280,6 +392,18 @@ const useStyles = makeStyles(theme => ({
     top: 20,
     width: 1,
   },
+  tableCell: {
+    maxWidth: '100px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  tableCellNumeric: {
+    maxWidth: '30px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
 }));
 
 export default function EnhancedTable({ tableData }) {
@@ -287,8 +411,8 @@ export default function EnhancedTable({ tableData }) {
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');
   const [selected, setSelected] = React.useState([]);
+  const [selectedData, setSelectedData] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState('');
-  const [data] = React.useState(tableData);
   const [filteredData, setFilteredData] = React.useState(tableData);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -308,25 +432,34 @@ export default function EnhancedTable({ tableData }) {
     setSelected([]);
   }
 
-  function handleClick(event, name) {
+  function handleClick(event, name, obj) {
     // TODO: Make it open up graphics/charts for that specific link
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
+    let newSelectedData = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
+      newSelectedData = newSelectedData.concat(selectedData, obj);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
+      newSelectedData = newSelectedData.concat(selectedData.slice(1));
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelectedData = newSelectedData.concat(selectedData.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
         selected.slice(selectedIndex + 1),
       );
+      newSelectedData = newSelectedData.concat(
+        selectedData.slice(0, selectedIndex),
+        selectedData.slice(selectedIndex + 1),
+      );
     }
 
     setSelected(newSelected);
+    setSelectedData(newSelectedData);
   }
 
   function handleChangePage(event, newPage) {
@@ -339,8 +472,9 @@ export default function EnhancedTable({ tableData }) {
   }
 
   function handleSearch(event) {
+    setPage(0);
     let filteredDatas = [];
-    filteredDatas = data.filter(e => {
+    filteredDatas = tableData.filter(e => {
       const matchItems = Object.values(e);
       let retVal = false;
       matchItems.forEach(ed => {
@@ -357,15 +491,190 @@ export default function EnhancedTable({ tableData }) {
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
-  const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
-
   EnhancedTable.propTypes = {
     tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   };
+
+  const baseUrl = 'http://localhost:3001/';
+
+  let emptyRows;
+  let genRows;
+  let tablePagination;
+
+  if (filteredData === undefined || filteredData.length === 0) {
+    emptyRows =
+      rowsPerPage -
+      Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
+    genRows = (
+      <TableBody>
+        {stableSort(tableData, getSorting(order, orderBy))
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((row, index) => {
+            const isItemSelected = isSelected(row.shortLink);
+            const labelId = `enhanced-table-checkbox-${index}`;
+
+            return (
+              <TableRow
+                hover
+                onClick={event => handleClick(event, row.shortLink, row)}
+                role="checkbox"
+                aria-checked={isItemSelected}
+                tabIndex={-1}
+                key={row.shortLink}
+                selected={isItemSelected}
+              >
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={isItemSelected}
+                    inputProps={{ 'aria-labelledby': labelId }}
+                  />
+                </TableCell>
+                <TableCell
+                  className={classes.tableCell}
+                  component="th"
+                  id={labelId}
+                  scope="row"
+                  padding="none"
+                >
+                  {row.url}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {`${baseUrl}${row.shortLink}`}
+                  <CopyToClipboard text={`${baseUrl}${row.shortLink}`}>
+                    <IconButton aria-label="copy">
+                      <FileCopy />
+                    </IconButton>
+                  </CopyToClipboard>
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.pageTitle ? row.pageTitle : 'N/A'}
+                </TableCell>
+                <TableCell align="right" className={classes.tableCellNumeric}>
+                  {row.numClicks.toString() ? row.numClicks.toString() : 'N/A'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.lastClick ? row.lastClick.createdAt : 'N/A'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.createdAt ? row.createdAt : 'N/A'}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        {emptyRows > 0 && (
+          <TableRow style={{ height: 49 * emptyRows }}>
+            <TableCell colSpan={6} />
+          </TableRow>
+        )}
+      </TableBody>
+    );
+    tablePagination = (
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={tableData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        backIconButtonProps={{
+          'aria-label': 'previous page',
+        }}
+        nextIconButtonProps={{
+          'aria-label': 'next page',
+        }}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    );
+  } else {
+    emptyRows =
+      rowsPerPage -
+      Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
+    genRows = (
+      <TableBody>
+        {stableSort(filteredData, getSorting(order, orderBy))
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((row, index) => {
+            const isItemSelected = isSelected(row.shortLink);
+            const labelId = `enhanced-table-checkbox-${index}`;
+
+            return (
+              <TableRow
+                hover
+                onClick={event => handleClick(event, row.shortLink, row)}
+                role="checkbox"
+                aria-checked={isItemSelected}
+                tabIndex={-1}
+                key={row.shortLink}
+                selected={isItemSelected}
+              >
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={isItemSelected}
+                    inputProps={{ 'aria-labelledby': labelId }}
+                  />
+                </TableCell>
+                <TableCell
+                  className={classes.tableCell}
+                  component="th"
+                  id={labelId}
+                  scope="row"
+                  padding="none"
+                >
+                  {row.url}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {`${baseUrl}${row.shortLink}`}
+                  <CopyToClipboard text={`${baseUrl}${row.shortLink}`}>
+                    <IconButton aria-label="copy">
+                      <FileCopy />
+                    </IconButton>
+                  </CopyToClipboard>
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.pageTitle ? row.pageTitle : 'N/A'}
+                </TableCell>
+                <TableCell align="right" className={classes.tableCellNumeric}>
+                  {row.numClicks.toString() ? row.numClicks.toString() : 'N/A'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.lastClick ? row.lastClick.createdAt : 'N/A'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.createdAt ? row.createdAt : 'N/A'}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        {emptyRows > 0 && (
+          <TableRow style={{ height: 49 * emptyRows }}>
+            <TableCell colSpan={6} />
+          </TableRow>
+        )}
+      </TableBody>
+    );
+    tablePagination = (
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        backIconButtonProps={{
+          'aria-label': 'previous page',
+        }}
+        nextIconButtonProps={{
+          'aria-label': 'next page',
+        }}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    );
+  }
   return (
     <div className={classes.root}>
+      <Paper className={classes.paper}>
+        <EnhancedTableGraphs selectedData={selectedData} classes={classes} />
+      </Paper>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -385,91 +694,12 @@ export default function EnhancedTable({ tableData }) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={tableData.length}
+              rowCount={filteredData.length}
             />
-            <TableBody>
-              {stableSort(tableData, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.url);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => handleClick(event, row.url)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.shortLink}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.url}
-                      </TableCell>
-                      <TableCell>
-                        {row.pageTitle ? row.pageTitle : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        {row.createdAt ? row.createdAt : 'N/A'}
-                      </TableCell>
-                      <TableCell>{row.type ? row.type : 'N/A'}</TableCell>
-                      <TableCell>
-                        {row.creatorId ? row.creatorId : 'N/A'}
-                      </TableCell>
-                      <TableCell align="right">
-                        {row.numClicks.toString()
-                          ? row.numClicks.toString()
-                          : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        {row.popLocation ? row.popLocation : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        {row.referrer ? row.referrer : 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        {row.lastClick.createdAt
-                          ? row.lastClick.createdAt
-                          : 'N/A'}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
+            {genRows}
           </Table>
         </div>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={tableData.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'previous page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'next page',
-          }}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+        {tablePagination}
       </Paper>
     </div>
   );

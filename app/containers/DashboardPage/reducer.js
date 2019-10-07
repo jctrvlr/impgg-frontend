@@ -29,7 +29,7 @@ const dashboardReducer = (state = initialState, action) =>
         draft.tableData = [];
         break;
       case TABLEDATA_SUCCESS:
-        console.log('Inside table data success');
+        console.log('Inside table data success', action.tableData);
         draft.tableData = action.tableData;
         draft.loading = false;
         break;
