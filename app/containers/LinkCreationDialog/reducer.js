@@ -1,48 +1,36 @@
 /*
  *
- * Dashboard reducer
+ * LinkCreationDialog reducer
  *
  */
 import produce from 'immer';
 import {
-  GET_TABLEDATA,
-  TABLEDATA_SUCCESS,
-  TABLEDATA_ERROR,
   FETCH_URL,
   FETCH_URL_SUCCESS,
   FETCH_URL_ERROR,
   URI_VALIDATION,
   CHANGE_URI,
+  CHANGE_DOMAIN,
 } from './constants';
 
 export const initialState = {
-  loading: true,
-  error: false,
-  tableData: [],
   uri: false,
+  linkDomain: false,
   uriValidation: false,
   currentLink: false,
+  loading: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
-const dashboardReducer = (state = initialState, action) =>
+const linkCreationDialogReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case GET_TABLEDATA:
-        draft.loading = true;
-        draft.error = false;
-        draft.tableData = [];
-        break;
-      case TABLEDATA_SUCCESS:
-        draft.tableData = action.tableData;
-        draft.loading = false;
-        break;
-      case TABLEDATA_ERROR:
-        draft.error = action.error;
-        draft.loading = false;
-        break;
       case CHANGE_URI:
         draft.uri = action.uri;
+        break;
+
+      case CHANGE_DOMAIN:
+        draft.linkDomain = action.linkDomain;
         break;
 
       case URI_VALIDATION:
@@ -68,4 +56,4 @@ const dashboardReducer = (state = initialState, action) =>
     }
   });
 
-export default dashboardReducer;
+export default linkCreationDialogReducer;

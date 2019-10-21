@@ -17,6 +17,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
 import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
 // import Typography from '@material-ui/core/Typography';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -35,6 +36,7 @@ import saga from './saga';
 
 import { getTableData } from './actions';
 import { logoutUser } from '../App/actions';
+import LinkCreationDialog from '../LinkCreationDialog';
 // import messages from './messages';
 
 const drawerWidth = 240;
@@ -101,6 +103,12 @@ const useStyles = makeStyles(theme => ({
   menuLeft: {
     height: '94px',
   },
+  newLinkButton: {
+    position: 'fixed',
+    bottom: theme.spacing(3),
+    right: theme.spacing(3),
+    zIndex: '99999',
+  },
 }));
 
 export function DashboardPage({
@@ -124,6 +132,16 @@ export function DashboardPage({
     onLoadUnauth();
   }
 
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const handleModalOpen = () => {
+    setOpenModal(true);
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
+
   return (
     <React.Fragment>
       <Helmet>
@@ -133,6 +151,14 @@ export function DashboardPage({
           content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
         />
       </Helmet>
+      <Button
+        className={classes.newLinkButton}
+        variant="contained"
+        color="primary"
+        onClick={handleModalOpen}
+      >
+        +
+      </Button>
       <Header
         userData={userData}
         loggedIn={loggedIn}
@@ -143,6 +169,10 @@ export function DashboardPage({
 
       {/* Start of dashboard main */}
       <Container maxWidth="xl" component="main" className={classes.formContent}>
+        <LinkCreationDialog
+          openModal={openModal}
+          handleModalClose={handleModalClose}
+        />
         <Table tableData={tableData} />
       </Container>
     </React.Fragment>

@@ -1,10 +1,11 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable react/style-prop-object */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable indent */
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { PieChart, Pie, Cell } from 'recharts';
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { lighten, fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
@@ -15,12 +16,20 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import FileCopy from '@material-ui/icons/FileCopy';
+
+function sum(array, prop) {
+  let total = 0;
+  for (let i = 0, _len = array.length; i < _len; i += 1) {
+    total += array[i][prop];
+  }
+  return total;
+}
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -52,14 +61,8 @@ const headCells = [
   {
     id: 'url',
     numeric: false,
-    disablePadding: true,
-    label: 'URL',
-  },
-  {
-    id: 'shortLink',
-    numeric: false,
     disablePadding: false,
-    label: 'Generated Link',
+    label: 'URL',
   },
   {
     id: 'pageTitle',
@@ -68,8 +71,14 @@ const headCells = [
     label: 'Page Title',
   },
   {
+    id: 'shortLink',
+    numeric: false,
+    disablePadding: false,
+    label: 'Generated Link',
+  },
+  {
     id: 'numClicks',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Clicks (#)',
   },
@@ -88,15 +97,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
@@ -104,21 +105,17 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all links' }}
-          />
-        </TableCell>
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
-            className={classes.tableCell}
+            className={
+              headCell.id === 'numClicks'
+                ? classes.tableCellNumeric
+                : classes.tableCell
+            }
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -141,12 +138,9 @@ function EnhancedTableHead(props) {
 
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
 };
 
 const useToolbarStyles = makeStyles(theme => ({
@@ -210,18 +204,17 @@ const useToolbarStyles = makeStyles(theme => ({
       },
     },
   },
+  toolbarInfo: {
+    marginLeft: theme.spacing(7),
+  },
 }));
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numSelected, onChangeSearch, searchValue } = props;
+  const { numLinks, onChangeSearch, searchValue } = props;
 
   return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
+    <Toolbar className={classes.root}>
       <div className={classes.search}>
         <div className={classes.searchIcon}>
           <SearchIcon />
@@ -237,47 +230,76 @@ const EnhancedTableToolbar = props => {
           value={searchValue}
         />
       </div>
+      <div className={classes.toolbarInfo}>
+        <Typography>{numLinks} Links</Typography>
+      </div>
     </Toolbar>
   );
 };
 
 EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+  numLinks: PropTypes.number.isRequired,
   onChangeSearch: PropTypes.func,
   searchValue: PropTypes.string,
 };
 
 const EnhancedTableGraphs = props => {
-  const { classes, selectedData } = props;
+  const { classes, selectedData, filteredData } = props;
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   let referrerChart;
   let popLocationChart;
-  console.log(selectedData);
-  console.log(classes);
+
+  const handleMouseEnter = o => {
+    const { dataKey } = o;
+    console.log(dataKey);
+  };
+
+  const handleMouseLeave = o => {
+    const { dataKey } = o;
+    console.log(dataKey);
+  };
+
+  const renderLegend = p => {
+    const { payload } = p;
+
+    return (
+      <ul>
+        {payload.map((entry, index) => (
+          <li
+            key={`item-${index}`}
+            style={{
+              margin: '5px',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: entry.color,
+                height: '5px',
+                width: '5px',
+              }}
+            />
+            {entry.payload.payload._id ? entry.payload.payload._id : 'N/A'}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
   if (selectedData[0]) {
     referrerChart = (
-      <PieChart width={800} height={400}>
+      <PieChart width={250} height={225} className={classes.chart}>
         <Pie
           data={selectedData[0].referrer}
-          cx={120}
-          cy={200}
-          innerRadius={60}
+          innerRadius={40}
           outerRadius={80}
           fill="#8884d8"
+          stroke="none"
           paddingAngle={5}
           dataKey="count"
-          label={({
-            cx,
-            cy,
-            midAngle,
-            innerRadius,
-            outerRadius,
-            value,
-            index,
-          }) => {
+          label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
             const RADIAN = Math.PI / 180;
-            const radius = 25 + innerRadius + (outerRadius - innerRadius);
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
             const x = cx + radius * Math.cos(-midAngle * RADIAN);
             const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -285,11 +307,11 @@ const EnhancedTableGraphs = props => {
               <text
                 x={x}
                 y={y}
-                fill="#fff"
+                fill="white"
                 textAnchor={x > cx ? 'start' : 'end'}
                 dominantBaseline="central"
               >
-                {selectedData[0].referrer[index]._id} ({value})
+                {value}
               </text>
             );
           }}
@@ -300,63 +322,152 @@ const EnhancedTableGraphs = props => {
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
+        <Legend
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          content={renderLegend}
+        />
       </PieChart>
     );
     popLocationChart = (
-      <PieChart width={800} height={400}>
+      <PieChart width={250} height={225} className={classes.chart}>
         <Pie
-          data={selectedData[0].referrer}
-          cx={120}
-          cy={200}
-          innerRadius={60}
+          data={selectedData[0].popLocation}
+          innerRadius={40}
           outerRadius={80}
           fill="#8884d8"
+          stroke="none"
           paddingAngle={5}
           dataKey="count"
-          label={({
-            cx,
-            cy,
-            midAngle,
-            innerRadius,
-            outerRadius,
-            value,
-            index,
-          }) => {
+          label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
             const RADIAN = Math.PI / 180;
             // eslint-disable-next-line
-            const radius = 25 + innerRadius + (outerRadius - innerRadius);
-            // eslint-disable-next-line
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
             const x = cx + radius * Math.cos(-midAngle * RADIAN);
-            // eslint-disable-next-line
             const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
             return (
               <text
                 x={x}
                 y={y}
-                fill="#fff"
+                fill="white"
                 textAnchor={x > cx ? 'start' : 'end'}
                 dominantBaseline="central"
               >
-                {selectedData[0].referrer[index]._id} ({value})
+                {value}
               </text>
             );
           }}
           labelLine={false}
         >
-          {selectedData[0].referrer.map((entry, index) => (
+          {selectedData[0].popLocation.map((entry, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
+        <Tooltip />
+        <Legend
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          content={renderLegend}
+        />
+      </PieChart>
+    );
+  } else if (filteredData[0]) {
+    referrerChart = (
+      <PieChart width={250} height={225} className={classes.chart}>
+        <Pie
+          data={filteredData[0].referrer}
+          innerRadius={40}
+          outerRadius={80}
+          fill="#8884d8"
+          stroke="none"
+          paddingAngle={5}
+          dataKey="count"
+          label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+            const RADIAN = Math.PI / 180;
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+              <text
+                x={x}
+                y={y}
+                fill="white"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+              >
+                {value}
+              </text>
+            );
+          }}
+          labelLine={false}
+        >
+          {filteredData[0].referrer.map((entry, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Legend
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          content={renderLegend}
+        />
+      </PieChart>
+    );
+    popLocationChart = (
+      <PieChart width={250} height={225} className={classes.chart}>
+        <Pie
+          data={filteredData[0].popLocation}
+          innerRadius={40}
+          outerRadius={80}
+          fill="#8884d8"
+          stroke="none"
+          paddingAngle={5}
+          dataKey="count"
+          label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+            const RADIAN = Math.PI / 180;
+            // eslint-disable-next-line
+            const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+              <text
+                x={x}
+                y={y}
+                fill="white"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+              >
+                {value}
+              </text>
+            );
+          }}
+          labelLine={false}
+        >
+          {filteredData[0].popLocation.map((entry, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          content={renderLegend}
+        />
       </PieChart>
     );
   }
 
   return (
     <div>
-      {referrerChart}
-      {popLocationChart}
+      <Grid container justify="center" alignItems="center" spacing={3}>
+        <Grid item>{referrerChart}</Grid>
+        <Grid item>{popLocationChart}</Grid>
+      </Grid>
     </div>
   );
 };
@@ -364,6 +475,7 @@ const EnhancedTableGraphs = props => {
 EnhancedTableGraphs.propTypes = {
   classes: PropTypes.object.isRequired,
   selectedData: PropTypes.array,
+  filteredData: PropTypes.array,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -374,6 +486,17 @@ const useStyles = makeStyles(theme => ({
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
+  },
+  statPaper: {
+    maxWidth: 200,
+    margin: 'auto',
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+  },
+  chart: {
+    margin: theme.spacing(3),
   },
   table: {
     minWidth: 750,
@@ -398,11 +521,31 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  tableCellNumeric: {
-    maxWidth: '30px',
+  tableCellCopy: {
+    maxWidth: '100px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    zIndex: '999',
+  },
+  tableCellNumeric: {
+    maxWidth: '5px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  cardTitle: {
+    fontSize: 23,
+    textAlign: 'center',
+    marginTop: 15,
+    marginBottom: 15,
+  },
+  cardInfo: {
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  pos: {
+    marginBottom: 12,
   },
 }));
 
@@ -423,40 +566,13 @@ export default function EnhancedTable({ tableData }) {
     setOrderBy(property);
   }
 
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      const newSelecteds = tableData.map(n => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  }
-
   function handleClick(event, name, obj) {
     // TODO: Make it open up graphics/charts for that specific link
-    const selectedIndex = selected.indexOf(name);
     let newSelected = [];
     let newSelectedData = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-      newSelectedData = newSelectedData.concat(selectedData, obj);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-      newSelectedData = newSelectedData.concat(selectedData.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-      newSelectedData = newSelectedData.concat(selectedData.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-      newSelectedData = newSelectedData.concat(
-        selectedData.slice(0, selectedIndex),
-        selectedData.slice(selectedIndex + 1),
-      );
-    }
+    newSelected = newSelected.concat(newSelected, name);
+    newSelectedData = newSelectedData.concat(newSelectedData, obj);
 
     setSelected(newSelected);
     setSelectedData(newSelectedData);
@@ -523,33 +639,30 @@ export default function EnhancedTable({ tableData }) {
                 key={row.shortLink}
                 selected={isItemSelected}
               >
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={isItemSelected}
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </TableCell>
                 <TableCell
                   className={classes.tableCell}
                   component="th"
                   id={labelId}
                   scope="row"
-                  padding="none"
+                  padding="default"
                 >
                   {row.url}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
+                  {row.pageTitle ? row.pageTitle : 'N/A'}
+                </TableCell>
+                <TableCell className={classes.tableCellCopy}>
                   {`${baseUrl}${row.shortLink}`}
-                  <CopyToClipboard text={`${baseUrl}${row.shortLink}`}>
+                  <CopyToClipboard
+                    text={`${baseUrl}${row.shortLink}`}
+                    onClick={event => event.stopPropagation()}
+                  >
                     <IconButton aria-label="copy">
                       <FileCopy />
                     </IconButton>
                   </CopyToClipboard>
                 </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {row.pageTitle ? row.pageTitle : 'N/A'}
-                </TableCell>
-                <TableCell align="right" className={classes.tableCellNumeric}>
+                <TableCell align="center" className={classes.tableCellNumeric}>
                   {row.numClicks.toString() ? row.numClicks.toString() : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
@@ -607,20 +720,17 @@ export default function EnhancedTable({ tableData }) {
                 key={row.shortLink}
                 selected={isItemSelected}
               >
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={isItemSelected}
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </TableCell>
                 <TableCell
                   className={classes.tableCell}
                   component="th"
                   id={labelId}
                   scope="row"
-                  padding="none"
+                  padding="default"
                 >
                   {row.url}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
                   {`${baseUrl}${row.shortLink}`}
@@ -630,10 +740,7 @@ export default function EnhancedTable({ tableData }) {
                     </IconButton>
                   </CopyToClipboard>
                 </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {row.pageTitle ? row.pageTitle : 'N/A'}
-                </TableCell>
-                <TableCell align="right" className={classes.tableCellNumeric}>
+                <TableCell align="center" className={classes.tableCellNumeric}>
                   {row.numClicks.toString() ? row.numClicks.toString() : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
@@ -670,14 +777,59 @@ export default function EnhancedTable({ tableData }) {
       />
     );
   }
+  const totalClicks =
+    filteredData === []
+      ? sum(filteredData, 'numClicks')
+      : sum(tableData, 'numClicks');
+  const totalLinks =
+    filteredData === [] ? filteredData.length : tableData.length;
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableGraphs selectedData={selectedData} classes={classes} />
+        <Grid container justify="center" alignItems="center">
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <EnhancedTableGraphs
+              selectedData={selectedData}
+              filteredData={filteredData}
+              classes={classes}
+            />
+          </Grid>
+        </Grid>
+        <Grid container justify="center" alignItems="center">
+          <Grid item xs={6} sm={6} md={6} lg={6}>
+            <Paper className={classes.statPaper}>
+              <Typography className={classes.cardTitle} variant="h1">
+                Total Links
+              </Typography>
+              <Typography
+                variant="h5"
+                component="h2"
+                className={classes.cardInfo}
+              >
+                {totalLinks}
+              </Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} sm={6} md={6} lg={6}>
+            <Paper className={classes.statPaper}>
+              <Typography className={classes.cardTitle} variant="h1">
+                Total Clicks
+              </Typography>
+              <Typography
+                variant="h5"
+                component="h2"
+                className={classes.cardInfo}
+              >
+                {totalClicks}
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
       </Paper>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
-          numSelected={selected.length}
+          numLinks={tableData.length}
           onChangeSearch={handleSearch}
           searchValue={searchValue}
         />
@@ -692,7 +844,6 @@ export default function EnhancedTable({ tableData }) {
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={filteredData.length}
             />

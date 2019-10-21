@@ -1,39 +1,17 @@
 /*
  *
- * Dashboard actions
+ * LinkCreationDialog actions
  *
  */
 
 import {
-  GET_TABLEDATA,
-  TABLEDATA_SUCCESS,
-  TABLEDATA_ERROR,
   FETCH_URL,
   FETCH_URL_SUCCESS,
   FETCH_URL_ERROR,
   URI_VALIDATION,
   CHANGE_URI,
+  CHANGE_DOMAIN,
 } from './constants';
-
-export function getTableData() {
-  return {
-    type: GET_TABLEDATA,
-  };
-}
-
-export function tableDataSuccess(tableData) {
-  return {
-    type: TABLEDATA_SUCCESS,
-    tableData,
-  };
-}
-
-export function tableDataError(error) {
-  return {
-    type: TABLEDATA_ERROR,
-    error,
-  };
-}
 
 /**
  * Validate URI to ensure it is a valid URI
@@ -59,12 +37,24 @@ export function validateURI(uri) {
 /**
  * Update the state with changed URI
  *
- * @return {object} An action object with a type of URI_VALIDATION
+ * @return {object} An action object with a type of CHANGE_URI
  */
 export function changeURI(uri) {
   return {
     type: CHANGE_URI,
     uri,
+  };
+}
+
+/**
+ * Update the state with changed domain for link creation
+ *
+ * @return {object} An action object with a type of CHANGE_DOMAIN
+ */
+export function changeDomain(domain) {
+  return {
+    type: CHANGE_DOMAIN,
+    domain,
   };
 }
 
