@@ -10,7 +10,6 @@ import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { lighten, fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
-import Button from '@material-ui/core/Button';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
