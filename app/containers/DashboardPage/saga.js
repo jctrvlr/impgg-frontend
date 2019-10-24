@@ -20,7 +20,7 @@ export function* getTableInfo() {
   // Select userData from store
   const userData = yield select(makeSelectUserData());
   const creatorId = userData.user.id;
-  console.log('Inside getTable');
+
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -28,14 +28,11 @@ export function* getTableInfo() {
       Authorization: `Bearer ${userData.token.accessToken}`,
     },
   };
-  console.log('Request Options: ', requestOptions);
 
   const requestURL = `${baseUrl}/v1/links?creatorId=${creatorId}`;
   try {
     // Call our request helper (see 'utils/request')
-    console.log('Inside try');
     const ret = yield call(request, requestURL, requestOptions);
-    console.log('Return is: ', ret);
     yield put(tableDataSuccess(ret));
   } catch (err) {
     yield put(tableDataError(err));

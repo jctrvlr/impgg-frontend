@@ -4,11 +4,13 @@
 /* eslint-disable indent */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { lighten, fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
+import Button from '@material-ui/core/Button';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -559,6 +561,7 @@ export default function EnhancedTable({ tableData }) {
   const [filteredData, setFilteredData] = React.useState(tableData);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { enqueueSnackbar } = useSnackbar();
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -655,7 +658,11 @@ export default function EnhancedTable({ tableData }) {
                   {`${baseUrl}${row.shortLink}`}
                   <CopyToClipboard
                     text={`${baseUrl}${row.shortLink}`}
-                    onClick={event => event.stopPropagation()}
+                    onCopy={() =>
+                      enqueueSnackbar('Copied link', {
+                        variant: 'success',
+                      })
+                    }
                   >
                     <IconButton aria-label="copy">
                       <FileCopy />
@@ -734,7 +741,14 @@ export default function EnhancedTable({ tableData }) {
                 </TableCell>
                 <TableCell className={classes.tableCell}>
                   {`${baseUrl}${row.shortLink}`}
-                  <CopyToClipboard text={`${baseUrl}${row.shortLink}`}>
+                  <CopyToClipboard
+                    text={`${baseUrl}${row.shortLink}`}
+                    onCopy={() =>
+                      enqueueSnackbar('Copied link', {
+                        variant: 'success',
+                      })
+                    }
+                  >
                     <IconButton aria-label="copy">
                       <FileCopy />
                     </IconButton>

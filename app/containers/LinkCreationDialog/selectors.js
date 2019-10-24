@@ -14,19 +14,43 @@ const selectLinkCreationDialogDomain = state =>
 const makeSelectURI = () =>
   createSelector(
     selectLinkCreationDialogDomain,
-    homeState => homeState.uri,
-  );
-
-const makeSelectURIHistory = () =>
-  createSelector(
-    selectLinkCreationDialogDomain,
-    homeState => homeState.uriHistory,
+    linkCreationState => linkCreationState.uri,
   );
 
 const makeSelectURIValidation = () =>
   createSelector(
     selectLinkCreationDialogDomain,
-    homeState => homeState.uriValidation,
+    linkCreationState => linkCreationState.uriValidation,
+  );
+
+const makeSelectLinkDomain = () =>
+  createSelector(
+    selectLinkCreationDialogDomain,
+    linkCreationState => linkCreationState.linkDomain,
+  );
+
+const makeSelectSlink = () =>
+  createSelector(
+    selectLinkCreationDialogDomain,
+    linkCreationState => linkCreationState.sLink,
+  );
+
+const makeSelectLoading = () =>
+  createSelector(
+    selectLinkCreationDialogDomain,
+    linkCreationState => linkCreationState.loading,
+  );
+
+const makeSelectsLinkError = () =>
+  createSelector(
+    selectLinkCreationDialogDomain,
+    linkCreationState => linkCreationState.sLinkError,
+  );
+
+const makeSelectFetchLinkSuccess = () =>
+  createSelector(
+    selectLinkCreationDialogDomain,
+    linkCreationState => linkCreationState.fetchLinkSuccess,
   );
 /**
  * Default selector used by LinkCreationDialog
@@ -42,6 +66,10 @@ export default makeSelectLinkCreationDialog;
 export {
   selectLinkCreationDialogDomain,
   makeSelectURI,
-  makeSelectURIHistory,
   makeSelectURIValidation,
+  makeSelectLinkDomain,
+  makeSelectSlink,
+  makeSelectLoading,
+  makeSelectsLinkError,
+  makeSelectFetchLinkSuccess,
 };

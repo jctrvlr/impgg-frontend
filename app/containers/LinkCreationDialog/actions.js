@@ -11,6 +11,10 @@ import {
   URI_VALIDATION,
   CHANGE_URI,
   CHANGE_DOMAIN,
+  CHANGE_SLINK,
+  GEN_SLINK,
+  GEN_SLINK_SUCCESS,
+  GEN_SLINK_ERROR,
 } from './constants';
 
 /**
@@ -31,6 +35,40 @@ export function validateURI(uri) {
   return {
     type: URI_VALIDATION,
     uriValidation,
+  };
+}
+
+/**
+ * Generate shortLink for given URI
+ * @returns {object} An action object with type GEN_SLINK
+ */
+export function generateShortLink() {
+  return {
+    type: GEN_SLINK,
+  };
+}
+
+/**
+ * Dispatched when generating a short link is successful
+ * @param {String} sLink
+ * @returns {object} An action object with type GEN_SLINK_ERROR
+ */
+export function generateShortLinkSuccess(sLink) {
+  return {
+    type: GEN_SLINK_SUCCESS,
+    sLink,
+  };
+}
+
+/**
+ * Dispatched when generating a short link fails
+ * @param {String} err
+ * @returns {object} An action object with type GEN_SLINK_ERROR
+ */
+export function generateShortLinkError(sLinkError) {
+  return {
+    type: GEN_SLINK_ERROR,
+    sLinkError,
   };
 }
 
@@ -59,6 +97,18 @@ export function changeDomain(domain) {
 }
 
 /**
+ * Update the state with changed sLink for link creation
+ *
+ * @return {object} An action object with a type of CHANGE_SLINK
+ */
+export function changeSLink(sLink) {
+  return {
+    type: CHANGE_SLINK,
+    sLink,
+  };
+}
+
+/**
  * Fetch or URL, this action starts the request saga -- backend will generate or send back existing link
  *
  * @return {object} An action object with a type of FETCH_URL
@@ -76,11 +126,10 @@ export function fetchUrl() {
  *
  * @return {object} An action object with a type of FETCH_URL_SUCCESS passing the URL's information along
  */
-export function fetchUrlSuccess(currentLink, uriHistory) {
+export function fetchUrlSuccess(currentLink) {
   return {
     type: FETCH_URL_SUCCESS,
     currentLink,
-    uriHistory,
   };
 }
 

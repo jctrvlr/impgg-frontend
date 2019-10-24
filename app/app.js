@@ -18,11 +18,16 @@ import 'sanitize.css/sanitize.css';
 import 'typeface-roboto';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
+import Button from '@material-ui/core/Button';
+
 // Import root app
 import App from 'containers/App';
 
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
+
+// Import snackbar provider
+import { SnackbarProvider } from 'notistack';
 
 // Import theme
 import { ThemeProvider } from 'themeProvider';
@@ -44,6 +49,12 @@ const initialState = {};
 const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
+// Setup notifications to all have dismiss buttons
+const notistackRef = React.createRef();
+const onClickDismiss = key => () => {
+  notistackRef.current.closeSnackbar(key);
+};
+
 const render = messages => {
   ReactDOM.render(
     <div>
@@ -52,7 +63,15 @@ const render = messages => {
         <LanguageProvider messages={messages}>
           <ConnectedRouter history={history}>
             <ThemeProvider theme={theme}>
-              <App />
+              <SnackbarProvider
+                maxSnack={3}
+                ref={notistackRef}
+                action={key => (
+                  <Button onClick={onClickDismiss(key)}>Dismiss</Button>
+                )}
+              >
+                <App />
+              </SnackbarProvider>
             </ThemeProvider>
           </ConnectedRouter>
         </LanguageProvider>
