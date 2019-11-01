@@ -29,6 +29,7 @@ import Table from './table';
 import makeSelectDashboard, {
   makeSelectAlerts,
   makeSelectTableData,
+  makeSelectLoading,
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
@@ -116,6 +117,7 @@ export function DashboardPage({
   userData,
   tableData,
   loggedIn,
+  loading,
   onLogoutClick,
   onLoadUnauth,
   onLoad,
@@ -127,7 +129,7 @@ export function DashboardPage({
 
   useEffect(() => {
     onLoad();
-  }, []);
+  }, [loading]);
 
   if (!loggedIn) {
     onLoadUnauth();
@@ -184,6 +186,7 @@ DashboardPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loggedIn: PropTypes.bool,
+  loading: PropTypes.bool,
   onLogoutClick: PropTypes.func,
   onLoadUnauth: PropTypes.func,
   onLoad: PropTypes.func,
@@ -193,6 +196,7 @@ DashboardPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   dashboard: makeSelectDashboard(),
   loggedIn: makeSelectLoggedIn(),
+  loading: makeSelectLoading(),
   userData: makeSelectUserData(),
   tableData: makeSelectTableData(),
   alerts: makeSelectAlerts(),
