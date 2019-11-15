@@ -654,7 +654,9 @@ export default function EnhancedTable({ tableData }) {
                   {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCellCopy}>
-                  {`${baseUrl}${row.shortLink}`}
+                  <div className={classes.tableCellText}>
+                    {`${baseUrl}${row.shortLink}`}
+                  </div>
                   <CopyToClipboard
                     text={`${baseUrl}${row.shortLink}`}
                     onCopy={() =>
@@ -739,7 +741,10 @@ export default function EnhancedTable({ tableData }) {
                   {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
-                  {`${baseUrl}${row.shortLink}`}
+                  <div className={classes.tableCellText}>
+                    {`${baseUrl}${row.shortLink}`}
+                  </div>
+
                   <CopyToClipboard
                     text={`${baseUrl}${row.shortLink}`}
                     onCopy={() =>

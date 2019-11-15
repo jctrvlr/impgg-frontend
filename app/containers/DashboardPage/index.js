@@ -128,7 +128,9 @@ export function DashboardPage({
   const classes = useStyles();
 
   useEffect(() => {
-    onLoad();
+    if (loading) {
+      onLoad();
+    }
   }, [loading]);
 
   if (!loggedIn) {
