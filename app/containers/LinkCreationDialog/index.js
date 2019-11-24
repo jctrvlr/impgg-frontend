@@ -104,6 +104,7 @@ export function LinkCreationDialog({
   fetchLinkSuccess,
   onChangeURI,
   onChangeDomain,
+  onChangeDomainFirst,
   onChangeSLink,
   onSubmitForm,
   onValidURI,
@@ -118,8 +119,12 @@ export function LinkCreationDialog({
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
+    onChangeDomainFirst(userData.user.preferences.primaryDomain);
+  }, []);
+
+  useEffect(() => {
     if (fetchLinkSuccess && !loading) {
-      enqueueSnackbar('Link created successfuly', { variant: 'success' });
+      enqueueSnackbar('Link created successfully', { variant: 'success' });
       handleModalClose();
     }
   }, [fetchLinkSuccess]);
@@ -179,7 +184,7 @@ export function LinkCreationDialog({
                     position="start"
                     className={classes.linkAdornment}
                   >
-                    {domain || userData.user.preferences.primaryDomain}
+                    {domain || userData.user.preferences.primaryDomain}/
                   </InputAdornment>
                 ),
               }}
@@ -248,6 +253,7 @@ LinkCreationDialog.propTypes = {
   fetchLinkSuccess: PropTypes.bool,
   onChangeURI: PropTypes.func,
   onChangeDomain: PropTypes.func,
+  onChangeDomainFirst: PropTypes.func,
   onChangeSLink: PropTypes.func,
   onSubmitForm: PropTypes.func,
   onValidURI: PropTypes.func,
@@ -276,6 +282,9 @@ function mapDispatchToProps(dispatch) {
     },
     onChangeDomain: evt => {
       dispatch(changeDomain(evt.target.value));
+    },
+    onChangeDomainFirst: domain => {
+      dispatch(changeDomain(domain));
     },
     onChangeSLink: evt => {
       dispatch(changeSLink(evt.target.value));

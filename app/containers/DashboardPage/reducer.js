@@ -13,15 +13,18 @@ import {
   FETCH_URL_ERROR,
   URI_VALIDATION,
   CHANGE_URI,
+  CHANGE_SELECTED_DATA,
 } from './constants';
 
 export const initialState = {
   loading: true,
+  newLink: true,
   error: false,
   tableData: [],
   uri: false,
   uriValidation: false,
   currentLink: false,
+  selectedData: [{}],
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -33,16 +36,24 @@ const dashboardReducer = (state = initialState, action) =>
         draft.error = false;
         draft.tableData = [];
         break;
+
       case TABLEDATA_SUCCESS:
         draft.tableData = action.tableData;
         draft.loading = false;
+        draft.newLink = false;
         break;
+
       case TABLEDATA_ERROR:
         draft.error = action.error;
         draft.loading = false;
         break;
+
       case CHANGE_URI:
         draft.uri = action.uri;
+        break;
+
+      case CHANGE_SELECTED_DATA:
+        draft.selectedData = action.selectedData;
         break;
 
       case URI_VALIDATION:
@@ -56,6 +67,7 @@ const dashboardReducer = (state = initialState, action) =>
 
       case FETCH_URL_SUCCESS:
         draft.loading = false;
+        draft.newLink = true;
         draft.currentLink = action.currentLink;
         draft.uriHistory = action.uriHistory;
         break;

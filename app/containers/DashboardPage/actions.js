@@ -13,6 +13,7 @@ import {
   FETCH_URL_ERROR,
   URI_VALIDATION,
   CHANGE_URI,
+  CHANGE_SELECTED_DATA,
 } from './constants';
 
 export function getTableData() {
@@ -65,6 +66,13 @@ export function changeURI(uri) {
   return {
     type: CHANGE_URI,
     uri,
+  };
+}
+
+export function changeSelectedData(selectedData) {
+  return {
+    type: CHANGE_SELECTED_DATA,
+    selectedData,
   };
 }
 

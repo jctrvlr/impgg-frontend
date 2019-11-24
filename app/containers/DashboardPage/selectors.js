@@ -28,6 +28,18 @@ const makeSelectLoading = () =>
     dashboardState => dashboardState.loading,
   );
 
+const makeSelectNewLink = () =>
+  createSelector(
+    selectDashboardDomain,
+    dashboardState => dashboardState.newLink,
+  );
+
+const makeSelectSelectedData = () =>
+  createSelector(
+    selectDashboardDomain,
+    dashboardState => dashboardState.selectedData,
+  );
+
 /**
  * Default selector used by Dashboard
  */
@@ -44,4 +56,6 @@ export {
   makeSelectAlerts,
   makeSelectTableData,
   makeSelectLoading,
+  makeSelectNewLink,
+  makeSelectSelectedData,
 };

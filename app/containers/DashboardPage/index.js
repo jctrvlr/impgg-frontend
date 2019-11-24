@@ -19,6 +19,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // import Typography from '@material-ui/core/Typography';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,13 +31,14 @@ import makeSelectDashboard, {
   makeSelectAlerts,
   makeSelectTableData,
   makeSelectLoading,
+  makeSelectNewLink,
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
 
-import { getTableData } from './actions';
+import { getTableData, changeSelectedData } from './actions';
 import { logoutUser } from '../App/actions';
 import LinkCreationDialog from '../LinkCreationDialog';
 // import messages from './messages';
@@ -118,8 +120,10 @@ export function DashboardPage({
   tableData,
   loggedIn,
   loading,
+  newLink,
   onLogoutClick,
   onLoadUnauth,
+  onChangeSelected,
   onLoad,
   alerts,
 }) {
@@ -128,10 +132,10 @@ export function DashboardPage({
   const classes = useStyles();
 
   useEffect(() => {
-    if (loading) {
+    if (newLink) {
       onLoad();
     }
-  }, [loading]);
+  }, [newLink]);
 
   if (!loggedIn) {
     onLoadUnauth();
@@ -178,7 +182,13 @@ export function DashboardPage({
           openModal={openModal}
           handleModalClose={handleModalClose}
         />
-        <Table tableData={tableData} />
+        {loading ? (
+          <div>
+            <CircularProgress />
+          </div>
+        ) : (
+          <Table tableData={tableData} onChangeSelected={onChangeSelected} />
+        )}
       </Container>
     </React.Fragment>
   );
@@ -189,8 +199,10 @@ DashboardPage.propTypes = {
   tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   loading: PropTypes.bool,
+  newLink: PropTypes.bool,
   onLogoutClick: PropTypes.func,
   onLoadUnauth: PropTypes.func,
+  onChangeSelected: PropTypes.func,
   onLoad: PropTypes.func,
   alerts: PropTypes.array,
 };
@@ -199,6 +211,7 @@ const mapStateToProps = createStructuredSelector({
   dashboard: makeSelectDashboard(),
   loggedIn: makeSelectLoggedIn(),
   loading: makeSelectLoading(),
+  newLink: makeSelectNewLink(),
   userData: makeSelectUserData(),
   tableData: makeSelectTableData(),
   alerts: makeSelectAlerts(),
@@ -216,6 +229,9 @@ function mapDispatchToProps(dispatch) {
     },
     onLoad: () => {
       dispatch(getTableData());
+    },
+    onChangeSelected: selectedData => {
+      dispatch(changeSelectedData(selectedData));
     },
   };
 }
