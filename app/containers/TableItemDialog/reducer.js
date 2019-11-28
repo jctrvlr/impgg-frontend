@@ -12,6 +12,7 @@ import {
   CHANGE_URI,
   CHANGE_DOMAIN,
   CHANGE_SLINK,
+  RESET_FIELDS,
   GEN_SLINK,
   GEN_SLINK_SUCCESS,
   GEN_SLINK_ERROR,
@@ -42,6 +43,12 @@ const tableItemDialogReducer = (state = initialState, action) =>
 
       case CHANGE_SLINK:
         draft.sLink = action.sLink;
+        break;
+
+      case RESET_FIELDS:
+        draft.sLink = false;
+        draft.uri = '';
+        draft.linkDomain = '';
         break;
 
       case URI_VALIDATION:

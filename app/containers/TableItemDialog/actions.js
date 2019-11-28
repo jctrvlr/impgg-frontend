@@ -15,6 +15,7 @@ import {
   GEN_SLINK,
   GEN_SLINK_SUCCESS,
   GEN_SLINK_ERROR,
+  RESET_FIELDS,
 } from './constants';
 
 /**
@@ -105,6 +106,17 @@ export function changeSLink(sLink) {
   return {
     type: CHANGE_SLINK,
     sLink,
+  };
+}
+
+/**
+ * Reset fields back to defaults
+ *
+ * @return {object} An action object with type of RESET_FIELDS
+ */
+export function resetFields() {
+  return {
+    type: RESET_FIELDS,
   };
 }
 

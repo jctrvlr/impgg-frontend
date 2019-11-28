@@ -19,9 +19,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 // import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
+import CachedIcon from '@material-ui/icons/Cached';
 
 import Fade from '@material-ui/core/Fade';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -51,9 +53,10 @@ import { makeSelectUserData } from '../App/selectors';
 import {
   changeDomain,
   changeURI,
+  changeSLink,
+  resetFields,
   validateURI,
   updateURL,
-  changeSLink,
   generateShortLink,
 } from './actions';
 
@@ -115,7 +118,7 @@ export function TableItemDialog({
   fetchLinkSuccess,
   onChangeDomain,
   onSubmitForm,
-  onValidURI,
+  onClickGenShortlink,
 }) {
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
@@ -125,24 +128,22 @@ export function TableItemDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    resetFields();
+  }, []);
+
+  useEffect(() => {
     if (fetchLinkSuccess && !loading) {
       enqueueSnackbar('Link updated successfully', { variant: 'success' });
       handleClose();
     }
   }, [fetchLinkSuccess]);
 
-  useEffect(() => {
-    if (uri && !uriValidation && !sLink && !loading) {
-      onValidURI();
-    }
-  }, [uri, uriValidation]);
-
   const handleClose = () => {
     setOpen(false);
   };
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  console.log(selectedData);
+
   return (
     <Dialog
       open={open}
@@ -191,6 +192,16 @@ export function TableItemDialog({
                 {selectedData[0].domain ||
                   userData.user.preferences.primaryDomain}
                 /
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={onClickGenShortlink}
+                >
+                  <CachedIcon />
+                </IconButton>
               </InputAdornment>
             ),
           }}
@@ -253,8 +264,8 @@ TableItemDialog.propTypes = {
   onChangeSLink: PropTypes.func,
   onSubmitForm: PropTypes.func,
   setOpen: PropTypes.func,
-  onValidURI: PropTypes.func,
   fetchLinkSuccess: PropTypes.bool,
+  onClickGenShortlink: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -275,7 +286,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(validateURI(evt.target.value));
       dispatch(changeURI(evt.target.value));
     },
-    onValidURI: () => {
+    onClickGenShortlink: () => {
       dispatch(generateShortLink());
     },
     onChangeDomain: evt => {

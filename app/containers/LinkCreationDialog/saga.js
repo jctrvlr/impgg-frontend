@@ -91,7 +91,6 @@ export function* genSlink() {
   const sLink = Math.random()
     .toString(36)
     .substr(7, 10);
-  console.log(sLink);
 
   const requestURL = `${baseUrl}/v1/link/slink`;
   const requestOptions = {

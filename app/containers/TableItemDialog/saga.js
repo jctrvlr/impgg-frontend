@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /**
  * Gets the repositories of the user from Github
  */
@@ -36,10 +37,10 @@ export function* fetchLink() {
   const uri = yield select(makeSelectURI());
   const selectedData = yield select(makeSelectSelectedData());
   const userData = yield select(makeSelectUserData());
-  let linkDomain = yield select(makeSelectLinkDomain());
+  let domain = yield select(makeSelectLinkDomain());
   let sLink = yield select(makeSelectSlink());
 
-  linkDomain = linkDomain || null;
+  domain = domain || null;
   sLink = sLink || null;
 
   let requestOptions = {};
@@ -52,7 +53,12 @@ export function* fetchLink() {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${userData.token.accessToken}`,
     },
-    body: JSON.stringify({ id: selectedData[0].id, uri, linkDomain, sLink }),
+    body: JSON.stringify({
+      linkId: selectedData[0]._id,
+      uri,
+      domain,
+      sLink,
+    }),
   };
 
   try {
