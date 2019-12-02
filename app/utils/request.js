@@ -43,6 +43,7 @@ export default function request(url, options) {
     .then(parseJSON)
     .catch(err => {
       const error = new Error(err);
+      error.response = err.response;
       throw error;
     });
 }

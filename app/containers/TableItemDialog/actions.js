@@ -16,6 +16,7 @@ import {
   GEN_SLINK_SUCCESS,
   GEN_SLINK_ERROR,
   RESET_FIELDS,
+  LOG_SOCIAL_SHARE,
 } from './constants';
 
 /**
@@ -36,6 +37,20 @@ export function validateURI(uri) {
   return {
     type: URI_VALIDATION,
     uriValidation,
+  };
+}
+
+/**
+ * Logs social media share events
+ *
+ * @return {object} An action object with a type of LOG_EVENT
+ */
+export function logSocialMediaShare(media) {
+  console.log('LOGGED SHARE TO ', media, ' button.');
+
+  return {
+    type: LOG_SOCIAL_SHARE,
+    media,
   };
 }
 

@@ -7,6 +7,8 @@
 import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -23,7 +25,23 @@ import IconButton from '@material-ui/core/IconButton';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
+// import Typography from '@material-ui/core/Typography';
+
+import {
+  FacebookShareButton,
+  LinkedinShareButton,
+  TwitterShareButton,
+  EmailShareButton,
+} from 'react-share';
+
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import CropFreeIcon from '@material-ui/icons/CropFree';
+import EmailIcon from '@material-ui/icons/Email';
+
 import CachedIcon from '@material-ui/icons/Cached';
+import CloseIcon from '@material-ui/icons/Close';
 
 import Fade from '@material-ui/core/Fade';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -58,6 +76,7 @@ import {
   validateURI,
   updateURL,
   generateShortLink,
+  logSocialMediaShare,
 } from './actions';
 
 import reducer from './reducer';
@@ -92,6 +111,11 @@ const useStyles = makeStyles(theme => ({
     padding: '6px 0 7px',
     paddingTop: '3px',
   },
+  socialButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }));
 
 function PaperComponent(props) {
@@ -101,6 +125,11 @@ function PaperComponent(props) {
     </Draggable>
   );
 }
+
+const sum = (items, prop) => {
+  if (!items) return null;
+  return items.reduce((a, b) => a + b[prop], 0);
+};
 
 export function TableItemDialog({
   selectedData,
@@ -119,6 +148,8 @@ export function TableItemDialog({
   onChangeDomain,
   onSubmitForm,
   onClickGenShortlink,
+  onLoadModal,
+  onSocialShare,
 }) {
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
@@ -128,8 +159,8 @@ export function TableItemDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    resetFields();
-  }, []);
+    onLoadModal(selectedData[0].shortLink);
+  }, [open]);
 
   useEffect(() => {
     if (fetchLinkSuccess && !loading) {
@@ -141,8 +172,133 @@ export function TableItemDialog({
   const handleClose = () => {
     setOpen(false);
   };
+  const shareDom =
+    selectedData[0].domain || userData.user.preferences.primaryDomain;
+  const shareUrl = `${shareDom}/${selectedData[0].shortLink}`;
+  const title = selectedData[0].pageTitle ? selectedData[0].pageTitle : '';
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  let clickRefOptions;
+  let clickLocationOptions;
+
+  if (selectedData[0].referrer) {
+    clickRefOptions = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+      },
+      title: {
+        text: 'Top sources',
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: false,
+          },
+          showInLegend: true,
+        },
+      },
+      series: [
+        {
+          name: 'Sources',
+          colorByPoint: true,
+          data: (() => {
+            // generate an array of random data
+            const sumCount = sum(selectedData[0].referrer, 'count');
+            const data = selectedData[0].referrer.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Direct',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+
+    clickLocationOptions = {
+      chart: {
+        type: 'spline',
+        animation: Highcharts.svg, // don't animate in old IE
+        marginRight: 10,
+        events: {
+          load: () => {
+            // set up the updating of the chart each second
+            const series = clickLocationOptions.series[0];
+            setInterval(() => {
+              const x = new Date().getTime(); // current time
+              const y = Math.random();
+              series.addPoint([x, y], true, true);
+            }, 1000);
+          },
+        },
+      },
+
+      time: {
+        useUTC: false,
+      },
+
+      title: {
+        text: 'Live random data',
+      },
+      xAxis: {
+        type: 'datetime',
+        tickPixelInterval: 150,
+      },
+      yAxis: {
+        title: {
+          text: 'Value',
+        },
+        plotLines: [
+          {
+            value: 0,
+            width: 1,
+            color: '#808080',
+          },
+        ],
+      },
+      tooltip: {
+        headerFormat: '<b>{series.name}</b><br/>',
+        pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}',
+      },
+      legend: {
+        enabled: false,
+      },
+      exporting: {
+        enabled: false,
+      },
+      series: [
+        {
+          name: 'Random data',
+          data: (() => {
+            // generate an array of random data
+            const data = [];
+            const time = new Date().getTime();
+            let i;
+
+            for (i = -19; i <= 0; i += 1) {
+              data.push({
+                x: time + i * 1000,
+                y: Math.random(),
+              });
+            }
+            return data;
+          })(),
+        },
+      ],
+    };
+  }
 
   return (
     <Dialog
@@ -161,6 +317,13 @@ export function TableItemDialog({
           ? selectedData[0].pageTitle
           : 'Page Title Not Found'}
       </DialogTitle>
+      <IconButton
+        aria-label="close"
+        className={classes.closeButton}
+        onClick={handleClose}
+      >
+        <CloseIcon />
+      </IconButton>
       <DialogContent>
         <TextField
           margin="dense"
@@ -179,7 +342,7 @@ export function TableItemDialog({
           id="name"
           label="Generated Link"
           key="shortlink"
-          value={sLink || selectedData[0].shortLink}
+          value={sLink}
           error={!!sLinkError}
           helperText={sLinkError}
           onChange={onChangeSLink}
@@ -241,6 +404,60 @@ export function TableItemDialog({
           </Button>
         )}
       </DialogActions>
+      <DialogContent>
+        <div className={classes.socialButtons}>
+          <TwitterShareButton
+            url={shareUrl}
+            title={title}
+            beforeOnClick={() => onSocialShare('twitter')}
+          >
+            <IconButton>
+              <TwitterIcon />
+            </IconButton>
+          </TwitterShareButton>
+          <FacebookShareButton
+            url={shareUrl}
+            quote={title}
+            beforeOnClick={() => onSocialShare('facebook')}
+          >
+            <IconButton>
+              <FacebookIcon />
+            </IconButton>
+          </FacebookShareButton>
+          <LinkedinShareButton
+            url={shareUrl}
+            windowWidth={750}
+            windowHeight={600}
+            beforeOnClick={() => onSocialShare('linkedin')}
+          >
+            <IconButton>
+              <LinkedInIcon />
+            </IconButton>
+          </LinkedinShareButton>
+          <EmailShareButton
+            url={shareUrl}
+            subject={title}
+            beforeOnClick={() => onSocialShare('email')}
+          >
+            <IconButton>
+              <EmailIcon />
+            </IconButton>
+          </EmailShareButton>
+          {/* Make QR codes work */}
+          <IconButton>
+            <CropFreeIcon />
+          </IconButton>
+        </div>
+      </DialogContent>
+      {selectedData[0].numClicks > 0 ? (
+        <DialogContent>
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={clickLocationOptions}
+          />
+          <HighchartsReact highcharts={Highcharts} options={clickRefOptions} />
+        </DialogContent>
+      ) : null}
     </Dialog>
   );
 }
@@ -266,6 +483,8 @@ TableItemDialog.propTypes = {
   setOpen: PropTypes.func,
   fetchLinkSuccess: PropTypes.bool,
   onClickGenShortlink: PropTypes.func,
+  onLoadModal: PropTypes.func,
+  onSocialShare: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -298,6 +517,14 @@ function mapDispatchToProps(dispatch) {
     onSubmitForm: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(updateURL());
+    },
+    onLoadModal: sLink => {
+      dispatch(resetFields());
+      dispatch(changeSLink(sLink));
+    },
+    onSocialShare: media => {
+      // TODO: MAKE BACKEND FOR LOGGING EVENTS
+      dispatch(logSocialMediaShare(media));
     },
   };
 }

@@ -23,6 +23,7 @@ export const initialState = {
   sLink: false,
   linkDomain: '',
   uriValidation: false,
+  uriError: false,
   sLinkError: false,
   currentLink: false,
   loading: false,
@@ -57,7 +58,7 @@ const tableItemDialogReducer = (state = initialState, action) =>
 
       case GEN_SLINK:
         draft.loading = true;
-        draft.error = false;
+        draft.sLinkError = false;
         break;
 
       case GEN_SLINK_SUCCESS:

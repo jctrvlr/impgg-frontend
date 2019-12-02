@@ -63,18 +63,19 @@ export function* fetchLink() {
 
   try {
     // Call our request helper (see 'utils/request')
-    console.log(requestOptions);
-
     // ret should be ['creatorId', 'url', 'type', 'shortLink']
     const ret = yield call(request, requestURL, requestOptions);
-
-    console.log(ret);
 
     // Return linkData
     yield put(getTableData());
     yield put(updateURLSuccess(ret));
   } catch (err) {
-    yield put(updateURLError(err.message));
+    const jres = yield err.response.json();
+    let sLinkError;
+    if (jres.message.toLowerCase().includes('short link')) {
+      sLinkError = jres.message;
+    }
+    yield put(updateURLError(sLinkError));
   }
 }
 
@@ -112,7 +113,9 @@ export function* genSlink() {
     // Return linkData
     yield put(generateShortLinkSuccess(sLink));
   } catch (err) {
-    yield put(generateShortLinkError(err));
+    const jres = yield err.response.json();
+    console.log(jres);
+    yield put(generateShortLinkError(jres.message));
   }
 }
 
