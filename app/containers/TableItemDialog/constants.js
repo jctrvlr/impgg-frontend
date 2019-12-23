@@ -16,3 +16,7 @@ export const GEN_SLINK_SUCCESS = 'app/TableItemDialog/GEN_SLINK_SUCCESS';
 export const GEN_SLINK_ERROR = 'app/TableItemDialog/GEN_SLINK_ERROR';
 export const RESET_FIELDS = 'app/TableItemDialog/RESET_FIELDS';
 export const LOG_SOCIAL_SHARE = 'app/TableItemDialog/LOG_SOCIAL_SHARE';
+export const GET_LINK_INFO = 'app/TableItemDialog/GET_LINK_INFO';
+export const GET_LINK_INFO_SUCCESS =
+  'app/TableItemDialog/GET_LINK_INFO_SUCCESS';
+export const GET_LINK_INFO_ERROR = 'app/TableItemDialog/GET_LINK_INFO_ERROR';

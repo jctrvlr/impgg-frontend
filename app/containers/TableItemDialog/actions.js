@@ -17,6 +17,9 @@ import {
   GEN_SLINK_ERROR,
   RESET_FIELDS,
   LOG_SOCIAL_SHARE,
+  GET_LINK_INFO,
+  GET_LINK_INFO_SUCCESS,
+  GET_LINK_INFO_ERROR,
 } from './constants';
 
 /**
@@ -46,6 +49,7 @@ export function validateURI(uri) {
  * @return {object} An action object with a type of LOG_EVENT
  */
 export function logSocialMediaShare(media) {
+  // eslint-disable-next-line no-console
   console.log('LOGGED SHARE TO ', media, ' button.');
 
   return {
@@ -170,6 +174,45 @@ export function updateURLSuccess(currentLink) {
 export function updateURLError(error) {
   return {
     type: UPDATE_LINK_ERROR,
+    error,
+  };
+}
+
+/**
+ * Fetch or URL, this action starts the request saga -- backend will generate or send back existing link
+ *
+ * @return {object} An action object with a type of FETCH_URL
+ */
+export function getLinkInfo() {
+  return {
+    type: GET_LINK_INFO,
+  };
+}
+
+/**
+ * Dispatched when fetching the link info was successful
+ *
+ * @param  {array} linkData The link data
+ *
+ * @return {object} An action object with a type of FETCH_URL_SUCCESS passing the URL's information along
+ */
+export function getLinkInfoSuccess(linkInfo) {
+  return {
+    type: GET_LINK_INFO_SUCCESS,
+    linkInfo,
+  };
+}
+
+/**
+ * Dispatched when registering the user fails
+ *
+ * @param  {object} error The error
+ *
+ * @return {object} An action object with a type of REGISTER_USER_ERROR passing the error
+ */
+export function getLinkInfoError(error) {
+  return {
+    type: GET_LINK_INFO_ERROR,
     error,
   };
 }

@@ -276,20 +276,17 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
   tableCell: {
-    maxWidth: '100px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
   tableCellCopy: {
-    maxWidth: '100px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     zIndex: '999',
   },
   tableCellNumeric: {
-    maxWidth: '5px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',

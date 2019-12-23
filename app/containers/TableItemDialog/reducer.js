@@ -16,6 +16,9 @@ import {
   GEN_SLINK,
   GEN_SLINK_SUCCESS,
   GEN_SLINK_ERROR,
+  GET_LINK_INFO,
+  GET_LINK_INFO_SUCCESS,
+  GET_LINK_INFO_ERROR,
 } from './constants';
 
 export const initialState = {
@@ -28,6 +31,7 @@ export const initialState = {
   currentLink: false,
   loading: false,
   updateLinkSuccess: false,
+  linkInfo: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -89,6 +93,21 @@ const tableItemDialogReducer = (state = initialState, action) =>
         draft.loading = false;
         draft.currentLink = false;
         draft.updateLinkSuccess = false;
+        break;
+
+      case GET_LINK_INFO:
+        draft.loading = true;
+        draft.error = false;
+        break;
+
+      case GET_LINK_INFO_SUCCESS:
+        draft.loading = false;
+        draft.linkInfo = action.linkInfo;
+        break;
+
+      case GET_LINK_INFO_ERROR:
+        draft.loading = false;
+        draft.linkInfo = false;
         break;
     }
   });

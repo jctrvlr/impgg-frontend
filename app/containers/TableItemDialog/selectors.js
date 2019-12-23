@@ -52,6 +52,12 @@ const makeSelectFetchLinkSuccess = () =>
     selectTableItemDialogDomain,
     linkCreationState => linkCreationState.fetchLinkSuccess,
   );
+
+const makeSelectLinkInfo = () =>
+  createSelector(
+    selectTableItemDialogDomain,
+    linkCreationState => linkCreationState.linkInfo,
+  );
 /**
  * Default selector used by TableItemDialog
  */
@@ -72,4 +78,5 @@ export {
   makeSelectLoading,
   makeSelectsLinkError,
   makeSelectFetchLinkSuccess,
+  makeSelectLinkInfo,
 };

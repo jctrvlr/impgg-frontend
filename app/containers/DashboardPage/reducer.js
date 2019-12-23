@@ -38,7 +38,7 @@ const dashboardReducer = (state = initialState, action) =>
         break;
 
       case TABLEDATA_SUCCESS:
-        draft.tableData = action.tableData;
+        draft.tableData = action.tData;
         draft.loading = false;
         draft.newLink = false;
         break;

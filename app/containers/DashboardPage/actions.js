@@ -23,9 +23,14 @@ export function getTableData() {
 }
 
 export function tableDataSuccess(tableData) {
+  let tData = tableData;
+  if (!tData) {
+    tData = [];
+  }
+
   return {
     type: TABLEDATA_SUCCESS,
-    tableData,
+    tData,
   };
 }
 

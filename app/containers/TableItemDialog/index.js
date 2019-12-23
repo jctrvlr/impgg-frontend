@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useEffect, memo } from 'react';
+import React, { useEffect, memo, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import Highcharts from 'highcharts';
@@ -39,6 +39,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import CropFreeIcon from '@material-ui/icons/CropFree';
 import EmailIcon from '@material-ui/icons/Email';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import CachedIcon from '@material-ui/icons/Cached';
 import CloseIcon from '@material-ui/icons/Close';
@@ -56,6 +57,7 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import QRCode from './qrcode';
 import {
   makeSelectURI,
   makeSelectURIValidation,
@@ -64,6 +66,7 @@ import {
   makeSelectsLinkError,
   makeSelectFetchLinkSuccess,
   makeSelectLinkDomain,
+  makeSelectLinkInfo,
 } from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
@@ -77,6 +80,7 @@ import {
   updateURL,
   generateShortLink,
   logSocialMediaShare,
+  getLinkInfo,
 } from './actions';
 
 import reducer from './reducer';
@@ -116,6 +120,23 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  chartContainer: {
+    display: 'flex',
+    flexFlow: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  halfChart: {
+    flex: '1 0 50%',
+  },
+  qrCodeContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '256px',
+    width: '256px',
+  },
 }));
 
 function PaperComponent(props) {
@@ -133,6 +154,7 @@ const sum = (items, prop) => {
 
 export function TableItemDialog({
   selectedData,
+  linkInfo,
   open,
   setOpen,
   sLinkError,
@@ -150,6 +172,7 @@ export function TableItemDialog({
   onClickGenShortlink,
   onLoadModal,
   onSocialShare,
+  onSelectedDataChange,
 }) {
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
@@ -158,9 +181,35 @@ export function TableItemDialog({
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
+  const qrCodeRef = createRef();
+
+  const [openQrCode, setOpenQrCode] = React.useState(false);
+  const [qrCodeLoading, setQrCodeLoading] = React.useState(true);
+
+  let qrcode;
+
+  useEffect(() => {
+    if (openQrCode) {
+      setTimeout(() => {
+        qrcode = new QRCode(qrCodeRef.current, {
+          text: `${shareDom}/${selectedData[0].shortLink}`,
+          width: 256,
+          height: 256,
+        });
+        setQrCodeLoading(false);
+      }, 2000);
+    }
+  }, [openQrCode, qrCodeRef.current]);
+
   useEffect(() => {
     onLoadModal(selectedData[0].shortLink);
   }, [open]);
+
+  useEffect(() => {
+    if (Object.keys(selectedData[0]).length !== 0) {
+      onSelectedDataChange();
+    }
+  }, [selectedData]);
 
   useEffect(() => {
     if (fetchLinkSuccess && !loading) {
@@ -172,6 +221,17 @@ export function TableItemDialog({
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleQrClick = () => {
+    setOpenQrCode(!openQrCode);
+  };
+
+  const handleQrClose = () => {
+    setQrCodeLoading(true);
+    setOpenQrCode(!openQrCode);
+    qrcode.clear();
+  };
+
   const shareDom =
     selectedData[0].domain || userData.user.preferences.primaryDomain;
   const shareUrl = `${shareDom}/${selectedData[0].shortLink}`;
@@ -180,18 +240,27 @@ export function TableItemDialog({
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   let clickRefOptions;
-  let clickLocationOptions;
+  // let clickLocationOptions;
+  // let clickLiveOptions;
 
-  if (selectedData[0].referrer) {
+  let clickDevicesOptions;
+  let clickPlatformsOptions;
+  let clickBrowsersOptions;
+  // let clickSocialOptions;
+
+  if (linkInfo) {
     clickRefOptions = {
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
         plotShadow: false,
         type: 'pie',
+        height: 250,
       },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
       title: {
         text: 'Top sources',
+        margin: 5,
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
@@ -211,9 +280,9 @@ export function TableItemDialog({
           name: 'Sources',
           colorByPoint: true,
           data: (() => {
-            // generate an array of random data
-            const sumCount = sum(selectedData[0].referrer, 'count');
-            const data = selectedData[0].referrer.map(s => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.referrer, 'count');
+            const data = linkInfo.referrer.map(s => {
               const yc = (s.count / sumCount) * 100;
               return {
                 // eslint-disable-next-line no-underscore-dangle
@@ -227,7 +296,74 @@ export function TableItemDialog({
       ],
     };
 
-    clickLocationOptions = {
+    /* clickLiveOptions = {
+      chart: {
+        events: {
+          load() {
+            // set up the updating of the chart each second
+            const series = clickLiveOptions.series[0];
+            setInterval(() => {
+              const x = new Date().getTime(); // current time
+              const y = Math.round(Math.random() * 100);
+              series.addPoint([x, y], true, true);
+            }, 1000);
+          },
+        },
+      },
+
+      time: {
+        useUTC: false,
+      },
+
+      rangeSelector: {
+        buttons: [
+          {
+            count: 1,
+            type: 'minute',
+            text: '1M',
+          },
+          {
+            count: 5,
+            type: 'minute',
+            text: '5M',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        inputEnabled: false,
+        selected: 0,
+      },
+
+      title: {
+        text: 'Live random data',
+        margin: 5,
+      },
+
+      exporting: {
+        enabled: false,
+      },
+
+      series: [
+        {
+          name: 'Random data',
+          data: (() => {
+            // generate an array of random data
+            const data = [];
+            const time = new Date().getTime();
+            let i;
+
+            for (i = -999; i <= 0; i += 1) {
+              data.push([time + i * 1000, Math.round(Math.random() * 100)]);
+            }
+            return data;
+          })(),
+        },
+      ],
+    }; */
+
+    /* clickLocationOptions = {
       chart: {
         type: 'spline',
         animation: Highcharts.svg, // don't animate in old IE
@@ -251,6 +387,7 @@ export function TableItemDialog({
 
       title: {
         text: 'Live random data',
+        margin: 5,
       },
       xAxis: {
         type: 'datetime',
@@ -297,168 +434,481 @@ export function TableItemDialog({
           })(),
         },
       ],
+    }; */
+
+    clickDevicesOptions = {
+      chart: {
+        type: 'bar',
+        height: 150,
+        spacing: [0, 1, 1, 1],
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      title: {
+        text: 'Devices',
+        margin: 0,
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Devices',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.devices, 'count');
+            const data = linkInfo.devices.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
     };
+
+    clickPlatformsOptions = {
+      chart: {
+        type: 'bar',
+        height: 150,
+        spacing: [0, 1, 1, 1],
+      },
+      title: {
+        text: 'Platforms',
+        margin: 0,
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Platforms',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.platform, 'count');
+            const data = linkInfo.platform.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+
+    clickBrowsersOptions = {
+      chart: {
+        type: 'bar',
+        height: 150,
+        spacing: [0, 1, 1, 1],
+      },
+      title: {
+        text: 'Browsers',
+        margin: 0,
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Browsers',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.browser, 'count');
+            const data = linkInfo.browser.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+    /** TODO: uncomment after finish link.social on dashboard.controller.js on backend
+    clickSocialOptions = {
+      chart: {
+        type: 'bar',
+        height: 200,
+        spacing: [2, 2, 2, 2],
+      },
+      title: {
+        text: 'Social',
+        margin: 10,
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Social',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.social, 'count');
+            const data = linkInfo.social.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+    */
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      PaperComponent={PaperComponent}
-      scroll="body"
-      fullScreen={fullScreen}
-      aria-labelledby="draggable-dialog-title"
-    >
-      <DialogTitle
-        style={{ cursor: 'move', textAlign: 'center' }}
-        id="draggable-dialog-title"
+    <React.Fragment>
+      <Dialog
+        open={openQrCode}
+        onClose={handleQrClose}
+        PaperComponent={PaperComponent}
+        fullScreen={fullScreen}
       >
-        {selectedData[0].pageTitle
-          ? selectedData[0].pageTitle
-          : 'Page Title Not Found'}
-      </DialogTitle>
-      <IconButton
-        aria-label="close"
-        className={classes.closeButton}
-        onClick={handleClose}
-      >
-        <CloseIcon />
-      </IconButton>
-      <DialogContent>
-        <TextField
-          margin="dense"
-          id="url"
-          label="URL"
-          value={uri || selectedData[0].url}
-          error={!!uriValidation}
-          helperText={uriValidation}
-          onChange={onChangeURI}
-          type="url"
-          key="url"
-          fullWidth
-        />
-        <TextField
-          margin="dense"
-          id="name"
-          label="Generated Link"
-          key="shortlink"
-          value={sLink}
-          error={!!sLinkError}
-          helperText={sLinkError}
-          onChange={onChangeSLink}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment
-                position="start"
-                className={classes.linkAdornment}
-              >
-                {selectedData[0].domain ||
-                  userData.user.preferences.primaryDomain}
-                /
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={onClickGenShortlink}
-                >
-                  <CachedIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <InputLabel htmlFor="domain-choice" shrink>
-          Domain
-        </InputLabel>
-        <Select
-          native
-          margin="dense"
-          key="domain"
-          value={domain || userData.user.preferences.primaryDomain}
-          onChange={onChangeDomain}
-          input={<Input id="domain-choice" />}
+        <DialogTitle
+          style={{ cursor: 'move', textAlign: 'center' }}
+          id="draggable-dialog-title"
         >
-          {userData.user.domains.map(dom => (
-            <option value={dom.uri} key={dom.uri}>
-              {dom.uri}
-            </option>
-          ))}
-        </Select>
-      </DialogContent>
-      <DialogActions>
-        {loading ? (
+          QR Code
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handleQrClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <div className={classes.qrCodeContainer}>
           <Fade
-            in={loading}
+            in={qrCodeLoading}
+            out={!qrCodeLoading}
             style={{
-              transitionDelay: loading ? '800ms' : '0ms',
+              transitionDelay: qrCodeLoading ? '800ms' : '0ms',
             }}
             unmountOnExit
           >
-            <CircularProgress />
+            <CircularProgress size={100} />
           </Fade>
-        ) : (
-          <Button variant="contained" onClick={onSubmitForm} color="primary">
-            Update Link
-          </Button>
-        )}
-      </DialogActions>
-      <DialogContent>
-        <div className={classes.socialButtons}>
-          <TwitterShareButton
-            url={shareUrl}
-            title={title}
-            beforeOnClick={() => onSocialShare('twitter')}
-          >
-            <IconButton>
-              <TwitterIcon />
-            </IconButton>
-          </TwitterShareButton>
-          <FacebookShareButton
-            url={shareUrl}
-            quote={title}
-            beforeOnClick={() => onSocialShare('facebook')}
-          >
-            <IconButton>
-              <FacebookIcon />
-            </IconButton>
-          </FacebookShareButton>
-          <LinkedinShareButton
-            url={shareUrl}
-            windowWidth={750}
-            windowHeight={600}
-            beforeOnClick={() => onSocialShare('linkedin')}
-          >
-            <IconButton>
-              <LinkedInIcon />
-            </IconButton>
-          </LinkedinShareButton>
-          <EmailShareButton
-            url={shareUrl}
-            subject={title}
-            beforeOnClick={() => onSocialShare('email')}
-          >
-            <IconButton>
-              <EmailIcon />
-            </IconButton>
-          </EmailShareButton>
-          {/* Make QR codes work */}
-          <IconButton>
-            <CropFreeIcon />
-          </IconButton>
+          <div ref={qrCodeRef} />
         </div>
-      </DialogContent>
-      {selectedData[0].numClicks > 0 ? (
+      </Dialog>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperComponent={PaperComponent}
+        scroll="body"
+        fullScreen={fullScreen}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle
+          style={{ cursor: 'move', textAlign: 'center' }}
+          id="draggable-dialog-title"
+        >
+          {selectedData[0].pageTitle
+            ? selectedData[0].pageTitle
+            : 'Page Title Not Found'}
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handleClose}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
-          <HighchartsReact
-            highcharts={Highcharts}
-            options={clickLocationOptions}
+          <TextField
+            margin="dense"
+            id="url"
+            label="URL"
+            value={uri || selectedData[0].url}
+            error={!!uriValidation}
+            helperText={uriValidation}
+            onChange={onChangeURI}
+            type="url"
+            key="url"
+            fullWidth
           />
-          <HighchartsReact highcharts={Highcharts} options={clickRefOptions} />
+          <TextField
+            margin="dense"
+            id="name"
+            label="Generated Link"
+            key="shortlink"
+            value={sLink}
+            error={!!sLinkError}
+            helperText={sLinkError}
+            onChange={onChangeSLink}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment
+                  position="start"
+                  className={classes.linkAdornment}
+                >
+                  {selectedData[0].domain ||
+                    userData.user.preferences.primaryDomain}
+                  /
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={onClickGenShortlink}
+                  >
+                    <CachedIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <InputLabel htmlFor="domain-choice" shrink>
+            Domain
+          </InputLabel>
+          <Select
+            native
+            margin="dense"
+            key="domain"
+            value={domain || userData.user.preferences.primaryDomain}
+            onChange={onChangeDomain}
+            input={<Input id="domain-choice" />}
+          >
+            {userData.user.domains.map(dom => (
+              <option value={dom.uri} key={dom.uri}>
+                {dom.uri}
+              </option>
+            ))}
+          </Select>
         </DialogContent>
-      ) : null}
-    </Dialog>
+        <DialogActions>
+          {loading ? (
+            <Fade
+              in={loading}
+              style={{
+                transitionDelay: loading ? '800ms' : '0ms',
+              }}
+              unmountOnExit
+            >
+              <CircularProgress />
+            </Fade>
+          ) : (
+            <Button variant="contained" onClick={onSubmitForm} color="primary">
+              Update Link
+            </Button>
+          )}
+        </DialogActions>
+        <DialogContent>
+          <div className={classes.socialButtons}>
+            <TwitterShareButton
+              url={shareUrl}
+              title={title}
+              beforeOnClick={() => onSocialShare('twitter')}
+            >
+              <IconButton>
+                <TwitterIcon />
+              </IconButton>
+            </TwitterShareButton>
+            <FacebookShareButton
+              url={shareUrl}
+              quote={title}
+              beforeOnClick={() => onSocialShare('facebook')}
+            >
+              <IconButton>
+                <FacebookIcon />
+              </IconButton>
+            </FacebookShareButton>
+            <LinkedinShareButton
+              url={shareUrl}
+              windowWidth={750}
+              windowHeight={600}
+              beforeOnClick={() => onSocialShare('linkedin')}
+            >
+              <IconButton>
+                <LinkedInIcon />
+              </IconButton>
+            </LinkedinShareButton>
+            <EmailShareButton
+              url={shareUrl}
+              subject={title}
+              beforeOnClick={() => onSocialShare('email')}
+            >
+              <IconButton>
+                <EmailIcon />
+              </IconButton>
+            </EmailShareButton>
+            {/* TODO: Make QR codes work */}
+            <IconButton onClick={handleQrClick}>
+              <CropFreeIcon />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        </DialogContent>
+        {selectedData[0].numClicks > 0 ? (
+          <DialogContent>
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={clickRefOptions}
+            />
+            <div className={classes.chartContainer}>
+              <div className={classes.halfChart}>
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={clickDevicesOptions}
+                />
+              </div>
+              <div className={classes.halfChart}>
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={clickPlatformsOptions}
+                />
+              </div>
+              <div className={classes.halfChart}>
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={clickBrowsersOptions}
+                />
+              </div>
+            </div>
+          </DialogContent>
+        ) : null}
+      </Dialog>
+    </React.Fragment>
   );
 }
 
@@ -476,6 +926,7 @@ TableItemDialog.propTypes = {
   ]),
   loading: PropTypes.bool,
   sLinkError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  linkInfo: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   onChangeURI: PropTypes.func,
   onChangeDomain: PropTypes.func,
   onChangeSLink: PropTypes.func,
@@ -485,6 +936,7 @@ TableItemDialog.propTypes = {
   onClickGenShortlink: PropTypes.func,
   onLoadModal: PropTypes.func,
   onSocialShare: PropTypes.func,
+  onSelectedDataChange: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -497,6 +949,7 @@ const mapStateToProps = createStructuredSelector({
   fetchLinkSuccess: makeSelectFetchLinkSuccess(),
   sLinkError: makeSelectsLinkError(),
   uriValidation: makeSelectURIValidation(),
+  linkInfo: makeSelectLinkInfo(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -521,6 +974,9 @@ function mapDispatchToProps(dispatch) {
     onLoadModal: sLink => {
       dispatch(resetFields());
       dispatch(changeSLink(sLink));
+    },
+    onSelectedDataChange: () => {
+      dispatch(getLinkInfo());
     },
     onSocialShare: media => {
       // TODO: MAKE BACKEND FOR LOGGING EVENTS

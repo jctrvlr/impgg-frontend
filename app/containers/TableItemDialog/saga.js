@@ -8,13 +8,15 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
-import { UPDATE_LINK, GEN_SLINK } from './constants';
+import { UPDATE_LINK, GEN_SLINK, GET_LINK_INFO } from './constants';
 
 import {
   generateShortLinkSuccess,
   generateShortLinkError,
   updateURLSuccess,
   updateURLError,
+  getLinkInfoSuccess,
+  getLinkInfoError,
 } from './actions';
 
 import { getTableData } from '../DashboardPage/actions';
@@ -90,7 +92,6 @@ export function* genSlink() {
   const sLink = Math.random()
     .toString(36)
     .substr(7, 10);
-  console.log(sLink);
 
   const requestURL = `${baseUrl}/v1/link/slink`;
   const requestOptions = {
@@ -114,8 +115,37 @@ export function* genSlink() {
     yield put(generateShortLinkSuccess(sLink));
   } catch (err) {
     const jres = yield err.response.json();
-    console.log(jres);
     yield put(generateShortLinkError(jres.message));
+  }
+}
+
+/**
+ * Get info about specific link
+ */
+export function* getLinkInfo() {
+  // Select URL and userData from store
+  const userData = yield select(makeSelectUserData());
+  const selectedData = yield select(makeSelectSelectedData());
+
+  const requestURL = `${baseUrl}/v1/dashboard/${selectedData[0]._id}`;
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userData.token.accessToken}`,
+    },
+  };
+
+  try {
+    // Call our request helper (see 'utils/request')
+
+    // ret should be checkDup
+    const ret = yield call(request, requestURL, requestOptions);
+
+    // Return linkData
+    yield put(getLinkInfoSuccess(ret[0]));
+  } catch (err) {
+    yield put(getLinkInfoError(err));
   }
 }
 
@@ -130,5 +160,6 @@ export default function* fetchLinkWatcher() {
   yield all([
     takeLatest(UPDATE_LINK, fetchLink),
     takeLatest(GEN_SLINK, genSlink),
+    takeLatest(GET_LINK_INFO, getLinkInfo),
   ]);
 }
