@@ -9,8 +9,20 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.DashboardPage';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the Dashboard container!',
+  home: {
+    id: `${scope}.home`,
+    defaultMessage: 'Home',
+  },
+  profile: {
+    id: `${scope}.profile`,
+    defaultMessage: 'Profile',
+  },
+  settings: {
+    id: `${scope}.settings`,
+    defaultMessage: 'Settings',
+  },
+  logOut: {
+    id: `${scope}.logOut`,
+    defaultMessage: 'Log out',
   },
 });

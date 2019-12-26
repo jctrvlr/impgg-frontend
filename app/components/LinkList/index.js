@@ -78,7 +78,7 @@ function LinkList({ uriHistory }) {
               }
             />
             <ListItemIcon>
-              <CopyToClipboard text={item.shortLink}>
+              <CopyToClipboard text={baseUrl + item.shortLink}>
                 <IconButton aria-label="copy">
                   <FileCopy />
                 </IconButton>

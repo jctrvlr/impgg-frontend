@@ -4,56 +4,236 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage } from 'react-intl';
+
+// import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import { push } from 'connected-react-router';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
-import Header from 'components/Header/index';
+import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+// import Typography from '@material-ui/core/Typography';
 
-import makeSelectDashboard from './selectors';
+import { makeStyles } from '@material-ui/core/styles';
+
+import Header from './Header';
+import Table from './table';
+
+import makeSelectDashboard, {
+  makeSelectAlerts,
+  makeSelectTableData,
+  makeSelectLoading,
+  makeSelectNewLink,
+} from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
 
-export function DashboardPage({ userData, loggedIn }) {
+import { getTableData, changeSelectedData } from './actions';
+import { logoutUser } from '../App/actions';
+
+import LinkCreationDialog from '../LinkCreationDialog';
+// import messages from './messages';
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  hide: {
+    display: 'none',
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  drawerOpen: {
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerClose: {
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9) + 1,
+    },
+  },
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+  menuLeft: {
+    height: '94px',
+  },
+  newLinkButton: {
+    position: 'fixed',
+    bottom: theme.spacing(3),
+    right: theme.spacing(3),
+    zIndex: '99999',
+  },
+}));
+
+export function DashboardPage({
+  userData,
+  tableData,
+  loggedIn,
+  loading,
+  newLink,
+  onLogoutClick,
+  onLoadUnauth,
+  onChangeSelected,
+  onLoad,
+  alerts,
+}) {
   useInjectReducer({ key: 'dashboard', reducer });
   useInjectSaga({ key: 'dashboard', saga });
+  const classes = useStyles();
+
+  useEffect(() => {
+    if (newLink) {
+      onLoad();
+    }
+  }, [newLink]);
+
+  if (!loggedIn) {
+    onLoadUnauth();
+  }
+
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const handleModalOpen = () => {
+    setOpenModal(true);
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+  };
 
   return (
-    <div>
+    <React.Fragment>
       <Helmet>
-        <title>ImpGG - Dashboard</title>
-        <meta name="description" content="Description of Dashboard" />
+        <title>Dashboard - ImpGG</title>
+        <meta
+          name="description"
+          content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
+        />
       </Helmet>
-      <Header userData={userData} loggedIn={loggedIn} background />
-      <FormattedMessage {...messages.header} />
-    </div>
+      <Button
+        className={classes.newLinkButton}
+        variant="contained"
+        color="primary"
+        onClick={handleModalOpen}
+      >
+        +
+      </Button>
+      <Header
+        userData={userData}
+        loggedIn={loggedIn}
+        logoutUser={onLogoutClick}
+        background
+        alerts={alerts}
+      />
+
+      {/* Start of dashboard main */}
+      <Container maxWidth="xl" component="main" className={classes.formContent}>
+        <LinkCreationDialog
+          openModal={openModal}
+          handleModalClose={handleModalClose}
+        />
+        {loading ? (
+          <div>
+            <CircularProgress />
+          </div>
+        ) : (
+          <Table tableData={tableData} onChangeSelected={onChangeSelected} />
+        )}
+      </Container>
+    </React.Fragment>
   );
 }
 
 DashboardPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loggedIn: PropTypes.bool,
+  loading: PropTypes.bool,
+  newLink: PropTypes.bool,
+  onLogoutClick: PropTypes.func,
+  onLoadUnauth: PropTypes.func,
+  onChangeSelected: PropTypes.func,
+  onLoad: PropTypes.func,
+  alerts: PropTypes.array,
 };
 
 const mapStateToProps = createStructuredSelector({
   dashboard: makeSelectDashboard(),
   loggedIn: makeSelectLoggedIn(),
+  loading: makeSelectLoading(),
+  newLink: makeSelectNewLink(),
   userData: makeSelectUserData(),
+  tableData: makeSelectTableData(),
+  alerts: makeSelectAlerts(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    onLogoutClick: () => {
+      dispatch(logoutUser());
+      dispatch(push('/'));
+    },
+    onLoadUnauth: () => {
+      dispatch(logoutUser());
+      dispatch(push('/'));
+    },
+    onLoad: () => {
+      dispatch(getTableData());
+    },
+    onChangeSelected: selectedData => {
+      dispatch(changeSelectedData(selectedData));
+    },
   };
 }
 

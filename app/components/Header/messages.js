@@ -29,4 +29,16 @@ export default defineMessages({
     id: `${scope}.resources`,
     defaultMessage: 'Resources',
   },
+  profile: {
+    id: `${scope}.profile`,
+    defaultMessage: 'Profile',
+  },
+  settings: {
+    id: `${scope}.settings`,
+    defaultMessage: 'Settings',
+  },
+  logOut: {
+    id: `${scope}.logOut`,
+    defaultMessage: 'Log out',
+  },
 });

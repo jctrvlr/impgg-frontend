@@ -1,0 +1,996 @@
+/**
+ *
+ * TableItemDialog
+ *
+ */
+
+import React, { useEffect, memo, createRef } from 'react';
+import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+// import DialogContentText from '@material-ui/core/DialogContentText';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import Select from '@material-ui/core/Select';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+// import Typography from '@material-ui/core/Typography';
+
+import {
+  FacebookShareButton,
+  LinkedinShareButton,
+  TwitterShareButton,
+  EmailShareButton,
+} from 'react-share';
+
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import CropFreeIcon from '@material-ui/icons/CropFree';
+import EmailIcon from '@material-ui/icons/Email';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import CachedIcon from '@material-ui/icons/Cached';
+import CloseIcon from '@material-ui/icons/Close';
+
+import Fade from '@material-ui/core/Fade';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import Paper from '@material-ui/core/Paper';
+import Draggable from 'react-draggable';
+
+import { connect } from 'react-redux';
+// import { FormattedMessage } from 'react-intl';
+import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
+
+import { useInjectSaga } from 'utils/injectSaga';
+import { useInjectReducer } from 'utils/injectReducer';
+import QRCode from './qrcode';
+import {
+  makeSelectURI,
+  makeSelectURIValidation,
+  makeSelectSlink,
+  makeSelectLoading,
+  makeSelectsLinkError,
+  makeSelectFetchLinkSuccess,
+  makeSelectLinkDomain,
+  makeSelectLinkInfo,
+} from './selectors';
+
+import { makeSelectUserData } from '../App/selectors';
+
+import {
+  changeDomain,
+  changeURI,
+  changeSLink,
+  resetFields,
+  validateURI,
+  updateURL,
+  generateShortLink,
+  logSocialMediaShare,
+  getLinkInfo,
+} from './actions';
+
+import reducer from './reducer';
+import saga from './saga';
+import { makeSelectSelectedData } from '../DashboardPage/selectors';
+// import messages from './messages';
+
+const useStyles = makeStyles(theme => ({
+  modalPaper: {
+    position: 'absolute',
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+  domainLabel: {
+    fontSize: '1rem',
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontWeight: '400',
+    lineHeight: '1',
+    letterSpacing: '0.00938em',
+  },
+  linkAdornment: {
+    fontSize: '14px',
+    width: '165px',
+    padding: '6px 0 7px',
+    paddingTop: '3px',
+  },
+  socialButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chartContainer: {
+    display: 'flex',
+    flexFlow: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  halfChart: {
+    flex: '1 0 50%',
+  },
+  qrCodeContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '256px',
+    width: '256px',
+  },
+}));
+
+function PaperComponent(props) {
+  return (
+    <Draggable cancel={'[class*="MuiDialogContent-root"]'}>
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+
+const sum = (items, prop) => {
+  if (!items) return null;
+  return items.reduce((a, b) => a + b[prop], 0);
+};
+
+export function TableItemDialog({
+  selectedData,
+  linkInfo,
+  open,
+  setOpen,
+  sLinkError,
+  onChangeSLink,
+  onChangeURI,
+  userData,
+  uriValidation,
+  uri,
+  sLink,
+  domain,
+  loading,
+  fetchLinkSuccess,
+  onChangeDomain,
+  onSubmitForm,
+  onClickGenShortlink,
+  onLoadModal,
+  onSocialShare,
+  onSelectedDataChange,
+}) {
+  useInjectReducer({ key: 'tableItemDialog', reducer });
+  useInjectSaga({ key: 'tableItemDialog', saga });
+
+  const classes = useStyles();
+  const theme = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const qrCodeRef = createRef();
+
+  const [openQrCode, setOpenQrCode] = React.useState(false);
+  const [qrCodeLoading, setQrCodeLoading] = React.useState(true);
+
+  let qrcode;
+
+  useEffect(() => {
+    if (openQrCode) {
+      setTimeout(() => {
+        qrcode = new QRCode(qrCodeRef.current, {
+          text: `${shareDom}/${selectedData[0].shortLink}`,
+          width: 256,
+          height: 256,
+        });
+        setQrCodeLoading(false);
+      }, 2000);
+    }
+  }, [openQrCode, qrCodeRef.current]);
+
+  useEffect(() => {
+    onLoadModal(selectedData[0].shortLink);
+  }, [open]);
+
+  useEffect(() => {
+    if (Object.keys(selectedData[0]).length !== 0) {
+      onSelectedDataChange();
+    }
+  }, [selectedData]);
+
+  useEffect(() => {
+    if (fetchLinkSuccess && !loading) {
+      enqueueSnackbar('Link updated successfully', { variant: 'success' });
+      handleClose();
+    }
+  }, [fetchLinkSuccess]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleQrClick = () => {
+    setOpenQrCode(!openQrCode);
+  };
+
+  const handleQrClose = () => {
+    setQrCodeLoading(true);
+    setOpenQrCode(!openQrCode);
+    qrcode.clear();
+  };
+
+  const shareDom =
+    selectedData[0].domain || userData.user.preferences.primaryDomain;
+  const shareUrl = `${shareDom}/${selectedData[0].shortLink}`;
+  const title = selectedData[0].pageTitle ? selectedData[0].pageTitle : '';
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  let clickRefOptions;
+  // let clickLocationOptions;
+  // let clickLiveOptions;
+
+  let clickDevicesOptions;
+  let clickPlatformsOptions;
+  let clickBrowsersOptions;
+  // let clickSocialOptions;
+
+  if (linkInfo) {
+    clickRefOptions = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+        height: 250,
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      title: {
+        text: 'Top sources',
+        margin: 5,
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: false,
+          },
+          showInLegend: true,
+        },
+      },
+      series: [
+        {
+          name: 'Sources',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.referrer, 'count');
+            const data = linkInfo.referrer.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Direct',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+
+    /* clickLiveOptions = {
+      chart: {
+        events: {
+          load() {
+            // set up the updating of the chart each second
+            const series = clickLiveOptions.series[0];
+            setInterval(() => {
+              const x = new Date().getTime(); // current time
+              const y = Math.round(Math.random() * 100);
+              series.addPoint([x, y], true, true);
+            }, 1000);
+          },
+        },
+      },
+
+      time: {
+        useUTC: false,
+      },
+
+      rangeSelector: {
+        buttons: [
+          {
+            count: 1,
+            type: 'minute',
+            text: '1M',
+          },
+          {
+            count: 5,
+            type: 'minute',
+            text: '5M',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
+        inputEnabled: false,
+        selected: 0,
+      },
+
+      title: {
+        text: 'Live random data',
+        margin: 5,
+      },
+
+      exporting: {
+        enabled: false,
+      },
+
+      series: [
+        {
+          name: 'Random data',
+          data: (() => {
+            // generate an array of random data
+            const data = [];
+            const time = new Date().getTime();
+            let i;
+
+            for (i = -999; i <= 0; i += 1) {
+              data.push([time + i * 1000, Math.round(Math.random() * 100)]);
+            }
+            return data;
+          })(),
+        },
+      ],
+    }; */
+
+    /* clickLocationOptions = {
+      chart: {
+        type: 'spline',
+        animation: Highcharts.svg, // don't animate in old IE
+        marginRight: 10,
+        events: {
+          load: () => {
+            // set up the updating of the chart each second
+            const series = clickLocationOptions.series[0];
+            setInterval(() => {
+              const x = new Date().getTime(); // current time
+              const y = Math.random();
+              series.addPoint([x, y], true, true);
+            }, 1000);
+          },
+        },
+      },
+
+      time: {
+        useUTC: false,
+      },
+
+      title: {
+        text: 'Live random data',
+        margin: 5,
+      },
+      xAxis: {
+        type: 'datetime',
+        tickPixelInterval: 150,
+      },
+      yAxis: {
+        title: {
+          text: 'Value',
+        },
+        plotLines: [
+          {
+            value: 0,
+            width: 1,
+            color: '#808080',
+          },
+        ],
+      },
+      tooltip: {
+        headerFormat: '<b>{series.name}</b><br/>',
+        pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}',
+      },
+      legend: {
+        enabled: false,
+      },
+      exporting: {
+        enabled: false,
+      },
+      series: [
+        {
+          name: 'Random data',
+          data: (() => {
+            // generate an array of random data
+            const data = [];
+            const time = new Date().getTime();
+            let i;
+
+            for (i = -19; i <= 0; i += 1) {
+              data.push({
+                x: time + i * 1000,
+                y: Math.random(),
+              });
+            }
+            return data;
+          })(),
+        },
+      ],
+    }; */
+
+    clickDevicesOptions = {
+      chart: {
+        type: 'bar',
+        height: 150,
+        spacing: [0, 1, 1, 1],
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      title: {
+        text: 'Devices',
+        margin: 0,
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Devices',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.devices, 'count');
+            const data = linkInfo.devices.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+
+    clickPlatformsOptions = {
+      chart: {
+        type: 'bar',
+        height: 150,
+        spacing: [0, 1, 1, 1],
+      },
+      title: {
+        text: 'Platforms',
+        margin: 0,
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Platforms',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.platform, 'count');
+            const data = linkInfo.platform.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+
+    clickBrowsersOptions = {
+      chart: {
+        type: 'bar',
+        height: 150,
+        spacing: [0, 1, 1, 1],
+      },
+      title: {
+        text: 'Browsers',
+        margin: 0,
+      },
+      colors: ['#F54336', '#360F0C', '#DB3C30', '#75201A', '#B53128'],
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Browsers',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.browser, 'count');
+            const data = linkInfo.browser.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+    /** TODO: uncomment after finish link.social on dashboard.controller.js on backend
+    clickSocialOptions = {
+      chart: {
+        type: 'bar',
+        height: 200,
+        spacing: [2, 2, 2, 2],
+      },
+      title: {
+        text: 'Social',
+        margin: 10,
+      },
+      accessibility: {
+        announceNewData: {
+          enabled: true,
+        },
+      },
+      xAxis: {
+        type: 'category',
+      },
+      yAxis: {
+        visible: false,
+      },
+      legend: {
+        enabled: false,
+      },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.001,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            format: '{point.y:.1f}%',
+          },
+        },
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat:
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+      },
+
+      series: [
+        {
+          name: 'Social',
+          colorByPoint: true,
+          data: (() => {
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.social, 'count');
+            const data = linkInfo.social.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                name: s._id || 'Other',
+                y: yc,
+              };
+            });
+            return data;
+          })(),
+        },
+      ],
+    };
+    */
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        open={openQrCode}
+        onClose={handleQrClose}
+        PaperComponent={PaperComponent}
+        fullScreen={fullScreen}
+      >
+        <DialogTitle
+          style={{ cursor: 'move', textAlign: 'center' }}
+          id="draggable-dialog-title"
+        >
+          QR Code
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handleQrClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <div className={classes.qrCodeContainer}>
+          <Fade
+            in={qrCodeLoading}
+            out={!qrCodeLoading}
+            style={{
+              transitionDelay: qrCodeLoading ? '800ms' : '0ms',
+            }}
+            unmountOnExit
+          >
+            <CircularProgress size={100} />
+          </Fade>
+          <div ref={qrCodeRef} />
+        </div>
+      </Dialog>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperComponent={PaperComponent}
+        scroll="body"
+        fullScreen={fullScreen}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle
+          style={{ cursor: 'move', textAlign: 'center' }}
+          id="draggable-dialog-title"
+        >
+          {selectedData[0].pageTitle
+            ? selectedData[0].pageTitle
+            : 'Page Title Not Found'}
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handleClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            id="url"
+            label="URL"
+            value={uri || selectedData[0].url}
+            error={!!uriValidation}
+            helperText={uriValidation}
+            onChange={onChangeURI}
+            type="url"
+            key="url"
+            fullWidth
+          />
+          <TextField
+            margin="dense"
+            id="name"
+            label="Generated Link"
+            key="shortlink"
+            value={sLink}
+            error={!!sLinkError}
+            helperText={sLinkError}
+            onChange={onChangeSLink}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment
+                  position="start"
+                  className={classes.linkAdornment}
+                >
+                  {selectedData[0].domain ||
+                    userData.user.preferences.primaryDomain}
+                  /
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={onClickGenShortlink}
+                  >
+                    <CachedIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <InputLabel htmlFor="domain-choice" shrink>
+            Domain
+          </InputLabel>
+          <Select
+            native
+            margin="dense"
+            key="domain"
+            value={domain || userData.user.preferences.primaryDomain}
+            onChange={onChangeDomain}
+            input={<Input id="domain-choice" />}
+          >
+            {userData.user.domains.map(dom => (
+              <option value={dom.uri} key={dom.uri}>
+                {dom.uri}
+              </option>
+            ))}
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          {loading ? (
+            <Fade
+              in={loading}
+              style={{
+                transitionDelay: loading ? '800ms' : '0ms',
+              }}
+              unmountOnExit
+            >
+              <CircularProgress />
+            </Fade>
+          ) : (
+            <Button variant="contained" onClick={onSubmitForm} color="primary">
+              Update Link
+            </Button>
+          )}
+        </DialogActions>
+        <DialogContent>
+          <div className={classes.socialButtons}>
+            <TwitterShareButton
+              url={shareUrl}
+              title={title}
+              beforeOnClick={() => onSocialShare('twitter')}
+            >
+              <IconButton>
+                <TwitterIcon />
+              </IconButton>
+            </TwitterShareButton>
+            <FacebookShareButton
+              url={shareUrl}
+              quote={title}
+              beforeOnClick={() => onSocialShare('facebook')}
+            >
+              <IconButton>
+                <FacebookIcon />
+              </IconButton>
+            </FacebookShareButton>
+            <LinkedinShareButton
+              url={shareUrl}
+              windowWidth={750}
+              windowHeight={600}
+              beforeOnClick={() => onSocialShare('linkedin')}
+            >
+              <IconButton>
+                <LinkedInIcon />
+              </IconButton>
+            </LinkedinShareButton>
+            <EmailShareButton
+              url={shareUrl}
+              subject={title}
+              beforeOnClick={() => onSocialShare('email')}
+            >
+              <IconButton>
+                <EmailIcon />
+              </IconButton>
+            </EmailShareButton>
+            {/* TODO: Make QR codes work */}
+            <IconButton onClick={handleQrClick}>
+              <CropFreeIcon />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        </DialogContent>
+        {selectedData[0].numClicks > 0 ? (
+          <DialogContent>
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={clickRefOptions}
+            />
+            <div className={classes.chartContainer}>
+              <div className={classes.halfChart}>
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={clickDevicesOptions}
+                />
+              </div>
+              <div className={classes.halfChart}>
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={clickPlatformsOptions}
+                />
+              </div>
+              <div className={classes.halfChart}>
+                <HighchartsReact
+                  highcharts={Highcharts}
+                  options={clickBrowsersOptions}
+                />
+              </div>
+            </div>
+          </DialogContent>
+        ) : null}
+      </Dialog>
+    </React.Fragment>
+  );
+}
+
+TableItemDialog.propTypes = {
+  selectedData: PropTypes.array,
+  open: PropTypes.bool,
+  uri: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  domain: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  uriValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  sLink: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.object,
+  ]),
+  loading: PropTypes.bool,
+  sLinkError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  linkInfo: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  onChangeURI: PropTypes.func,
+  onChangeDomain: PropTypes.func,
+  onChangeSLink: PropTypes.func,
+  onSubmitForm: PropTypes.func,
+  setOpen: PropTypes.func,
+  fetchLinkSuccess: PropTypes.bool,
+  onClickGenShortlink: PropTypes.func,
+  onLoadModal: PropTypes.func,
+  onSocialShare: PropTypes.func,
+  onSelectedDataChange: PropTypes.func,
+};
+
+const mapStateToProps = createStructuredSelector({
+  userData: makeSelectUserData(),
+  uri: makeSelectURI(),
+  domain: makeSelectLinkDomain(),
+  sLink: makeSelectSlink(),
+  selectedData: makeSelectSelectedData(),
+  loading: makeSelectLoading(),
+  fetchLinkSuccess: makeSelectFetchLinkSuccess(),
+  sLinkError: makeSelectsLinkError(),
+  uriValidation: makeSelectURIValidation(),
+  linkInfo: makeSelectLinkInfo(),
+});
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onChangeURI: evt => {
+      dispatch(validateURI(evt.target.value));
+      dispatch(changeURI(evt.target.value));
+    },
+    onClickGenShortlink: () => {
+      dispatch(generateShortLink());
+    },
+    onChangeDomain: evt => {
+      dispatch(changeDomain(evt.target.value));
+    },
+    onChangeSLink: evt => {
+      dispatch(changeSLink(evt.target.value));
+    },
+    onSubmitForm: evt => {
+      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
+      dispatch(updateURL());
+    },
+    onLoadModal: sLink => {
+      dispatch(resetFields());
+      dispatch(changeSLink(sLink));
+    },
+    onSelectedDataChange: () => {
+      dispatch(getLinkInfo());
+    },
+    onSocialShare: media => {
+      // TODO: MAKE BACKEND FOR LOGGING EVENTS
+      dispatch(logSocialMediaShare(media));
+    },
+  };
+}
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+  memo,
+)(TableItemDialog);

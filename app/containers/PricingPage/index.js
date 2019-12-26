@@ -9,6 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { Link as RouterLink } from 'react-router-dom';
 // import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
@@ -82,56 +83,63 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const tiers = [
-  {
-    title: 'Free',
-    price: '0',
-    description: [
-      '10 users included',
-      '2 GB of storage',
-      'Help center access',
-      'Email support',
-    ],
-    buttonText: 'Sign up for free',
-    buttonVariant: 'outlined',
-  },
-  {
-    title: 'Pro',
-    subheader: 'Most popular',
-    price: '15',
-    description: [
-      '20 users included',
-      '10 GB of storage',
-      'Help center access',
-      'Priority email support',
-    ],
-    buttonText: 'Get started',
-    buttonVariant: 'contained',
-  },
-  {
-    title: 'Enterprise',
-    price: '30',
-    description: [
-      '50 users included',
-      '30 GB of storage',
-      'Help center access',
-      'Phone & email support',
-    ],
-    buttonText: 'Contact us',
-    buttonVariant: 'outlined',
-  },
-];
-
 export function PricingPage({ userData, loggedIn, onLogoutClick }) {
   useInjectReducer({ key: 'pricingPage', reducer });
   useInjectSaga({ key: 'pricingPage', saga });
   const classes = useStyles();
 
+  const tiers = [
+    {
+      title: 'Free',
+      price: '0',
+      description: [
+        'Unlimited links with Imp.GG',
+        'Help center access',
+        'Email support',
+      ],
+      buttonText: loggedIn ? 'Go to dashboard' : 'Sign up for free',
+      buttonVariant: 'outlined',
+      buttonHref: loggedIn ? '/dashboard' : '/register',
+    },
+    {
+      title: 'Pro',
+      subheader: 'Most popular',
+      price: '5',
+      description: [
+        '2 users included',
+        'Unlimited Links with Imp.GG and 1 custom URL',
+        'Help center access',
+        'Priority email support',
+      ],
+      buttonText: 'Get started',
+      buttonVariant: 'contained',
+      buttonHref: loggedIn
+        ? '/upgrade?type=pro&ref=pricing'
+        : '/register?type=pro',
+    },
+    {
+      title: 'Enterprise',
+      price: '50',
+      description: [
+        '50 users included',
+        'Unlimited Links with Imp.GG and 10 custom URL',
+        'Help center access',
+        'Phone & email support',
+      ],
+      buttonText: 'Contact us',
+      buttonVariant: 'outlined',
+      buttonHref: '/contact?type=enterprise&ref=pricing',
+    },
+  ];
+
   return (
     <React.Fragment>
       <Helmet>
         <title>ImpGG - Pricing</title>
-        <meta name="description" content="Description of PricingPage" />
+        <meta
+          name="description"
+          content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
+        />
       </Helmet>
       <Header
         userData={userData}
@@ -209,6 +217,8 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
                     fullWidth
                     variant={tier.buttonVariant}
                     color="primary"
+                    component={RouterLink}
+                    to={tier.buttonHref}
                   >
                     {tier.buttonText}
                   </Button>

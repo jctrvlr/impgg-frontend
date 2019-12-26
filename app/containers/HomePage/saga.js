@@ -52,6 +52,9 @@ export function* fetchLink() {
 
     // ret should be ['creatorId', 'url', 'type', 'shortLink']
     const ret = yield call(request, requestURL, requestOptions);
+
+    console.log(ret);
+
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
     uriHistory.push(ret);
     localStorage.setItem('uriHistory', JSON.stringify(uriHistory));

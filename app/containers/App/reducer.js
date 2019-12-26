@@ -26,9 +26,6 @@ if (localStorage.getItem('userData')) {
   loggedInR = !!localStorage.getItem('userData');
   const today = moment.utc();
   const expiresIn = moment.utc(userDataR.expires);
-  console.log(today);
-  console.log(expiresIn);
-  console.log(expiresIn.isAfter(today));
   if (expiresIn.isBefore(today)) {
     loggedInR = false;
     userDataR = {};

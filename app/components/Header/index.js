@@ -24,6 +24,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -159,7 +162,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
       </List>
       <Divider />
       <List>
-        <ListItem button>
+        <ListItem>
           <ListItemIcon>
             <DarkToggle />
           </ListItemIcon>
@@ -177,45 +180,40 @@ function Header({ loggedIn, userData, logoutUser, background }) {
             </Button>
             <IconButton
               className={classes.iconbutton}
-              aria-label="Account of current user"
+              aria-label="Profile of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={handleMenu}
+              component={RouterLink}
+              to="/profile"
             >
               <Avatar src={userAvatar} alt={userName} className={avatarClass} />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              getContentAnchorEl={null}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem
-                component={RouterLink}
-                to="/profile"
-                onClick={handleClose}
-              >
-                Profile
-              </MenuItem>
-              <MenuItem
-                component={RouterLink}
-                to="/account"
-                onClick={handleClose}
-              >
-                My account
-              </MenuItem>
-              <MenuItem onClick={logoutUser}>Log out</MenuItem>
-            </Menu>
+            <List>
+              <ListItem button component={RouterLink} to="/profile">
+                <ListItemIcon>
+                  <AccountBoxIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={<FormattedMessage {...messages.profile} />}
+                />
+              </ListItem>
+              <ListItem button component={RouterLink} to="/settings">
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={<FormattedMessage {...messages.settings} />}
+                />
+              </ListItem>
+              <ListItem button onClick={logoutUser}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={<FormattedMessage {...messages.logOut} />}
+                />
+              </ListItem>
+            </List>
           </React.Fragment>
         ) : (
           <React.Fragment>
