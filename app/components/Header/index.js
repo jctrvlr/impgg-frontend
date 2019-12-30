@@ -90,7 +90,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
   menuIconR: {
-    marginRight: theme.spacing(5),
+    margin: 'auto',
   },
   menuIconButton: {
     width: 40,
@@ -261,6 +261,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
 
   return (
     <React.Fragment>
+      <div id="nav-top" />
       <AppBar
         position="static"
         color="default"

@@ -20,6 +20,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 
 import LinkList from 'components/LinkList';
 import Header from 'components/Header';
+import Footer from 'components/Footer';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -43,6 +44,11 @@ import { changeURI, validateURI, fetchUrl } from './actions';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
+    body: {
+      display: 'flex',
+      minHeight: '100vh',
+      flexDirection: 'column',
+    },
     ul: {
       margin: 0,
       padding: 0,
@@ -56,6 +62,14 @@ const useStyles = makeStyles(theme => ({
   },
   formContent: {
     padding: theme.spacing(8, 0, 6),
+    [theme.breakpoints.up('769')]: {
+      height: '500px',
+    },
+    paddingBottom: theme.spacing(12),
+    [theme.breakpoints.down(769)]: {
+      paddingBottom: theme.spacing(0),
+      height: '300px',
+    },
   },
   heroContent: {
     display: 'flex',
@@ -73,7 +87,7 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(3),
     [theme.breakpoints.down(769)]: {
       width: '80%',
       margin: 'auto',
@@ -145,7 +159,7 @@ export function HomePage({
   };
 
   return (
-    <div>
+    <React.Fragment>
       <Helmet>
         <title>ImpGG - URL Shortener, Mischievous link helper</title>
         <meta
@@ -233,7 +247,8 @@ export function HomePage({
       <Container maxWidth="md" component="div">
         {uriHistory.length >= 1 && <LinkList {...linkListProps} />}
       </Container>
-    </div>
+      <Footer />
+    </React.Fragment>
   );
 }
 
