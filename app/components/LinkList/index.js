@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    maxWidth: '400px',
+    maxWidth: '35%',
     [theme.breakpoints.up(768)]: {
       marginLeft: '56px',
     },
@@ -56,7 +56,7 @@ function LinkList({ uriHistory }) {
   const classes = useStyles();
   const baseUrl = 'http://localhost:3001/';
 
-  const content = uriHistory.map((item, i) => {
+  const content = [...uriHistory].reverse().map((item, i) => {
     if (uriHistory.length - 1 === i) {
       return (
         <React.Fragment key={shortid.generate()}>

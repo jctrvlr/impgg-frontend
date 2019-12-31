@@ -62,14 +62,10 @@ const useStyles = makeStyles(theme => ({
   },
   formContent: {
     padding: theme.spacing(8, 0, 6),
-    [theme.breakpoints.up('769')]: {
-      height: '500px',
-    },
+  },
+  uriHistoryContainer: {
+    height: '500px',
     paddingBottom: theme.spacing(12),
-    [theme.breakpoints.down(769)]: {
-      paddingBottom: theme.spacing(0),
-      height: '300px',
-    },
   },
   heroContent: {
     display: 'flex',
@@ -244,7 +240,11 @@ export function HomePage({
           </Button>
         </form>
       </Container>
-      <Container maxWidth="md" component="div">
+      <Container
+        maxWidth="md"
+        component="div"
+        className={classes.uriHistoryContainer}
+      >
         {uriHistory.length >= 1 && <LinkList {...linkListProps} />}
       </Container>
       <Footer />
