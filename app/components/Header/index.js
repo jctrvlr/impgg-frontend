@@ -30,7 +30,6 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Logo from 'images/logo.png';
 import DarkmodeLogo from 'images/logo-darkmode.png';
 
 import PropTypes from 'prop-types';
@@ -51,10 +50,11 @@ const useStyles = makeStyles(theme => ({
     padding: 0,
   },
   transparentAppbar: {
-    background: 'transparent',
+    background: '#E31837',
     boxShadow: 'none',
   },
   appBar: {
+    background: '#E31837',
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
   toolbar: {
@@ -174,7 +174,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               to="/dashboard"
               color="primary"
               variant="contained"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               Dashboard
             </Button>
@@ -186,7 +186,11 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               component={RouterLink}
               to="/profile"
             >
-              <Avatar src={userAvatar} alt={userName} className={avatarClass} />
+              <Avatar
+                src={userAvatar}
+                alt={userName}
+                className={classes.avatarNoBackground}
+              />
             </IconButton>
             <List>
               <ListItem button component={RouterLink} to="/profile">
@@ -222,7 +226,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               to="/login"
               color="primary"
               variant="contained"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               Sign in
             </Button>
@@ -231,7 +235,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               to="/register"
               color="primary"
               variant="contained"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               Register an account
             </Button>
@@ -250,11 +254,6 @@ function Header({ loggedIn, userData, logoutUser, background }) {
     setAnchorEl(null);
   }
 
-  const appBarClass = background ? classes.appBar : classes.transparentAppbar;
-  const fontBarClass = background ? classes.link : classes.linkNoBackground;
-  const avatarClass = background ? classes.avatar : classes.avatarNoBackground;
-  const logoB = background ? Logo : DarkmodeLogo;
-
   const menuButtonColor = background
     ? classes.menuIconButton
     : classes.menuIconButtonNoBackground;
@@ -266,13 +265,13 @@ function Header({ loggedIn, userData, logoutUser, background }) {
         position="static"
         color="default"
         elevation={0}
-        className={appBarClass}
+        className={classes.transparentAppbar}
       >
         <Toolbar className={classes.toolbar}>
           <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
             <img
               alt="ImpGG logo. Your friendly neighborhood link shortener"
-              src={logoB}
+              src={DarkmodeLogo}
               className={classes.logo}
             />
           </Link>
@@ -282,7 +281,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               color="textPrimary"
               component={RouterLink}
               to="/about"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               <FormattedMessage {...messages.about} />
             </Link>
@@ -291,7 +290,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               color="textPrimary"
               component={RouterLink}
               to="/features"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               <FormattedMessage {...messages.features} />
             </Link>
@@ -300,7 +299,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               color="textPrimary"
               component={RouterLink}
               to="/pricing"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               <FormattedMessage {...messages.pricing} />
             </Link>
@@ -309,7 +308,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               color="textPrimary"
               component={RouterLink}
               to="/resources"
-              className={fontBarClass}
+              className={classes.linkNoBackground}
             >
               <FormattedMessage {...messages.resources} />
             </Link>
@@ -322,7 +321,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 to="/dashboard"
                 color="primary"
                 variant="contained"
-                className={fontBarClass}
+                className={classes.linkNoBackground}
               >
                 Dashboard
               </Button>
@@ -336,7 +335,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 <Avatar
                   src={userAvatar}
                   alt={userName}
-                  className={avatarClass}
+                  className={classes.avatarNoBackground}
                 />
               </IconButton>
               <Menu
@@ -379,7 +378,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 to="/login"
                 color="primary"
                 variant="contained"
-                className={fontBarClass}
+                className={classes.linkNoBackground}
               >
                 Sign in
               </Button>
@@ -388,7 +387,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 to="/register"
                 color="primary"
                 variant="contained"
-                className={fontBarClass}
+                className={classes.linkNoBackground}
               >
                 Register an account
               </Button>
@@ -399,7 +398,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
           <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
             <img
               alt="ImpGG logo. Your friendly neighborhood link shortener"
-              src={logoB}
+              src={DarkmodeLogo}
               className={classes.logo}
             />
           </Link>

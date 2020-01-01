@@ -15,6 +15,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
 import Header from 'components/Header/index';
+import Footer from 'components/Footer';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import makeSelectFeaturesPage from './selectors';
@@ -27,6 +28,11 @@ import saga from './saga';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
+    body: {
+      display: 'flex',
+      minHeight: '100vh',
+      flexDirection: 'column',
+    },
     ul: {
       margin: 0,
       padding: 0,
@@ -49,6 +55,7 @@ const useStyles = makeStyles(theme => ({
   },
   heroContent: {
     padding: theme.spacing(8, 0, 6),
+    height: '90vh',
   },
   cardHeader: {
     backgroundColor: theme.palette.grey[200],
@@ -59,16 +66,6 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'baseline',
     marginBottom: theme.spacing(2),
   },
-  footer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    marginTop: theme.spacing(8),
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: theme.spacing(6),
-      paddingBottom: theme.spacing(6),
-    },
-  },
 }));
 
 export function FeaturesPage({ userData, loggedIn, onLogoutClick }) {
@@ -78,7 +75,7 @@ export function FeaturesPage({ userData, loggedIn, onLogoutClick }) {
   const classes = useStyles();
 
   return (
-    <div>
+    <React.Fragment>
       <Helmet>
         <title>ImpGG - Features</title>
         <meta
@@ -95,7 +92,8 @@ export function FeaturesPage({ userData, loggedIn, onLogoutClick }) {
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         Placeholder for now that is really long so the container doesnt close.
       </Container>
-    </div>
+      <Footer />
+    </React.Fragment>
   );
 }
 

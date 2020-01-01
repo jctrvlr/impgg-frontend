@@ -68,6 +68,9 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   toolbarTitle: {
+    [theme.breakpoints.down(768)]: {
+      marginLeft: '0%',
+    },
     marginLeft: '50%',
     flexGrow: '1',
   },
