@@ -20,6 +20,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 
 import LinkList from 'components/LinkList';
 import Header from 'components/Header';
+import Footer from 'components/Footer';
 import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -43,6 +44,11 @@ import { changeURI, validateURI, fetchUrl } from './actions';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
+    body: {
+      display: 'flex',
+      minHeight: '100vh',
+      flexDirection: 'column',
+    },
     ul: {
       margin: 0,
       padding: 0,
@@ -56,6 +62,10 @@ const useStyles = makeStyles(theme => ({
   },
   formContent: {
     padding: theme.spacing(8, 0, 6),
+  },
+  uriHistoryContainer: {
+    height: '500px',
+    paddingBottom: theme.spacing(12),
   },
   heroContent: {
     display: 'flex',
@@ -73,7 +83,7 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(3),
     [theme.breakpoints.down(769)]: {
       width: '80%',
       margin: 'auto',
@@ -106,17 +116,6 @@ const useStyles = makeStyles(theme => ({
       marginLeft: '0',
     },
   },
-  footer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    marginTop: theme.spacing(8),
-    marginBottom: theme.spacing(8),
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: theme.spacing(6),
-      paddingBottom: theme.spacing(6),
-    },
-  },
 }));
 
 export function HomePage({
@@ -145,7 +144,7 @@ export function HomePage({
   };
 
   return (
-    <div>
+    <React.Fragment>
       <Helmet>
         <title>ImpGG - URL Shortener, Mischievous link helper</title>
         <meta
@@ -230,10 +229,15 @@ export function HomePage({
           </Button>
         </form>
       </Container>
-      <Container maxWidth="md" component="div">
+      <Container
+        maxWidth="md"
+        component="div"
+        className={classes.uriHistoryContainer}
+      >
         {uriHistory.length >= 1 && <LinkList {...linkListProps} />}
       </Container>
-    </div>
+      <Footer />
+    </React.Fragment>
   );
 }
 

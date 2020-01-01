@@ -56,6 +56,10 @@ export function* fetchLink() {
     console.log(ret);
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
+    if (uriHistory.length > 5) {
+      uriHistory.shift();
+    }
+
     uriHistory.push(ret);
     localStorage.setItem('uriHistory', JSON.stringify(uriHistory));
     // Return linkData

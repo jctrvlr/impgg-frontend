@@ -17,7 +17,9 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
-import Header from 'components/Header/index';
+import Footer from 'components/Footer';
+import Header from 'components/Header';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -71,15 +73,8 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'baseline',
     marginBottom: theme.spacing(2),
   },
-  footer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    marginTop: theme.spacing(8),
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: theme.spacing(6),
-      paddingBottom: theme.spacing(6),
-    },
+  pricingContainer: {
+    marginBottom: theme.spacing(15),
   },
 }));
 
@@ -164,13 +159,15 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
           color="textSecondary"
           component="p"
         >
-          Quickly build an effective pricing table for your potential customers
-          with this layout. It&apos;s built with default Material-UI components
-          with little customization.
+          Choose the right pricing plan for you, no matter your size or reach
         </Typography>
       </Container>
       {/* End hero unit */}
-      <Container maxWidth="md" component="main">
+      <Container
+        maxWidth="md"
+        component="main"
+        className={classes.pricingContainer}
+      >
         <Grid container spacing={5} alignItems="flex-end">
           {tiers.map(tier => (
             // Enterprise card is full width at sm breakpoint
@@ -228,6 +225,7 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
           ))}
         </Grid>
       </Container>
+      <Footer />
     </React.Fragment>
   );
 }

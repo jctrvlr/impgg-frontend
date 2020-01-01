@@ -24,6 +24,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Footer from 'components/Footer';
+
 import Header from './Header';
 import Table from './table';
 
@@ -47,6 +49,20 @@ import LinkCreationDialog from '../LinkCreationDialog';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
+  '@global': {
+    body: {
+      display: 'flex',
+      minHeight: '100vh',
+      flexDirection: 'column',
+    },
+    ul: {
+      margin: 0,
+      padding: 0,
+    },
+    li: {
+      listStyle: 'none',
+    },
+  },
   root: {
     display: 'flex',
   },
@@ -101,7 +117,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
   },
-  content: {
+  formContent: {
+    minHeight: '90vh',
     flexGrow: 1,
     padding: theme.spacing(3),
   },
@@ -191,6 +208,7 @@ export function DashboardPage({
           <Table tableData={tableData} onChangeSelected={onChangeSelected} />
         )}
       </Container>
+      <Footer />
     </React.Fragment>
   );
 }
