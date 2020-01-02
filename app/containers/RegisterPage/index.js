@@ -23,6 +23,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import ErrorMessageHolder from 'components/ErrorMessageHolder';
 
+import HeartIcon from '@material-ui/icons/Favorite';
+
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
@@ -71,11 +73,32 @@ import saga from './saga';
 function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Built with love by the '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
+      {'Made with '} <HeartIcon /> {' on Earth'}
+    </Typography>
+  );
+}
+
+function TermsAndPrivacy() {
+  return (
+    <Typography variant="caption" align="right" color="textSecondary">
+      {"I agree to ImpGG's "}
+      <Link
+        target="_blank"
+        to="/terms"
+        color="textSecondary"
+        component={RouterLink}
+      >
+        Terms of Service
       </Link>
-      {' team.'}
+      {' and '}
+      <Link
+        target="_blank"
+        to="/privacy"
+        color="textSecondary"
+        component={RouterLink}
+      >
+        Privacy Policy
+      </Link>
     </Typography>
   );
 }
@@ -222,12 +245,8 @@ export function RegisterPage({
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                <Checkbox value="allowExtraEmails" color="primary" />
+                <TermsAndPrivacy />
               </Grid>
             </Grid>
             <Button
