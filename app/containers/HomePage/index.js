@@ -130,15 +130,8 @@ export function HomePage({
 }) {
   useInjectReducer({ key: 'homePage', reducer });
   useInjectSaga({ key: 'homePage', saga });
-  const classes = useStyles();
-  /**
-   * <img
-          src="https://via.placeholder.com/1280x500"
-          alt="ImpGG banner"
-          className={classes.banner}
-        />
-   */
 
+  const classes = useStyles();
   const linkListProps = {
     uriHistory,
   };

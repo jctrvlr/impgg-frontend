@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     padding: 0,
   },
   transparentAppbar: {
-    background: 'transparent',
+    background: '#E31837',
     boxShadow: 'none',
   },
   menuButton: {
@@ -60,6 +60,7 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
   },
   appBar: {
+    background: '#E31837',
     borderBottom: `1px solid ${theme.palette.divider}`,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -241,6 +242,7 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
 
   return (
     <React.Fragment>
+      <div id="nav-top" />
       <AppBar
         position="static"
         color="default"

@@ -29,6 +29,12 @@ const makeSelectURIValidation = () =>
     homeState => homeState.uriValidation,
   );
 
+const makeSelectSlink = () =>
+  createSelector(
+    selectHomePageDomain,
+    linkCreationState => linkCreationState.sLink,
+  );
+
 /**
  * Default selector used by HomePage
  */
@@ -45,4 +51,5 @@ export {
   makeSelectURI,
   makeSelectURIHistory,
   makeSelectURIValidation,
+  makeSelectSlink,
 };
