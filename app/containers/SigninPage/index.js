@@ -23,6 +23,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import ErrorMessageHolder from 'components/ErrorMessageHolder';
 
+import HeartIcon from '@material-ui/icons/Favorite';
+
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
@@ -61,11 +63,7 @@ import { authUser } from '../App/actions';
 function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Built with love by the '}
-      <Link color="inherit" href="https://imp.gg/">
-        ImpGG
-      </Link>
-      {' team.'}
+      {'Made with '} <HeartIcon /> {' on Earth'}
     </Typography>
   );
 }
