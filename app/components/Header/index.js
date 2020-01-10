@@ -117,8 +117,10 @@ const useStyles = makeStyles(theme => ({
 function Header({ loggedIn, userData, logoutUser, background }) {
   const classes = useStyles();
 
-  const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
-  const userName = userData.name || userData.email || 'Placeholder';
+  const userAvatar =
+    userData && userData.user && userData.user.profile.picture
+      ? userData.user.profile.picture
+      : false;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -184,13 +186,22 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               component={RouterLink}
-              to="/profile"
+              to="/settings/profile"
             >
-              <Avatar
-                src={userAvatar}
-                alt={userName}
-                className={classes.avatarNoBackground}
-              />
+              {userAvatar ? (
+                <Avatar
+                  src={userData.user.profile.picture}
+                  alt="Profile Picture"
+                  className={classes.avatarNoBackground}
+                />
+              ) : (
+                <Avatar
+                  alt="Profile Picture"
+                  className={classes.avatarNoBackground}
+                >
+                  {userData.user.profile.firstName.charAt(0).toUpperCase()}
+                </Avatar>
+              )}
             </IconButton>
             <List>
               <ListItem button component={RouterLink} to="/profile">
@@ -332,11 +343,20 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 aria-haspopup="true"
                 onClick={handleMenu}
               >
-                <Avatar
-                  src={userAvatar}
-                  alt={userName}
-                  className={classes.avatarNoBackground}
-                />
+                {userAvatar ? (
+                  <Avatar
+                    src={userData.user.profile.picture}
+                    alt="Profile Picture"
+                    className={classes.avatarNoBackground}
+                  />
+                ) : (
+                  <Avatar
+                    alt="Profile Picture"
+                    className={classes.avatarNoBackground}
+                  >
+                    {userData.user.profile.firstName.charAt(0).toUpperCase()}
+                  </Avatar>
+                )}
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -356,7 +376,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               >
                 <MenuItem
                   component={RouterLink}
-                  to="/profile"
+                  to="/settings/profile"
                   onClick={handleClose}
                 >
                   Profile

@@ -30,7 +30,6 @@ import Badge from '@material-ui/core/Badge';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Logo from 'images/logo-withouttext.png';
 import DarkmodeLogo from 'images/logo-darkmode.png';
 
 import PropTypes from 'prop-types';
@@ -90,6 +89,7 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
   },
   alertsIcon: {
+    color: '#fff',
     margin: 15,
   },
   menuIconR: {
@@ -120,11 +120,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Header({ loggedIn, userData, logoutUser, background, alerts }) {
+function Header({ loggedIn, userData, logoutUser, alerts }) {
   const classes = useStyles();
 
-  const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
-  const userName = userData.name || userData.email || 'Placeholder';
+  const userAvatar = userData.user.profile.picture
+    ? userData.user.profile.picture
+    : false;
 
   const [state, setState] = React.useState({
     right: false,
@@ -172,9 +173,19 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               component={RouterLink}
-              to="/profile"
+              to="/settings/profile"
             >
-              <Avatar src={userAvatar} alt={userName} className={avatarClass} />
+              {userAvatar ? (
+                <Avatar
+                  src={userData.user.profile.picture}
+                  alt="Profile Picture"
+                  className={avatarClass}
+                />
+              ) : (
+                <Avatar alt="Profile Picture" className={avatarClass}>
+                  {userData.user.profile.firstName.charAt(0).toUpperCase()}
+                </Avatar>
+              )}
             </IconButton>
             <Divider />
             <List>
@@ -230,13 +241,11 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
     </div>
   );
 
-  const fontBarClass = background ? classes.link : classes.linkNoBackground;
-  const avatarClass = background ? classes.avatar : classes.avatarNoBackground;
-  const logoB = background ? Logo : DarkmodeLogo;
+  const fontBarClass = classes.linkNoBackground;
+  const avatarClass = classes.avatarNoBackground;
+  const logoB = DarkmodeLogo;
 
-  const menuButtonColor = background
-    ? classes.menuIconButton
-    : classes.menuIconButtonNoBackground;
+  const menuButtonColor = classes.menuIconButtonNoBackground;
 
   const alertsCount = alerts ? alerts.length() : 0;
 
@@ -297,7 +306,6 @@ Header.propTypes = {
   loggedIn: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   logoutUser: PropTypes.func,
-  background: PropTypes.bool,
   alerts: PropTypes.array,
 };
 

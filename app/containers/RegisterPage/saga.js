@@ -29,10 +29,12 @@ export function* registerUser() {
   const lastName = yield select(makeSelectLastName());
   const email = yield select(makeSelectEmail());
   const password = yield select(makeSelectPassword());
+
   const profile = {
     firstName,
     lastName,
   };
+
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

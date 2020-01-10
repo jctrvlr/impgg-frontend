@@ -14,6 +14,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
+import { push } from 'connected-react-router';
+
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
@@ -246,6 +248,7 @@ function mapDispatchToProps(dispatch) {
   return {
     onLogoutClick: () => {
       dispatch(logoutUser());
+      dispatch(push('/'));
     },
   };
 }

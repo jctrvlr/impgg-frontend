@@ -12,6 +12,8 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
+import { push } from 'connected-react-router';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import Footer from 'components/Footer';
@@ -259,6 +261,7 @@ function mapDispatchToProps(dispatch) {
   return {
     onLogoutClick: () => {
       dispatch(logoutUser());
+      dispatch(push('/'));
     },
   };
 }
