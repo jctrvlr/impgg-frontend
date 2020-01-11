@@ -3,9 +3,10 @@
  * ProfilePage
  *
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useSnackbar } from 'notistack';
 // import { FormattedMessage } from 'react-intl';
@@ -25,6 +26,10 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -52,6 +57,7 @@ import {
   removeProfilePicture,
   updateProfileInfo,
 } from './actions';
+
 // import messages from './messages';
 
 const useStyles = makeStyles(theme => ({
@@ -70,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   heroContent: {
-    padding: theme.spacing(8, 0, 6),
+    padding: theme.spacing(1, 0),
     minHeight: '75vh',
     overflow: 'auto',
   },
@@ -109,7 +115,37 @@ const useStyles = makeStyles(theme => ({
   divider: {
     clear: 'both',
   },
+  settingsMain: {
+    padding: theme.spacing(2, 0),
+  },
 }));
+
+function LinkTab(props) {
+  return <Tab component={RouterLink} {...props} />;
+}
+
+/**
+ * Hook that alerts clicks outside of the passed ref
+ */
+function useOutsideAlerter(ref, updateFunction) {
+  /**
+   * Alert if clicked on outside of element
+   */
+  function handleClickOutside(event) {
+    if (ref.current && !ref.current.contains(event.target)) {
+      updateFunction();
+    }
+  }
+
+  useEffect(() => {
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
+}
 
 export function ProfilePage({
   firstName,
@@ -136,6 +172,13 @@ export function ProfilePage({
   const [updatedNameInfo, setupdatedNameInfo] = React.useState(false);
 
   useEffect(() => {
+    let evtOnce = { target: { value: userData.user.profile.firstName } };
+    onChangeFirstName(evtOnce);
+    evtOnce = { target: { value: userData.user.profile.lastName } };
+    onChangeLastName(evtOnce);
+  }, []);
+
+  useEffect(() => {
     if (firstName && firstName !== userData.user.profile.firstName) {
       setupdatedNameInfo(true);
     } else if (lastName && lastName !== userData.user.profile.lastName) {
@@ -156,8 +199,21 @@ export function ProfilePage({
     ? userData.user.profile.picture
     : false;
 
+  const resetFirstName = () => {
+    const evtOnce = { target: { value: userData.user.profile.firstName } };
+    onChangeFirstName(evtOnce);
+  };
+
+  const resetLastName = () => {
+    const evtOnce = { target: { value: userData.user.profile.lastName } };
+    onChangeLastName(evtOnce);
+  };
+
+  const firstNameRef = useRef(null);
+  useOutsideAlerter(firstNameRef, resetFirstName);
+  const lastNameRef = useRef(null);
+  useOutsideAlerter(lastNameRef, resetLastName);
   const classes = useStyles();
-  const userCopy = JSON.parse(JSON.stringify(userData.user));
 
   return (
     <React.Fragment>
@@ -174,6 +230,22 @@ export function ProfilePage({
         logoutUser={onLogoutClick}
         background
       />
+      <Container maxWidth="md">
+        <Typography variant="h3" align="left" className={classes.settingsMain}>
+          Settings
+        </Typography>
+        <AppBar
+          position="static"
+          className={classes.settingsTabs}
+          component="div"
+        >
+          <Tabs variant="fullWidth" aria-label="nav tabs example" value={0}>
+            <LinkTab label="Profile" to="/settings/profile" />
+            <LinkTab label="Security and Privacy" to="/settings/security" />
+            <LinkTab label="Connections" to="/settings/connections" />
+          </Tabs>
+        </AppBar>
+      </Container>
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         <div className={classes.nameSection}>
           <Typography variant="h4" align="left" className={classes.heroText}>
@@ -183,23 +255,25 @@ export function ProfilePage({
             Change identifying details for your account
           </Typography>
           <TextField
+            ref={firstNameRef}
             autoFocus
             variant="outlined"
             margin="dense"
             id="firstName"
             label="First Name"
             key="firstName"
-            value={firstName || userCopy.profile.firstName}
+            value={firstName}
             onChange={onChangeFirstName}
             fullWidth
           />
           <TextField
+            ref={lastNameRef}
             variant="outlined"
             margin="dense"
             id="lastName"
             label="Last Name"
             key="lastName"
-            value={lastName || userCopy.profile.lastName}
+            value={lastName}
             onChange={onChangeLastName}
             fullWidth
           />
