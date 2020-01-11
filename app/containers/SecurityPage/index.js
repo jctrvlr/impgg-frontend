@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { useSnackbar } from 'notistack';
+// import { useSnackbar } from 'notistack';
 // import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
@@ -24,17 +24,18 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import DeleteIcon from '@material-ui/icons/Delete';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 
-import Fade from '@material-ui/core/Fade';
-import CircularProgress from '@material-ui/core/CircularProgress';
+// import Fade from '@material-ui/core/Fade';
+// import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -42,21 +43,11 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 import { logoutUser } from '../App/actions';
 
-import {
-  makeSelectFirstName,
-  makeSelectLastName,
-  makeSelectUpdateLoading,
-  makeSelectUpdateProfileInfoSuccess,
-} from './selectors';
+import { makeSelectEmail } from './selectors';
 
 import reducer from './reducer';
 import saga from './saga';
-import {
-  changeFirstName,
-  changeLastName,
-  removeProfilePicture,
-  updateProfileInfo,
-} from './actions';
+import { changeEmail } from './actions';
 
 // import messages from './messages';
 
@@ -118,63 +109,50 @@ const useStyles = makeStyles(theme => ({
   settingsMain: {
     padding: theme.spacing(2, 0),
   },
+  verifiedEmail: {
+    paddingLeft: theme.spacing(3),
+  },
+  changePasswordButton: {
+    display: 'block',
+    margin: theme.spacing(2, 0),
+  },
 }));
 
 function LinkTab(props) {
   return <Tab component={RouterLink} {...props} />;
 }
 
-export function ProfilePage({
-  firstName,
-  lastName,
+export function SecurityPage({
   userData,
   loggedIn,
-  updateProfileInfoSuccess,
-  updateLoading,
+  email,
   onLogoutClick,
-  onChangeFirstName,
-  onChangeLastName,
   onLoadUnauth,
-  onSaveName,
-  onProfilePictureDelete,
+  onChangeEmail,
 }) {
-  useInjectReducer({ key: 'profilePage', reducer });
-  useInjectSaga({ key: 'profilePage', saga });
+  useInjectReducer({ key: 'securityPage', reducer });
+  useInjectSaga({ key: 'securityPage', saga });
 
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
+
   if (!loggedIn) {
     onLoadUnauth();
   }
 
-  const [updatedNameInfo, setupdatedNameInfo] = React.useState(false);
-
   useEffect(() => {
-    let evtOnce = { target: { value: userData.user.profile.firstName } };
-    onChangeFirstName(evtOnce);
-    evtOnce = { target: { value: userData.user.profile.lastName } };
-    onChangeLastName(evtOnce);
+    const evtOnce = { target: { value: userData.user.email } };
+    onChangeEmail(evtOnce);
   }, []);
 
-  useEffect(() => {
-    if (firstName && firstName !== userData.user.profile.firstName) {
-      setupdatedNameInfo(true);
-    } else if (lastName && lastName !== userData.user.profile.lastName) {
-      setupdatedNameInfo(true);
-    } else {
-      setupdatedNameInfo(false);
-    }
-  }, [firstName, lastName]);
+  const [editEmail, seteditEmail] = React.useState(false);
 
-  useEffect(() => {
-    if (updateProfileInfoSuccess && !updateLoading) {
-      enqueueSnackbar('Profile Updated', { variant: 'success' });
-      setupdatedNameInfo(false);
+  const handleEditEmailClick = () => {
+    seteditEmail(!editEmail);
+    if (editEmail) {
+      const evt = { target: { value: userData.user.email } };
+      onChangeEmail(evt);
     }
-  }, [updateProfileInfoSuccess]);
-
-  const userAvatar = userData.user.profile.picture
-    ? userData.user.profile.picture
-    : false;
+  };
 
   const classes = useStyles();
 
@@ -202,7 +180,7 @@ export function ProfilePage({
           className={classes.settingsTabs}
           component="div"
         >
-          <Tabs variant="fullWidth" aria-label="nav tabs example" value={0}>
+          <Tabs variant="fullWidth" aria-label="nav tabs example" value={1}>
             <LinkTab label="Profile" to="/settings/profile" />
             <LinkTab label="Security and Privacy" to="/settings/security" />
             <LinkTab label="Connections" to="/settings/connections" />
@@ -212,90 +190,70 @@ export function ProfilePage({
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         <div className={classes.nameSection}>
           <Typography variant="h4" align="left" className={classes.heroText}>
-            Profile Settings
+            Contact
           </Typography>
           <Typography variant="caption" align="left">
-            Change identifying details for your account
+            Where should we send you messages about your account
           </Typography>
           <TextField
             autoFocus
-            variant="outlined"
+            variant="standard"
             margin="dense"
-            id="firstName"
-            label="First Name"
-            key="firstName"
-            value={firstName}
-            onChange={onChangeFirstName}
+            id="email"
+            label="Email"
+            key="email"
+            type="email"
+            value={email}
+            onChange={onChangeEmail}
+            disabled={!editEmail}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle edit email"
+                    onClick={handleEditEmailClick}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             fullWidth
           />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            id="lastName"
-            label="Last Name"
-            key="lastName"
-            value={lastName}
-            onChange={onChangeLastName}
-            fullWidth
-          />
-          {updateLoading ? (
-            <Fade
-              in={updateLoading}
-              style={{
-                transitionDelay: updateLoading ? '800ms' : '0ms',
-              }}
-              unmountOnExit
-            >
-              <CircularProgress />
-            </Fade>
-          ) : (
+          <Typography
+            variant="caption"
+            align="left"
+            className={classes.verifiedEmail}
+          >
+            {/* TODO: */}Your email is <strong>Verified</strong>
+          </Typography>
+          {editEmail ? (
             <Button
               variant="contained"
               color="primary"
               className={classes.saveButton}
-              disabled={!updatedNameInfo}
-              onClick={onSaveName}
             >
-              Save Changes
+              Save
             </Button>
-          )}
+          ) : null}
         </div>
         <Divider variant="fullWidth" className={classes.divider} />
         <div className={classes.nameSection}>
           <Typography variant="h4" align="left" className={classes.heroText}>
-            Profile Picture
+            Security
           </Typography>
           <Typography variant="caption" align="left">
-            Change profile picture
+            Update security settings
           </Typography>
-          <div className={classes.avatarContainer}>
-            {userAvatar ? (
-              <Avatar
-                src={userAvatar}
-                alt="Profile Picture"
-                className={classes.avatar}
-              />
-            ) : (
-              <Avatar alt="Profile Picture" className={classes.avatar}>
-                {userData.user.profile.firstName.charAt(0).toUpperCase()}
-              </Avatar>
-            )}
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.pictureButton}
-            >
-              Update Profile Picture
-            </Button>
-            {userAvatar ? (
-              <Button
-                className={classes.pictureDeleteButton}
-                onClick={onProfilePictureDelete}
-              >
-                <DeleteIcon />
-              </Button>
-            ) : null}
-          </div>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.changePasswordButton}
+            startIcon
+          >
+            Change password
+          </Button>
+          {/* TODO: Two factor authentication */}
         </div>
       </Container>
       <Footer />
@@ -303,28 +261,19 @@ export function ProfilePage({
   );
 }
 
-ProfilePage.propTypes = {
+SecurityPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  firstName: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  lastName: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   loggedIn: PropTypes.bool,
-  updateProfileInfoSuccess: PropTypes.bool,
-  updateLoading: PropTypes.bool,
+  email: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   onLogoutClick: PropTypes.func,
-  onChangeFirstName: PropTypes.func,
-  onChangeLastName: PropTypes.func,
-  onSaveName: PropTypes.func,
   onLoadUnauth: PropTypes.func,
-  onProfilePictureDelete: PropTypes.func,
+  onChangeEmail: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
-  firstName: makeSelectFirstName(),
-  lastName: makeSelectLastName(),
-  updateLoading: makeSelectUpdateLoading(),
-  updateProfileInfoSuccess: makeSelectUpdateProfileInfoSuccess(),
+  email: makeSelectEmail(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -337,18 +286,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(logoutUser());
       dispatch(push('/'));
     },
-    onChangeFirstName: evt => {
-      dispatch(changeFirstName(evt.target.value));
-    },
-    onChangeLastName: evt => {
-      dispatch(changeLastName(evt.target.value));
-    },
-    onProfilePictureDelete: () => {
-      dispatch(removeProfilePicture());
-    },
-    onSaveName: evt => {
-      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
-      dispatch(updateProfileInfo());
+    onChangeEmail: evt => {
+      dispatch(changeEmail(evt.target.value));
     },
   };
 }
@@ -358,4 +297,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(ProfilePage);
+export default compose(withConnect)(SecurityPage);
