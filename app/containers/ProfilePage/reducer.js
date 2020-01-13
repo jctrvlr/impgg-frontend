@@ -11,6 +11,7 @@ import {
   UPDATE_PROFILE_INFO,
   UPDATE_PROFILE_INFO_SUCCESS,
   UPDATE_PROFILE_INFO_ERROR,
+  RESET_STATE,
 } from './constants';
 
 export const initialState = {
@@ -25,6 +26,9 @@ export const initialState = {
 const profilePageReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case RESET_STATE:
+        draft.updateProfileInfoSuccess = false;
+        break;
       case CHANGE_FIRST_NAME:
         draft.firstName = action.firstName;
         break;

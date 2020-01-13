@@ -1,5 +1,5 @@
 /**
- * Registers user
+ * logs in user
  */
 
 import { push } from 'connected-react-router';
@@ -48,7 +48,9 @@ export function* authUser() {
     yield put(authUserSuccess(ret, email));
     yield put(push('/'));
   } catch (err) {
-    yield put(authUserError(err));
+    const jres = yield err.response.json();
+    const authUserErrorMess = jres.message;
+    yield put(authUserError(authUserErrorMess));
   }
 }
 

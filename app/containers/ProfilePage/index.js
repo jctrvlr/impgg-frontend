@@ -56,6 +56,7 @@ import {
   changeLastName,
   removeProfilePicture,
   updateProfileInfo,
+  resetState,
 } from './actions';
 
 // import messages from './messages';
@@ -137,6 +138,7 @@ export function ProfilePage({
   onLoadUnauth,
   onSaveName,
   onProfilePictureDelete,
+  snackBarReset,
 }) {
   useInjectReducer({ key: 'profilePage', reducer });
   useInjectSaga({ key: 'profilePage', saga });
@@ -169,6 +171,7 @@ export function ProfilePage({
     if (updateProfileInfoSuccess && !updateLoading) {
       enqueueSnackbar('Profile Updated', { variant: 'success' });
       setupdatedNameInfo(false);
+      snackBarReset();
     }
   }, [updateProfileInfoSuccess]);
 
@@ -316,6 +319,7 @@ ProfilePage.propTypes = {
   onSaveName: PropTypes.func,
   onLoadUnauth: PropTypes.func,
   onProfilePictureDelete: PropTypes.func,
+  snackBarReset: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -349,6 +353,9 @@ function mapDispatchToProps(dispatch) {
     onSaveName: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(updateProfileInfo());
+    },
+    snackBarReset: () => {
+      dispatch(resetState());
     },
   };
 }

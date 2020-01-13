@@ -48,6 +48,7 @@ import { makeSelectEmail } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import { changeEmail } from './actions';
+import ChangePasswordModal from '../ChangePasswordModal';
 
 // import messages from './messages';
 
@@ -153,6 +154,15 @@ export function SecurityPage({
       onChangeEmail(evt);
     }
   };
+  const [openPasswordModal, setOpenPasswordModal] = React.useState(false);
+
+  const handleModalOpen = () => {
+    setOpenPasswordModal(true);
+  };
+
+  const handleModalClose = () => {
+    setOpenPasswordModal(false);
+  };
 
   const classes = useStyles();
 
@@ -249,10 +259,14 @@ export function SecurityPage({
             variant="contained"
             color="primary"
             className={classes.changePasswordButton}
-            startIcon
+            onClick={handleModalOpen}
           >
             Change password
           </Button>
+          <ChangePasswordModal
+            openModal={openPasswordModal}
+            handleModalClose={handleModalClose}
+          />
           {/* TODO: Two factor authentication */}
         </div>
       </Container>

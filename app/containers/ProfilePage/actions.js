@@ -13,7 +13,14 @@ import {
   UPDATE_PROFILE_INFO,
   UPDATE_PROFILE_INFO_SUCCESS,
   UPDATE_PROFILE_INFO_ERROR,
+  RESET_STATE,
 } from './constants';
+
+export function resetState() {
+  return {
+    type: RESET_STATE,
+  };
+}
 
 export function changeFirstName(firstName) {
   return {

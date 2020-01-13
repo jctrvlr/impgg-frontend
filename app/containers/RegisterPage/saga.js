@@ -60,7 +60,9 @@ export function* registerUser() {
     yield put(registerUserSuccess(ret, email));
     yield put(push('/'));
   } catch (err) {
-    yield put(registerUserError(err));
+    const jres = yield err.response.json();
+    const authUserErrorMess = jres.message;
+    yield put(registerUserError(authUserErrorMess));
   }
 }
 

@@ -16,3 +16,4 @@ export const UPDATE_PROFILE_INFO_SUCCESS =
   'app/ProfilePage/UPDATE_PROFILE_INFO_SUCCESS';
 export const UPDATE_PROFILE_INFO_ERROR =
   'app/ProfilePage/UPDATE_PROFILE_INFO_ERROR';
+export const RESET_STATE = 'app/ProfilePage/RESET_STATE';

@@ -163,7 +163,7 @@ export function RegisterPage({
     <div>
       <Helmet>
         <title>ImpGG - Register</title>
-        <meta name="description" content="Description of RegisterPage" />
+        <meta name="description" content="Register for ImpGG" />
       </Helmet>
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
