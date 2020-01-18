@@ -170,7 +170,7 @@ const useToolbarStyles = makeStyles(theme => ({
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
-    width: '100%',
+    width: '80%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
       width: 'auto',
@@ -200,7 +200,13 @@ const useToolbarStyles = makeStyles(theme => ({
     },
   },
   toolbarInfo: {
-    marginLeft: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(7),
+    },
+    marginLeft: 0,
+  },
+  numLinks: {
+    fontSize: '1rem',
   },
 }));
 
@@ -226,7 +232,7 @@ const EnhancedTableToolbar = props => {
         />
       </div>
       <div className={classes.toolbarInfo}>
-        <Typography>{numLinks} Links</Typography>
+        <Typography className={classes.numLinks}>{numLinks} Links</Typography>
       </div>
     </Toolbar>
   );
@@ -371,7 +377,7 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
     onChangeSelected: PropTypes.func,
   };
 
-  const baseUrl = 'http://localhost:3001/';
+  const baseUrl = 'http://imp.gg:3001/';
 
   let emptyRows;
   let genRows;

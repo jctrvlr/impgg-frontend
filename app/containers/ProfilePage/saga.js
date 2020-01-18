@@ -14,7 +14,7 @@ import { makeSelectFirstName, makeSelectLastName } from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Remove Profile picture handler

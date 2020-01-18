@@ -16,7 +16,7 @@ import {
   updatePasswordError,
 } from './actions';
 import { AUTH_USER, UPDATE_PASSWORD } from './constants';
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Authentication for user request/response handler

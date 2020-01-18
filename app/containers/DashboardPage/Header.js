@@ -67,16 +67,28 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
+  toolBar: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    position: 'relative',
+    minHeight: '85px',
+  },
   toolbarTitle: {
-    [theme.breakpoints.down(768)]: {
-      marginLeft: '0%',
+    [theme.breakpoints.up(768)]: {
+      flex: '0 1 auto',
+      position: 'absolute',
+      left: '50%',
+      transform: 'translateX(-50%)',
     },
-    marginLeft: '50%',
-    flexGrow: '1',
+    marginLeft: '0%',
   },
   logo: {
     height: 65,
     margin: 10,
+  },
+  pullRight: {
+    flex: '0 1 auto',
+    marginLeft: 'auto',
   },
   link: {
     margin: theme.spacing(1, 1.5),
@@ -90,10 +102,12 @@ const useStyles = makeStyles(theme => ({
   },
   alertsIcon: {
     color: '#fff',
-    margin: 15,
+    margin: 10,
+    padding: 0,
   },
   menuIconR: {
-    margin: 15,
+    margin: 10,
+    padding: 0,
   },
   menuIconButton: {
     width: 40,
@@ -258,7 +272,7 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
         elevation={0}
         className={classes.appBar}
       >
-        <Toolbar>
+        <Toolbar className={classes.toolBar}>
           <Link
             component={RouterLink}
             to="/dashboard"
@@ -270,25 +284,27 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
               className={classes.logo}
             />
           </Link>
-          <IconButton
-            edge="end"
-            className={classes.alertsIcon}
-            color="inherit"
-            aria-label="alerts"
-          >
-            <Badge badgeContent={alertsCount} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton
-            edge="end"
-            className={classes.menuIconR}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer('right', true)}
-          >
-            <MenuIcon className={menuButtonColor} />
-          </IconButton>
+          <div className={classes.pullRight}>
+            <IconButton
+              edge="end"
+              className={classes.alertsIcon}
+              color="inherit"
+              aria-label="alerts"
+            >
+              <Badge badgeContent={alertsCount} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              className={classes.menuIconR}
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer('right', true)}
+            >
+              <MenuIcon className={menuButtonColor} />
+            </IconButton>
+          </div>
           <Drawer
             anchor="right"
             open={state.right}

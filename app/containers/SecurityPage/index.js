@@ -6,7 +6,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 // import { useSnackbar } from 'notistack';
 // import { FormattedMessage } from 'react-intl';
@@ -25,10 +24,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
-
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
@@ -49,6 +44,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { changeEmail } from './actions';
 import ChangePasswordModal from '../ChangePasswordModal';
+import SettingsTabs from '../../components/SettingsTabs';
 
 // import messages from './messages';
 
@@ -119,10 +115,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function LinkTab(props) {
-  return <Tab component={RouterLink} {...props} />;
-}
-
 export function SecurityPage({
   userData,
   loggedIn,
@@ -185,17 +177,7 @@ export function SecurityPage({
         <Typography variant="h3" align="left" className={classes.settingsMain}>
           Settings
         </Typography>
-        <AppBar
-          position="static"
-          className={classes.settingsTabs}
-          component="div"
-        >
-          <Tabs variant="fullWidth" aria-label="nav tabs example" value={1}>
-            <LinkTab label="Profile" to="/settings/profile" />
-            <LinkTab label="Security and Privacy" to="/settings/security" />
-            <LinkTab label="Connections" to="/settings/connections" />
-          </Tabs>
-        </AppBar>
+        <SettingsTabs tabValue={1} />
       </Container>
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         <div className={classes.nameSection}>

@@ -15,7 +15,7 @@ import {
   makeSelectPassword,
 } from 'containers/SigninPage/selectors';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Authentication for user request/response handler

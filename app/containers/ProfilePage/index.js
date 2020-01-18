@@ -6,7 +6,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useSnackbar } from 'notistack';
 // import { FormattedMessage } from 'react-intl';
@@ -26,10 +25,6 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -58,6 +53,7 @@ import {
   updateProfileInfo,
   resetState,
 } from './actions';
+import SettingsTabs from '../../components/SettingsTabs';
 
 // import messages from './messages';
 
@@ -120,10 +116,6 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 0),
   },
 }));
-
-function LinkTab(props) {
-  return <Tab component={RouterLink} {...props} />;
-}
 
 export function ProfilePage({
   firstName,
@@ -200,17 +192,7 @@ export function ProfilePage({
         <Typography variant="h3" align="left" className={classes.settingsMain}>
           Settings
         </Typography>
-        <AppBar
-          position="static"
-          className={classes.settingsTabs}
-          component="div"
-        >
-          <Tabs variant="fullWidth" aria-label="nav tabs example" value={0}>
-            <LinkTab label="Profile" to="/settings/profile" />
-            <LinkTab label="Security and Privacy" to="/settings/security" />
-            <LinkTab label="Connections" to="/settings/connections" />
-          </Tabs>
-        </AppBar>
+        <SettingsTabs tabValue={0} />
       </Container>
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
         <div className={classes.nameSection}>

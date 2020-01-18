@@ -18,7 +18,7 @@ import {
   makeSelectPassword,
 } from './selectors';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Registration for user request/response handler

@@ -25,7 +25,7 @@ import {
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Create link request/response handler
