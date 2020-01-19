@@ -30,7 +30,6 @@ import Badge from '@material-ui/core/Badge';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Logo from 'images/logo-withouttext.png';
 import DarkmodeLogo from 'images/logo-darkmode.png';
 
 import PropTypes from 'prop-types';
@@ -68,16 +67,28 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
+  toolBar: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    position: 'relative',
+    minHeight: '85px',
+  },
   toolbarTitle: {
-    [theme.breakpoints.down(768)]: {
-      marginLeft: '0%',
+    [theme.breakpoints.up(768)]: {
+      flex: '0 1 auto',
+      position: 'absolute',
+      left: '50%',
+      transform: 'translateX(-50%)',
     },
-    marginLeft: '50%',
-    flexGrow: '1',
+    marginLeft: '0%',
   },
   logo: {
     height: 65,
     margin: 10,
+  },
+  pullRight: {
+    flex: '0 1 auto',
+    marginLeft: 'auto',
   },
   link: {
     margin: theme.spacing(1, 1.5),
@@ -90,10 +101,13 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
   },
   alertsIcon: {
-    margin: 15,
+    color: '#fff',
+    margin: 10,
+    padding: 0,
   },
   menuIconR: {
-    margin: 15,
+    margin: 10,
+    padding: 0,
   },
   menuIconButton: {
     width: 40,
@@ -120,11 +134,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Header({ loggedIn, userData, logoutUser, background, alerts }) {
+function Header({ loggedIn, userData, logoutUser, alerts }) {
   const classes = useStyles();
 
-  const userAvatar = userData.picture || 'https://i.pravatar.cc/300';
-  const userName = userData.name || userData.email || 'Placeholder';
+  const userAvatar = userData.user.profile.picture
+    ? userData.user.profile.picture
+    : false;
 
   const [state, setState] = React.useState({
     right: false,
@@ -172,9 +187,19 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               component={RouterLink}
-              to="/profile"
+              to="/settings/profile"
             >
-              <Avatar src={userAvatar} alt={userName} className={avatarClass} />
+              {userAvatar ? (
+                <Avatar
+                  src={userData.user.profile.picture}
+                  alt="Profile Picture"
+                  className={avatarClass}
+                />
+              ) : (
+                <Avatar alt="Profile Picture" className={avatarClass}>
+                  {userData.user.profile.firstName.charAt(0).toUpperCase()}
+                </Avatar>
+              )}
             </IconButton>
             <Divider />
             <List>
@@ -230,13 +255,11 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
     </div>
   );
 
-  const fontBarClass = background ? classes.link : classes.linkNoBackground;
-  const avatarClass = background ? classes.avatar : classes.avatarNoBackground;
-  const logoB = background ? Logo : DarkmodeLogo;
+  const fontBarClass = classes.linkNoBackground;
+  const avatarClass = classes.avatarNoBackground;
+  const logoB = DarkmodeLogo;
 
-  const menuButtonColor = background
-    ? classes.menuIconButton
-    : classes.menuIconButtonNoBackground;
+  const menuButtonColor = classes.menuIconButtonNoBackground;
 
   const alertsCount = alerts ? alerts.length() : 0;
 
@@ -249,7 +272,7 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
         elevation={0}
         className={classes.appBar}
       >
-        <Toolbar>
+        <Toolbar className={classes.toolBar}>
           <Link
             component={RouterLink}
             to="/dashboard"
@@ -261,25 +284,27 @@ function Header({ loggedIn, userData, logoutUser, background, alerts }) {
               className={classes.logo}
             />
           </Link>
-          <IconButton
-            edge="end"
-            className={classes.alertsIcon}
-            color="inherit"
-            aria-label="alerts"
-          >
-            <Badge badgeContent={alertsCount} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton
-            edge="end"
-            className={classes.menuIconR}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer('right', true)}
-          >
-            <MenuIcon className={menuButtonColor} />
-          </IconButton>
+          <div className={classes.pullRight}>
+            <IconButton
+              edge="end"
+              className={classes.alertsIcon}
+              color="inherit"
+              aria-label="alerts"
+            >
+              <Badge badgeContent={alertsCount} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              className={classes.menuIconR}
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer('right', true)}
+            >
+              <MenuIcon className={menuButtonColor} />
+            </IconButton>
+          </div>
           <Drawer
             anchor="right"
             open={state.right}
@@ -297,7 +322,6 @@ Header.propTypes = {
   loggedIn: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   logoutUser: PropTypes.func,
-  background: PropTypes.bool,
   alerts: PropTypes.array,
 };
 

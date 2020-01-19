@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 
 function ErrorMessageHolder(props) {
   if (props.error !== false) {
-    return <div>There was a problem</div>;
+    return <div>{props.error}</div>;
   }
   return null;
 }

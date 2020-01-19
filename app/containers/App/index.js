@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import PrivateRoute from 'utils/PrivateRoute';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -27,6 +27,8 @@ import RegisterPage from 'containers/RegisterPage/Loadable';
 
 // Protected routes
 import DashboardPage from 'containers/DashboardPage/Loadable';
+import ProfilePage from 'containers/ProfilePage/Loadable';
+import SecurityPage from 'containers/SecurityPage/Loadable';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
@@ -50,6 +52,16 @@ export default function App() {
         <Route exact path="/register" component={RegisterPage} />
 
         <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+
+        <Redirect exact from="/settings" to="/settings/profile" />
+        <Redirect exact from="/profile" to="/settings/profile" />
+        <PrivateRoute exact path="/settings/profile" component={ProfilePage} />
+        <PrivateRoute
+          exact
+          path="/settings/security"
+          component={SecurityPage}
+        />
+
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

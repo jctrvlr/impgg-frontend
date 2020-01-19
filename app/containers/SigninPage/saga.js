@@ -1,5 +1,5 @@
 /**
- * Registers user
+ * logs in user
  */
 
 import { push } from 'connected-react-router';
@@ -15,7 +15,7 @@ import {
   makeSelectPassword,
 } from 'containers/SigninPage/selectors';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Authentication for user request/response handler
@@ -48,7 +48,9 @@ export function* authUser() {
     yield put(authUserSuccess(ret, email));
     yield put(push('/'));
   } catch (err) {
-    yield put(authUserError(err));
+    const jres = yield err.response.json();
+    const authUserErrorMess = jres.message;
+    yield put(authUserError(authUserErrorMess));
   }
 }
 

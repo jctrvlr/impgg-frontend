@@ -18,7 +18,7 @@ import {
   makeSelectPassword,
 } from './selectors';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://imp.gg:3001';
 
 /**
  * Registration for user request/response handler
@@ -29,10 +29,12 @@ export function* registerUser() {
   const lastName = yield select(makeSelectLastName());
   const email = yield select(makeSelectEmail());
   const password = yield select(makeSelectPassword());
+
   const profile = {
     firstName,
     lastName,
   };
+
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -58,7 +60,9 @@ export function* registerUser() {
     yield put(registerUserSuccess(ret, email));
     yield put(push('/'));
   } catch (err) {
-    yield put(registerUserError(err));
+    const jres = yield err.response.json();
+    const authUserErrorMess = jres.message;
+    yield put(registerUserError(authUserErrorMess));
   }
 }
 
