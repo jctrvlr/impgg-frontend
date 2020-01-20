@@ -37,7 +37,7 @@ const linkCreationDialogReducer = (state = initialState, action) =>
         break;
 
       case CHANGE_DOMAIN:
-        draft.linkDomain = action.linkDomain;
+        draft.linkDomain = action.domain;
         break;
 
       case CHANGE_SLINK:

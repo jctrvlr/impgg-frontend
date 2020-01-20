@@ -266,6 +266,7 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 750,
+    maxWidth: '100%',
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -282,17 +283,20 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
   tableCell: {
+    maxWidth: '15vw',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
   tableCellCopy: {
+    maxWidth: '25vw',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     zIndex: '999',
   },
   tableCellNumeric: {
+    maxWidth: '5vw',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',

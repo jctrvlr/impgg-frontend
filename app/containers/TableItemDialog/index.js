@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import mapDataUSA from '@highcharts/map-collection/countries/us/us-all.geo.json';
+import mapDataWorld from '@highcharts/map-collection/custom/world.geo.json';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -86,7 +88,11 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import { makeSelectSelectedData } from '../DashboardPage/selectors';
+import iso2to3 from './iso2to3';
+
 // import messages from './messages';
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/map')(Highcharts);
 
 const useStyles = makeStyles(theme => ({
   modalPaper: {
@@ -240,7 +246,7 @@ export function TableItemDialog({
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   let clickRefOptions;
-  // let clickLocationOptions;
+  let clickLocationOptions;
   // let clickLiveOptions;
 
   let clickDevicesOptions;
@@ -363,78 +369,270 @@ export function TableItemDialog({
       ],
     }; */
 
-    /* clickLocationOptions = {
+    const dataThing = [
+      {
+        value: 438,
+        code: 'nj',
+      },
+      {
+        value: 387.35,
+        code: 'ri',
+      },
+      {
+        value: 312.68,
+        code: 'ma',
+      },
+      {
+        value: 271.4,
+        code: 'ct',
+      },
+      {
+        value: 209.23,
+        code: 'md',
+      },
+      {
+        value: 195.18,
+        code: 'ny',
+      },
+      {
+        value: 154.87,
+        code: 'de',
+      },
+      {
+        value: 114.43,
+        code: 'fl',
+      },
+      {
+        value: 107.05,
+        code: 'oh',
+      },
+      {
+        value: 105.8,
+        code: 'pa',
+      },
+      {
+        value: 86.27,
+        code: 'il',
+      },
+      {
+        value: 83.85,
+        code: 'ca',
+      },
+      {
+        value: 72.83,
+        code: 'hi',
+      },
+      {
+        value: 69.03,
+        code: 'va',
+      },
+      {
+        value: 67.55,
+        code: 'mi',
+      },
+      {
+        value: 65.46,
+        code: 'in',
+      },
+      {
+        value: 63.8,
+        code: 'nc',
+      },
+      {
+        value: 54.59,
+        code: 'ga',
+      },
+      {
+        value: 53.29,
+        code: 'tn',
+      },
+      {
+        value: 53.2,
+        code: 'nh',
+      },
+      {
+        value: 51.45,
+        code: 'sc',
+      },
+      {
+        value: 39.61,
+        code: 'la',
+      },
+      {
+        value: 39.28,
+        code: 'ky',
+      },
+      {
+        value: 38.13,
+        code: 'wi',
+      },
+      {
+        value: 34.2,
+        code: 'wa',
+      },
+      {
+        value: 33.84,
+        code: 'al',
+      },
+      {
+        value: 31.36,
+        code: 'mo',
+      },
+      {
+        value: 30.75,
+        code: 'tx',
+      },
+      {
+        value: 29,
+        code: 'wv',
+      },
+      {
+        value: 25.41,
+        code: 'vt',
+      },
+      {
+        value: 23.86,
+        code: 'mn',
+      },
+      {
+        value: 23.42,
+        code: 'ms',
+      },
+      {
+        value: 20.22,
+        code: 'ia',
+      },
+      {
+        value: 19.82,
+        code: 'ar',
+      },
+      {
+        value: 19.4,
+        code: 'ok',
+      },
+      {
+        value: 17.43,
+        code: 'az',
+      },
+      {
+        value: 16.01,
+        code: 'co',
+      },
+      {
+        value: 15.95,
+        code: 'me',
+      },
+      {
+        value: 13.76,
+        code: 'or',
+      },
+      {
+        value: 12.69,
+        code: 'ks',
+      },
+      {
+        value: 10.5,
+        code: 'ut',
+      },
+      {
+        value: 8.6,
+        code: 'ne',
+      },
+      {
+        value: 7.03,
+        code: 'nv',
+      },
+      {
+        value: 6.04,
+        code: 'id',
+      },
+      {
+        value: 5.79,
+        code: 'nm',
+      },
+      {
+        value: 3.84,
+        code: 'sd',
+      },
+      {
+        value: 3.59,
+        code: 'nd',
+      },
+      {
+        value: 2.39,
+        code: 'mt',
+      },
+      {
+        value: 1.96,
+        code: 'wy',
+      },
+      {
+        value: 0.42,
+        code: 'ak',
+      },
+    ];
+    dataThing.forEach(p => {
+      // eslint-disable-next-line no-param-reassign
+      p.code = p.code.toUpperCase();
+    });
+
+    clickLocationOptions = {
       chart: {
-        type: 'spline',
-        animation: Highcharts.svg, // don't animate in old IE
-        marginRight: 10,
-        events: {
-          load: () => {
-            // set up the updating of the chart each second
-            const series = clickLocationOptions.series[0];
-            setInterval(() => {
-              const x = new Date().getTime(); // current time
-              const y = Math.random();
-              series.addPoint([x, y], true, true);
-            }, 1000);
-          },
-        },
+        map: 'countries/us/us-all',
       },
-
-      time: {
-        useUTC: false,
-      },
-
       title: {
-        text: 'Live random data',
-        margin: 5,
+        text: 'US population density (/km²)',
       },
-      xAxis: {
-        type: 'datetime',
-        tickPixelInterval: 150,
-      },
-      yAxis: {
-        title: {
-          text: 'Value',
-        },
-        plotLines: [
-          {
-            value: 0,
-            width: 1,
-            color: '#808080',
-          },
-        ],
-      },
-      tooltip: {
-        headerFormat: '<b>{series.name}</b><br/>',
-        pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}',
-      },
-      legend: {
+      credits: {
         enabled: false,
       },
-      exporting: {
-        enabled: false,
+      mapNavigation: {
+        enabled: true,
+      },
+      colorAxis: {
+        min: 0,
+        minColor: '#E6E7E8',
+        maxColor: '#005645',
       },
       series: [
         {
-          name: 'Random data',
+          // Use the gb-all map with no data as a basemap
+          mapData: linkInfo.justUSA ? mapDataUSA : mapDataWorld,
+          borderColor: '#A0A0A0',
+          nullColor: 'rgba(200, 200, 200, 0.3)',
+          showInLegend: false,
+          animation: {
+            duration: 1000,
+          },
           data: (() => {
-            // generate an array of random data
-            const data = [];
-            const time = new Date().getTime();
-            let i;
-
-            for (i = -19; i <= 0; i += 1) {
-              data.push({
-                x: time + i * 1000,
-                y: Math.random(),
-              });
-            }
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.countries, 'count');
+            const data = linkInfo.countries.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                code: iso2to3[s._id] || 'N/A',
+                value: yc,
+                count: s.count,
+              };
+            });
+            data.sort((a, b) => (a.value < b.value ? 1 : -1));
             return data;
           })(),
+          joinBy: ['iso-a3', 'code'],
+          dataLabels: {
+            enabled: true,
+            color: '#FFFFFF',
+            format: '{point.code}',
+          },
+          name: 'Clicks per country',
+          tooltip: {
+            pointFormat:
+              '{point.code}: {point.value:.2f}% - {point.count} clicks',
+          },
         },
       ],
-    }; */
+    };
 
     clickDevicesOptions = {
       chart: {
@@ -881,6 +1079,11 @@ export function TableItemDialog({
         </DialogContent>
         {selectedData[0].numClicks > 0 ? (
           <DialogContent>
+            <HighchartsReact
+              constructorType="mapChart"
+              highcharts={Highcharts}
+              options={clickLocationOptions}
+            />
             <HighchartsReact
               highcharts={Highcharts}
               options={clickRefOptions}
