@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /**
  *
  * TableItemDialog
@@ -9,6 +10,8 @@ import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import mapDataUSA from '@highcharts/map-collection/countries/us/us-all.geo.json';
+import mapDataWorld from '@highcharts/map-collection/custom/world.geo.json';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -86,7 +89,13 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import { makeSelectSelectedData } from '../DashboardPage/selectors';
+import iso2to3 from './iso2to3';
+
 // import messages from './messages';
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/map')(Highcharts);
+require('highcharts/modules/drilldown')(Highcharts);
+require('highcharts/modules/data')(Highcharts);
 
 const useStyles = makeStyles(theme => ({
   modalPaper: {
@@ -177,6 +186,8 @@ export function TableItemDialog({
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
 
+  let mapData = mapDataWorld;
+
   const classes = useStyles();
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
@@ -240,7 +251,7 @@ export function TableItemDialog({
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   let clickRefOptions;
-  // let clickLocationOptions;
+  let clickLocationOptions;
   // let clickLiveOptions;
 
   let clickDevicesOptions;
@@ -363,78 +374,175 @@ export function TableItemDialog({
       ],
     }; */
 
-    /* clickLocationOptions = {
+    clickLocationOptions = {
       chart: {
-        type: 'spline',
-        animation: Highcharts.svg, // don't animate in old IE
-        marginRight: 10,
         events: {
-          load: () => {
-            // set up the updating of the chart each second
-            const series = clickLocationOptions.series[0];
-            setInterval(() => {
-              const x = new Date().getTime(); // current time
-              const y = Math.random();
-              series.addPoint([x, y], true, true);
-            }, 1000);
+          drillup(e) {
+            if (!e.seriesOptions) {
+              const chart = this;
+              // Handle error, the timeout is cleared on success
+              let fail = setTimeout(() => {
+                chart.showLoading(
+                  `<i class="icon-frown"></i> Failed loading ${e.point.name}`,
+                );
+                fail = setTimeout(() => {
+                  chart.hideLoading();
+                }, 1000);
+              }, 3000);
+
+              // Show the spinner
+              chart.showLoading(
+                '<i class="icon-spinner icon-spin icon-3x"></i>',
+              ); // Font Awesome spinner
+
+              // Hide loading and add series
+              chart.hideLoading();
+              clearTimeout(fail);
+            }
+          },
+          drilldown(e) {
+            if (!e.seriesOptions) {
+              const chart = this;
+              // Handle error, the timeout is cleared on success
+              let fail = setTimeout(() => {
+                chart.showLoading(
+                  `<i class="icon-frown"></i> Failed loading ${e.point.name}`,
+                );
+                fail = setTimeout(() => {
+                  chart.hideLoading();
+                }, 1000);
+              }, 3000);
+
+              // Show the spinner
+              chart.showLoading(
+                '<i class="icon-spinner icon-spin icon-3x"></i>',
+              ); // Font Awesome spinner
+
+              // Load the drilldown map
+              mapData = mapDataUSA;
+
+              // Hide loading and add series
+              chart.hideLoading();
+              clearTimeout(fail);
+              chart.addSeriesAsDrilldown(e.point, {
+                name: e.point.code,
+                mapData,
+                dataLabels: {
+                  enabled: true,
+                  format: '{point.code}',
+                },
+              });
+            }
           },
         },
       },
-
-      time: {
-        useUTC: false,
-      },
-
       title: {
-        text: 'Live random data',
-        margin: 5,
+        text: 'Location',
       },
-      xAxis: {
-        type: 'datetime',
-        tickPixelInterval: 150,
-      },
-      yAxis: {
-        title: {
-          text: 'Value',
-        },
-        plotLines: [
-          {
-            value: 0,
-            width: 1,
-            color: '#808080',
-          },
-        ],
-      },
-      tooltip: {
-        headerFormat: '<b>{series.name}</b><br/>',
-        pointFormat: '{point.x:%Y-%m-%d %H:%M:%S}<br/>{point.y:.2f}',
-      },
-      legend: {
+      credits: {
         enabled: false,
       },
-      exporting: {
-        enabled: false,
+      mapNavigation: {
+        enabled: true,
+      },
+      colorAxis: {
+        min: 0,
+        minColor: '#E6E7E8',
+        maxColor: '#005645',
       },
       series: [
         {
-          name: 'Random data',
+          // Use the gb-all map with no data as a basemap
+          mapData: linkInfo.justUSA ? mapDataUSA : mapData,
+          borderColor: '#A0A0A0',
+          nullColor: 'rgba(200, 200, 200, 0.3)',
+          showInLegend: false,
+          animation: {
+            duration: 1000,
+          },
           data: (() => {
-            // generate an array of random data
-            const data = [];
-            const time = new Date().getTime();
-            let i;
-
-            for (i = -19; i <= 0; i += 1) {
-              data.push({
-                x: time + i * 1000,
-                y: Math.random(),
-              });
-            }
+            // Calculate percentage of data.
+            const sumCount = sum(linkInfo.countries, 'count');
+            const data = linkInfo.countries.map(s => {
+              const yc = (s.count / sumCount) * 100;
+              return {
+                // eslint-disable-next-line no-underscore-dangle
+                code: iso2to3[s._id] || 'N/A',
+                value: yc,
+                count: s.count,
+                // eslint-disable-next-line no-underscore-dangle
+                drilldown: s._id === 'US' ? 'USA' : null,
+              };
+            });
+            data.sort((a, b) => (a.value < b.value ? 1 : -1));
             return data;
           })(),
+          joinBy: ['iso-a3', 'code'],
+          dataLabels: {
+            enabled: true,
+            color: '#FFFFFF',
+            format: '{point.code}',
+          },
+          name: 'World',
+          tooltip: {
+            pointFormat:
+              '{point.code}: {point.value:.2f}% - {point.count} clicks',
+          },
         },
       ],
-    }; */
+      drilldown: {
+        series: [
+          {
+            id: 'USA',
+            mapData: mapDataUSA,
+            borderColor: '#A0A0A0',
+            nullColor: 'rgba(200, 200, 200, 0.3)',
+            showInLegend: false,
+            animation: {
+              duration: 1000,
+            },
+            data: (() => {
+              // Calculate percentage of data.
+              const sumCount = sum(linkInfo.states, 'count');
+              const data = linkInfo.states.map(s => {
+                const yc = (s.count / sumCount) * 100;
+                return {
+                  // eslint-disable-next-line no-underscore-dangle
+                  code: s._id || 'N/A',
+                  value: yc,
+                  count: s.count,
+                };
+              });
+              data.sort((a, b) => (a.value < b.value ? 1 : -1));
+              return data;
+            })(),
+            joinBy: ['postal-code', 'code'],
+            dataLabels: {
+              enabled: true,
+              color: '#FFFFFF',
+              format: '{point.code}',
+            },
+            name: 'USA',
+            tooltip: {
+              pointFormat:
+                '{point.code}: {point.value:.2f}% - {point.count} clicks',
+            },
+          },
+        ],
+        activeDataLabelStyle: {
+          color: '#FFFFFF',
+          textDecoration: 'none',
+          textOutline: '1px #000000',
+        },
+        drillUpButton: {
+          relativeTo: 'spacingBox',
+          position: {
+            x: 0,
+            y: 0,
+          },
+        },
+      },
+    };
 
     clickDevicesOptions = {
       chart: {
@@ -881,6 +989,11 @@ export function TableItemDialog({
         </DialogContent>
         {selectedData[0].numClicks > 0 ? (
           <DialogContent>
+            <HighchartsReact
+              constructorType="mapChart"
+              highcharts={Highcharts}
+              options={clickLocationOptions}
+            />
             <HighchartsReact
               highcharts={Highcharts}
               options={clickRefOptions}

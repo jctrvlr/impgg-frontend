@@ -266,6 +266,7 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     minWidth: 750,
+    maxWidth: '100%',
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -282,17 +283,20 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
   tableCell: {
+    maxWidth: '15vw',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
   tableCellCopy: {
+    maxWidth: '25vw',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     zIndex: '999',
   },
   tableCellNumeric: {
+    maxWidth: '5vw',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -377,7 +381,8 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
     onChangeSelected: PropTypes.func,
   };
 
-  const baseUrl = 'http://imp.gg:3001/';
+  const host = window.location.hostname;
+  const baseUrl = `http://${host}:3001/`;
 
   let emptyRows;
   let genRows;

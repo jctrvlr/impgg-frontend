@@ -54,7 +54,8 @@ const useStyles = makeStyles(theme => ({
 
 function LinkList({ uriHistory }) {
   const classes = useStyles();
-  const baseUrl = 'http://localhost:3001/';
+  const host = window.location.hostname;
+  const baseUrl = `http://${host}:3001/`;
 
   const content = [...uriHistory].reverse().map((item, i) => {
     if (uriHistory.length - 1 === i) {
