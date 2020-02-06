@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /**
  *
  * TableItemDialog
@@ -93,6 +94,8 @@ import iso2to3 from './iso2to3';
 // import messages from './messages';
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts/modules/map')(Highcharts);
+require('highcharts/modules/drilldown')(Highcharts);
+require('highcharts/modules/data')(Highcharts);
 
 const useStyles = makeStyles(theme => ({
   modalPaper: {
@@ -182,6 +185,8 @@ export function TableItemDialog({
 }) {
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
+
+  let mapData = mapDataWorld;
 
   const classes = useStyles();
   const theme = useTheme();
@@ -371,10 +376,68 @@ export function TableItemDialog({
 
     clickLocationOptions = {
       chart: {
-        map: 'countries/us/us-all',
+        events: {
+          drillup(e) {
+            if (!e.seriesOptions) {
+              const chart = this;
+              // Handle error, the timeout is cleared on success
+              let fail = setTimeout(() => {
+                chart.showLoading(
+                  `<i class="icon-frown"></i> Failed loading ${e.point.name}`,
+                );
+                fail = setTimeout(() => {
+                  chart.hideLoading();
+                }, 1000);
+              }, 3000);
+
+              // Show the spinner
+              chart.showLoading(
+                '<i class="icon-spinner icon-spin icon-3x"></i>',
+              ); // Font Awesome spinner
+
+              // Hide loading and add series
+              chart.hideLoading();
+              clearTimeout(fail);
+            }
+          },
+          drilldown(e) {
+            if (!e.seriesOptions) {
+              const chart = this;
+              // Handle error, the timeout is cleared on success
+              let fail = setTimeout(() => {
+                chart.showLoading(
+                  `<i class="icon-frown"></i> Failed loading ${e.point.name}`,
+                );
+                fail = setTimeout(() => {
+                  chart.hideLoading();
+                }, 1000);
+              }, 3000);
+
+              // Show the spinner
+              chart.showLoading(
+                '<i class="icon-spinner icon-spin icon-3x"></i>',
+              ); // Font Awesome spinner
+
+              // Load the drilldown map
+              mapData = mapDataUSA;
+
+              // Hide loading and add series
+              chart.hideLoading();
+              clearTimeout(fail);
+              chart.addSeriesAsDrilldown(e.point, {
+                name: e.point.code,
+                mapData,
+                dataLabels: {
+                  enabled: true,
+                  format: '{point.code}',
+                },
+              });
+            }
+          },
+        },
       },
       title: {
-        text: 'US population density (/km²)',
+        text: 'Location',
       },
       credits: {
         enabled: false,
@@ -390,7 +453,7 @@ export function TableItemDialog({
       series: [
         {
           // Use the gb-all map with no data as a basemap
-          mapData: linkInfo.justUSA ? mapDataUSA : mapDataWorld,
+          mapData: linkInfo.justUSA ? mapDataUSA : mapData,
           borderColor: '#A0A0A0',
           nullColor: 'rgba(200, 200, 200, 0.3)',
           showInLegend: false,
@@ -407,6 +470,8 @@ export function TableItemDialog({
                 code: iso2to3[s._id] || 'N/A',
                 value: yc,
                 count: s.count,
+                // eslint-disable-next-line no-underscore-dangle
+                drilldown: s._id === 'US' ? 'USA' : null,
               };
             });
             data.sort((a, b) => (a.value < b.value ? 1 : -1));
@@ -418,13 +483,65 @@ export function TableItemDialog({
             color: '#FFFFFF',
             format: '{point.code}',
           },
-          name: 'Clicks per country',
+          name: 'World',
           tooltip: {
             pointFormat:
               '{point.code}: {point.value:.2f}% - {point.count} clicks',
           },
         },
       ],
+      drilldown: {
+        series: [
+          {
+            id: 'USA',
+            mapData: mapDataUSA,
+            borderColor: '#A0A0A0',
+            nullColor: 'rgba(200, 200, 200, 0.3)',
+            showInLegend: false,
+            animation: {
+              duration: 1000,
+            },
+            data: (() => {
+              // Calculate percentage of data.
+              const sumCount = sum(linkInfo.states, 'count');
+              const data = linkInfo.states.map(s => {
+                const yc = (s.count / sumCount) * 100;
+                return {
+                  // eslint-disable-next-line no-underscore-dangle
+                  code: s._id || 'N/A',
+                  value: yc,
+                  count: s.count,
+                };
+              });
+              data.sort((a, b) => (a.value < b.value ? 1 : -1));
+              return data;
+            })(),
+            joinBy: ['postal-code', 'code'],
+            dataLabels: {
+              enabled: true,
+              color: '#FFFFFF',
+              format: '{point.code}',
+            },
+            name: 'USA',
+            tooltip: {
+              pointFormat:
+                '{point.code}: {point.value:.2f}% - {point.count} clicks',
+            },
+          },
+        ],
+        activeDataLabelStyle: {
+          color: '#FFFFFF',
+          textDecoration: 'none',
+          textOutline: '1px #000000',
+        },
+        drillUpButton: {
+          relativeTo: 'spacingBox',
+          position: {
+            x: 0,
+            y: 0,
+          },
+        },
+      },
     };
 
     clickDevicesOptions = {

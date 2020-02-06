@@ -381,7 +381,8 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
     onChangeSelected: PropTypes.func,
   };
 
-  const baseUrl = 'http://imp.gg:3001/';
+  const host = window.location.hostname;
+  const baseUrl = `http://${host}:3001/`;
 
   let emptyRows;
   let genRows;

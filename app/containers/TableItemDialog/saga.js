@@ -29,7 +29,8 @@ import {
 import { makeSelectSelectedData } from '../DashboardPage/selectors';
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = 'http://imp.gg:3001';
+const host = window.location.hostname;
+const baseUrl = `http://${host}:3001`;
 
 /**
  * Create link request/response handler

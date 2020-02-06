@@ -11,7 +11,8 @@ import { tableDataSuccess, tableDataError } from './actions';
 
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = 'http://imp.gg:3001';
+const host = window.location.hostname;
+const baseUrl = `http://${host}:3001`;
 
 /**
  * Get table info
