@@ -381,9 +381,6 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
     onChangeSelected: PropTypes.func,
   };
 
-  const host = window.location.hostname;
-  const baseUrl = `http://${host}:3001/`;
-
   let emptyRows;
   let genRows;
   let tablePagination;
@@ -423,9 +420,9 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
                   {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCellCopy}>
-                  {`${baseUrl}${row.shortLink}`}
+                  {`${row.domain}/${row.shortLink}`}
                   <CopyToClipboard
-                    text={`${baseUrl}${row.shortLink}`}
+                    text={`${row.domain}/${row.shortLink}`}
                     onCopy={() =>
                       enqueueSnackbar('Copied link', {
                         variant: 'success',
@@ -522,9 +519,9 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
                   {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCellCopy}>
-                  {`${baseUrl}${row.shortLink}`}
+                  {`${row.domain}/${row.shortLink}`}
                   <CopyToClipboard
-                    text={`${baseUrl}${row.shortLink}`}
+                    text={`${row.domain}/${row.shortLink}`}
                     onCopy={() =>
                       enqueueSnackbar('Copied link', {
                         variant: 'success',
