@@ -74,6 +74,9 @@ const linkCreationDialogReducer = (state = initialState, action) =>
         draft.loading = false;
         draft.currentLink = action.currentLink;
         draft.fetchLinkSuccess = true;
+        draft.sLink = false;
+        draft.linkDomain = '';
+        draft.uri = '';
         break;
 
       case FETCH_URL_ERROR:
