@@ -20,3 +20,6 @@ export const GET_LINK_INFO = 'app/TableItemDialog/GET_LINK_INFO';
 export const GET_LINK_INFO_SUCCESS =
   'app/TableItemDialog/GET_LINK_INFO_SUCCESS';
 export const GET_LINK_INFO_ERROR = 'app/TableItemDialog/GET_LINK_INFO_ERROR';
+export const ARCHIVE_LINK = 'app/TableItemDialog/ARCHIVE_LINK';
+export const ARCHIVE_LINK_SUCCESS = 'app/TableItemDialog/ARCHIVE_LINK_SUCCESS';
+export const ARCHIVE_LINK_ERROR = 'app/TableItemDialog/ARCHIVE_LINK_ERROR';

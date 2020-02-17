@@ -16,6 +16,7 @@ import mapDataWorld from '@highcharts/map-collection/custom/world.geo.json';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -84,6 +85,7 @@ import {
   generateShortLink,
   logSocialMediaShare,
   getLinkInfo,
+  archiveLink,
 } from './actions';
 
 import reducer from './reducer';
@@ -146,6 +148,9 @@ const useStyles = makeStyles(theme => ({
     height: '256px',
     width: '256px',
   },
+  deleteDialogContent: {
+    textAlign: 'center',
+  },
 }));
 
 function PaperComponent(props) {
@@ -182,6 +187,8 @@ export function TableItemDialog({
   onLoadModal,
   onSocialShare,
   onSelectedDataChange,
+  onArchive,
+  onDelete,
 }) {
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
@@ -193,6 +200,8 @@ export function TableItemDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   const qrCodeRef = createRef();
+
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
   const [openQrCode, setOpenQrCode] = React.useState(false);
   const [qrCodeLoading, setQrCodeLoading] = React.useState(true);
@@ -231,6 +240,10 @@ export function TableItemDialog({
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleDeleteClick = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
   };
 
   const handleQrClick = () => {
@@ -503,17 +516,20 @@ export function TableItemDialog({
             },
             data: (() => {
               // Calculate percentage of data.
-              const sumCount = sum(linkInfo.states, 'count');
-              const data = linkInfo.states.map(s => {
-                const yc = (s.count / sumCount) * 100;
-                return {
-                  // eslint-disable-next-line no-underscore-dangle
-                  code: s._id || 'N/A',
-                  value: yc,
-                  count: s.count,
-                };
-              });
-              data.sort((a, b) => (a.value < b.value ? 1 : -1));
+              let data = [];
+              if (linkInfo && linkInfo.states) {
+                const sumCount = sum(linkInfo.states, 'count');
+                data = linkInfo.states.map(s => {
+                  const yc = (s.count / sumCount) * 100;
+                  return {
+                    // eslint-disable-next-line no-underscore-dangle
+                    code: s._id || 'N/A',
+                    value: yc,
+                    count: s.count,
+                  };
+                });
+                data.sort((a, b) => (a.value < b.value ? 1 : -1));
+              }
               return data;
             })(),
             joinBy: ['postal-code', 'code'],
@@ -837,6 +853,39 @@ export function TableItemDialog({
         </div>
       </Dialog>
       <Dialog
+        open={openDeleteDialog}
+        onClose={handleDeleteClick}
+        PaperComponent={PaperComponent}
+        fullScreen={fullScreen}
+      >
+        <DialogTitle
+          style={{ cursor: 'move', textAlign: 'center', margin: '0px 25px' }}
+          id="draggable-dialog-title"
+        >
+          Do you want to delete or archive the link?
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handleDeleteClick}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent className={classes.deleteDialogContent}>
+          <Typography variant="body1" color="textSecondary">
+            You cannot recover any data on link after you delete it.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={onArchive} color="secondary">
+            Archive
+          </Button>
+          <Button variant="contained" onClick={onDelete} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={open}
         onClose={handleClose}
         PaperComponent={PaperComponent}
@@ -978,11 +1027,10 @@ export function TableItemDialog({
                 <EmailIcon />
               </IconButton>
             </EmailShareButton>
-            {/* TODO: Make QR codes work */}
             <IconButton onClick={handleQrClick}>
               <CropFreeIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={handleDeleteClick}>
               <DeleteIcon />
             </IconButton>
           </div>
@@ -1050,6 +1098,8 @@ TableItemDialog.propTypes = {
   onLoadModal: PropTypes.func,
   onSocialShare: PropTypes.func,
   onSelectedDataChange: PropTypes.func,
+  onArchive: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -1094,6 +1144,12 @@ function mapDispatchToProps(dispatch) {
     onSocialShare: media => {
       // TODO: MAKE BACKEND FOR LOGGING EVENTS
       dispatch(logSocialMediaShare(media));
+    },
+    onArchive: () => {
+      dispatch(archiveLink());
+    },
+    onDelete: () => {
+      // dispatch(deleteLink());
     },
   };
 }
