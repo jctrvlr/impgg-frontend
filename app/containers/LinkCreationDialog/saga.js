@@ -74,8 +74,7 @@ export function* fetchLink() {
     console.log(ret);
 
     // Return linkData
-    yield put(getTableData());
-    yield put(fetchUrlSuccess(ret));
+    yield all([put(fetchUrlSuccess(ret)), put(getTableData())]);
   } catch (err) {
     yield put(fetchUrlError(err.message));
   }

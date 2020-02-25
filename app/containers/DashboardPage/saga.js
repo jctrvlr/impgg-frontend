@@ -2,14 +2,21 @@
  * Get table info saga
  */
 
-import { call, put, select, takeLatest } from 'redux-saga/effects';
+import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
-import { GET_TABLEDATA } from './constants';
-import { tableDataSuccess, tableDataError } from './actions';
+import { GET_TABLEDATA, ARCHIVE_LINK } from './constants';
+import {
+  tableDataSuccess,
+  tableDataError,
+  getTableData,
+  archiveLinkSuccess,
+  archiveLinkError,
+} from './actions';
 
 import { makeSelectUserData } from '../App/selectors';
+import { makeSelectTableArchive, makeSelectLinkId } from './selectors';
 
 const host = window.location.hostname;
 const baseUrl = `http://${host}:3001`;
@@ -20,6 +27,8 @@ const baseUrl = `http://${host}:3001`;
 export function* getTableInfo() {
   // Select userData from store
   const userData = yield select(makeSelectUserData());
+  let tableArchive = yield select(makeSelectTableArchive());
+  if (!tableArchive) tableArchive = false;
   const creatorId = userData.user.id;
 
   const requestOptions = {
@@ -30,7 +39,7 @@ export function* getTableInfo() {
     },
   };
 
-  const requestURL = `${baseUrl}/v1/links?creatorId=${creatorId}`;
+  const requestURL = `${baseUrl}/v1/links?creatorId=${creatorId}&archived=${tableArchive}`;
   try {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
@@ -42,6 +51,35 @@ export function* getTableInfo() {
 }
 
 /**
+ * Archive a specific link
+ */
+export function* archiveLinkSaga() {
+  // Select link and userdata for token
+  const userData = yield select(makeSelectUserData());
+  const selectedLinkId = yield select(makeSelectLinkId());
+
+  const requestURL = `${baseUrl}/v1/link/archive`;
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userData.token.accessToken}`,
+    },
+    body: JSON.stringify({ linkId: selectedLinkId }),
+  };
+  console.log(requestOptions);
+
+  try {
+    const ret = yield call(request, requestURL, requestOptions);
+
+    yield all([put(archiveLinkSuccess(ret)), put(getTableData())]);
+  } catch (err) {
+    console.log(err);
+    yield put(archiveLinkError(err));
+  }
+}
+
+/**
  * Root saga manages watcher lifecycle for getTableInfo (dashboard info)
  */
 export default function* getTableInfoWatcher() {
@@ -49,5 +87,8 @@ export default function* getTableInfoWatcher() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(GET_TABLEDATA, getTableInfo);
+  yield all([
+    takeLatest(GET_TABLEDATA, getTableInfo),
+    takeLatest(ARCHIVE_LINK, archiveLinkSaga),
+  ]);
 }

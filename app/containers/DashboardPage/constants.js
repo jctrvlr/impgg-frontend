@@ -14,3 +14,8 @@ export const FETCH_URL_ERROR = 'app/Dashboard/FETCH_URL_ERROR';
 export const URI_VALIDATION = 'app/Dashboard/URI_VALIDATION';
 export const CHANGE_URI = 'app/Dashboard/CHANGE_URI';
 export const CHANGE_SELECTED_DATA = 'app/Dashboard/CHANGE_SELECTED_DATA';
+
+export const CHANGE_TABLE_ARCHIVE = 'app/Dashboard/CHANGE_TABLE_ARCHIVE';
+export const ARCHIVE_LINK = 'app/Dashboard/ARCHIVE_LINK';
+export const ARCHIVE_LINK_SUCCESS = 'app/Dashboard/ARCHIVE_LINK_SUCCESS';
+export const ARCHIVE_LINK_ERROR = 'app/Dashboard/ARCHIVE_LINK_ERROR';

@@ -20,6 +20,12 @@ import {
   GET_LINK_INFO,
   GET_LINK_INFO_SUCCESS,
   GET_LINK_INFO_ERROR,
+  ARCHIVE_LINK,
+  ARCHIVE_LINK_SUCCESS,
+  ARCHIVE_LINK_ERROR,
+  DELETE_LINK,
+  DELETE_LINK_SUCCESS,
+  DELETE_LINK_ERROR,
 } from './constants';
 
 /**
@@ -174,6 +180,84 @@ export function updateURLSuccess(currentLink) {
 export function updateURLError(error) {
   return {
     type: UPDATE_LINK_ERROR,
+    error,
+  };
+}
+
+/**
+ * Delete link, this action starts the request saga -- backend will delete link
+ *
+ * @return {object} An action object with a type of DELETE_LINK
+ */
+export function deleteLink() {
+  return {
+    type: DELETE_LINK,
+  };
+}
+
+/**
+ * Dispatched when deleting the link was successful
+ *
+ * @param {object} deletedLink
+ *
+ * @return {object} An action object with a type of DELETE_LINK_SUCCESS passing the delete link info along
+ */
+export function deleteLinkSuccess(deletedLink) {
+  return {
+    type: DELETE_LINK_SUCCESS,
+    deletedLink,
+  };
+}
+
+/**
+ * Dispatched when deleting the link failed
+ *
+ * @param  {object} error The error
+ *
+ * @return {object} An action object with a type of DELETE_LINK_ERROR passing the error
+ */
+export function deleteLinkError(error) {
+  return {
+    type: DELETE_LINK_ERROR,
+    error,
+  };
+}
+
+/**
+ * Archive link, this action starts the request saga -- backend will set link to be archived or unarchived
+ *
+ * @return {object} An action object with a type of ARCHIVE_LINK
+ */
+export function archiveLink() {
+  return {
+    type: ARCHIVE_LINK,
+  };
+}
+
+/**
+ * Dispatched when archiving the link was successful
+ *
+ * @param {object} updatedLink
+ *
+ * @return {object} An action object with a type of ARCHIVE_LINK_SUCCESS passing the updated archived link's data along
+ */
+export function archiveLinkSuccess(newLink) {
+  return {
+    type: ARCHIVE_LINK_SUCCESS,
+    newLink,
+  };
+}
+
+/**
+ * Dispatched when archiving the link failed
+ *
+ * @param  {object} error The error
+ *
+ * @return {object} An action object with a type of ARCHIVE_LINK_ERROR passing the error
+ */
+export function archiveLinkError(error) {
+  return {
+    type: ARCHIVE_LINK_ERROR,
     error,
   };
 }

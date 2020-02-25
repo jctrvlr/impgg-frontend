@@ -14,6 +14,10 @@ import {
   URI_VALIDATION,
   CHANGE_URI,
   CHANGE_SELECTED_DATA,
+  CHANGE_TABLE_ARCHIVE,
+  ARCHIVE_LINK,
+  ARCHIVE_LINK_SUCCESS,
+  ARCHIVE_LINK_ERROR,
 } from './constants';
 
 export const initialState = {
@@ -25,12 +29,18 @@ export const initialState = {
   uriValidation: false,
   currentLink: false,
   selectedData: [{}],
+  tableArchived: false,
+  linkId: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
 const dashboardReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case CHANGE_TABLE_ARCHIVE:
+        draft.tableArchive = !draft.tableArchive;
+        break;
+
       case GET_TABLEDATA:
         draft.loading = true;
         draft.error = false;
@@ -76,6 +86,18 @@ const dashboardReducer = (state = initialState, action) =>
         draft.error = action.error;
         draft.loading = false;
         draft.currentLink = false;
+        break;
+
+      case ARCHIVE_LINK:
+        draft.linkId = action.linkId;
+        break;
+
+      case ARCHIVE_LINK_SUCCESS:
+        draft.linkId = false;
+        break;
+
+      case ARCHIVE_LINK_ERROR:
+        draft.linkId = false;
         break;
     }
   });

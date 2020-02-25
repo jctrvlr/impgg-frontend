@@ -34,13 +34,19 @@ import makeSelectDashboard, {
   makeSelectTableData,
   makeSelectLoading,
   makeSelectNewLink,
+  makeSelectTableArchive,
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
 import reducer from './reducer';
 import saga from './saga';
 
-import { getTableData, changeSelectedData } from './actions';
+import {
+  getTableData,
+  changeSelectedData,
+  changeTableArchive,
+  archiveLink,
+} from './actions';
 import { logoutUser } from '../App/actions';
 
 import LinkCreationDialog from '../LinkCreationDialog';
@@ -142,8 +148,11 @@ export function DashboardPage({
   onLogoutClick,
   onLoadUnauth,
   onChangeSelected,
+  onArchiveChange,
+  onArchive,
   onLoad,
   alerts,
+  tableArchived,
 }) {
   useInjectReducer({ key: 'dashboard', reducer });
   useInjectSaga({ key: 'dashboard', saga });
@@ -205,7 +214,13 @@ export function DashboardPage({
             <CircularProgress />
           </div>
         ) : (
-          <Table tableData={tableData} onChangeSelected={onChangeSelected} />
+          <Table
+            tableData={tableData}
+            onChangeSelected={onChangeSelected}
+            archived={tableArchived}
+            onArchiveChange={onArchiveChange}
+            onArchive={onArchive}
+          />
         )}
       </Container>
       <Footer />
@@ -222,8 +237,11 @@ DashboardPage.propTypes = {
   onLogoutClick: PropTypes.func,
   onLoadUnauth: PropTypes.func,
   onChangeSelected: PropTypes.func,
+  onArchiveChange: PropTypes.func,
+  onArchive: PropTypes.func,
   onLoad: PropTypes.func,
   alerts: PropTypes.array,
+  tableArchived: PropTypes.bool,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -234,6 +252,7 @@ const mapStateToProps = createStructuredSelector({
   userData: makeSelectUserData(),
   tableData: makeSelectTableData(),
   alerts: makeSelectAlerts(),
+  tableArchived: makeSelectTableArchive(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -251,6 +270,13 @@ function mapDispatchToProps(dispatch) {
     },
     onChangeSelected: selectedData => {
       dispatch(changeSelectedData(selectedData));
+    },
+    onArchiveChange: () => {
+      dispatch(changeTableArchive());
+      dispatch(getTableData());
+    },
+    onArchive: linkId => {
+      dispatch(archiveLink(linkId));
     },
   };
 }

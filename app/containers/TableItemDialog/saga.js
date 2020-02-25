@@ -8,7 +8,13 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
-import { UPDATE_LINK, GEN_SLINK, GET_LINK_INFO } from './constants';
+import {
+  UPDATE_LINK,
+  GEN_SLINK,
+  GET_LINK_INFO,
+  ARCHIVE_LINK,
+  DELETE_LINK,
+} from './constants';
 
 import {
   generateShortLinkSuccess,
@@ -17,6 +23,10 @@ import {
   updateURLError,
   getLinkInfoSuccess,
   getLinkInfoError,
+  archiveLinkSuccess,
+  archiveLinkError,
+  deleteLinkSuccess,
+  deleteLinkError,
 } from './actions';
 
 import { getTableData } from '../DashboardPage/actions';
@@ -70,8 +80,7 @@ export function* fetchLink() {
     const ret = yield call(request, requestURL, requestOptions);
 
     // Return linkData
-    yield put(getTableData());
-    yield put(updateURLSuccess(ret));
+    yield all([put(updateURLSuccess(ret)), put(getTableData())]);
   } catch (err) {
     const jres = yield err.response.json();
     let sLinkError;
@@ -151,6 +160,64 @@ export function* getLinkInfo() {
 }
 
 /**
+ * Archive a specific link
+ */
+export function* archiveLinkSaga() {
+  // Select link and userdata for token
+  const userData = yield select(makeSelectUserData());
+  const selectedData = yield select(makeSelectSelectedData());
+
+  const requestURL = `${baseUrl}/v1/link/archive`;
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userData.token.accessToken}`,
+    },
+    body: JSON.stringify({ linkId: selectedData[0]._id }),
+  };
+  console.log(requestOptions);
+
+  try {
+    const ret = yield call(request, requestURL, requestOptions);
+
+    yield all([put(archiveLinkSuccess(ret)), put(getTableData())]);
+  } catch (err) {
+    console.log(err);
+    yield put(archiveLinkError(err));
+  }
+}
+
+/**
+ * Delete a specific link
+ */
+export function* deleteLinkSaga() {
+  // Select link and userdata for token
+  const userData = yield select(makeSelectUserData());
+  const selectedData = yield select(makeSelectSelectedData());
+
+  const requestURL = `${baseUrl}/v1/link/delete`;
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${userData.token.accessToken}`,
+    },
+    body: JSON.stringify({ linkId: selectedData[0]._id }),
+  };
+  console.log(requestOptions);
+
+  try {
+    const ret = yield call(request, requestURL, requestOptions);
+
+    yield all([put(deleteLinkSuccess(ret)), put(getTableData())]);
+  } catch (err) {
+    console.log(err);
+    yield put(deleteLinkError(err));
+  }
+}
+
+/**
  * Root saga manages watcher lifecycle for link
  */
 export default function* fetchLinkWatcher() {
@@ -162,5 +229,7 @@ export default function* fetchLinkWatcher() {
     takeLatest(UPDATE_LINK, fetchLink),
     takeLatest(GEN_SLINK, genSlink),
     takeLatest(GET_LINK_INFO, getLinkInfo),
+    takeLatest(ARCHIVE_LINK, archiveLinkSaga),
+    takeLatest(DELETE_LINK, deleteLinkSaga),
   ]);
 }

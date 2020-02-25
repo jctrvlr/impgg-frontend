@@ -10,6 +10,12 @@ const selectDashboardDomain = state => state.dashboard || initialState;
 /**
  * Other specific selectors
  */
+const makeSelectTableArchive = () =>
+  createSelector(
+    selectDashboardDomain,
+    dashboardState => dashboardState.tableArchive,
+  );
+
 const makeSelectAlerts = () =>
   createSelector(
     selectDashboardDomain,
@@ -40,6 +46,12 @@ const makeSelectSelectedData = () =>
     dashboardState => dashboardState.selectedData,
   );
 
+const makeSelectLinkId = () =>
+  createSelector(
+    selectDashboardDomain,
+    dashboardState => dashboardState.linkId,
+  );
+
 /**
  * Default selector used by Dashboard
  */
@@ -53,9 +65,11 @@ const makeSelectDashboard = () =>
 export default makeSelectDashboard;
 export {
   selectDashboardDomain,
+  makeSelectTableArchive,
   makeSelectAlerts,
   makeSelectTableData,
   makeSelectLoading,
   makeSelectNewLink,
   makeSelectSelectedData,
+  makeSelectLinkId,
 };
