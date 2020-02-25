@@ -14,7 +14,58 @@ import {
   URI_VALIDATION,
   CHANGE_URI,
   CHANGE_SELECTED_DATA,
+  CHANGE_TABLE_ARCHIVE,
+  ARCHIVE_LINK,
+  ARCHIVE_LINK_SUCCESS,
+  ARCHIVE_LINK_ERROR,
 } from './constants';
+
+/**
+ * Archive link, this action starts the request saga -- backend will set link to be archived or unarchived
+ *
+ * @return {object} An action object with a type of ARCHIVE_LINK
+ */
+export function archiveLink(linkId) {
+  return {
+    type: ARCHIVE_LINK,
+    linkId,
+  };
+}
+
+/**
+ * Dispatched when archiving the link was successful
+ *
+ * @param {object} updatedLink
+ *
+ * @return {object} An action object with a type of ARCHIVE_LINK_SUCCESS passing the updated archived link's data along
+ */
+export function archiveLinkSuccess(newLink) {
+  return {
+    type: ARCHIVE_LINK_SUCCESS,
+    newLink,
+  };
+}
+
+/**
+ * Dispatched when archiving the link failed
+ *
+ * @param  {object} error The error
+ *
+ * @return {object} An action object with a type of ARCHIVE_LINK_ERROR passing the error
+ */
+export function archiveLinkError(error) {
+  return {
+    type: ARCHIVE_LINK_ERROR,
+    error,
+  };
+}
+
+export function changeTableArchive(tableArchive) {
+  return {
+    type: CHANGE_TABLE_ARCHIVE,
+    tableArchive,
+  };
+}
 
 export function getTableData() {
   return {

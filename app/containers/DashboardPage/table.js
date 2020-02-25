@@ -11,6 +11,7 @@ import moment from 'moment';
 import { lighten, fade, makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
+import Switch from '@material-ui/core/Switch';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -24,6 +25,9 @@ import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import FileCopy from '@material-ui/icons/FileCopy';
+import Archive from '@material-ui/icons/Archive';
+import Unarchive from '@material-ui/icons/Unarchive';
+
 import TableItemDialog from '../TableItemDialog';
 
 function desc(a, b, orderBy) {
@@ -88,6 +92,12 @@ const headCells = [
     numeric: false,
     disablePadding: false,
     label: 'Created',
+  },
+  {
+    id: '',
+    numeric: false,
+    disablePadding: false,
+    label: 'Actions',
   },
 ];
 
@@ -208,11 +218,25 @@ const useToolbarStyles = makeStyles(theme => ({
   numLinks: {
     fontSize: '1rem',
   },
+  archivedSwitch: {
+    marginLeft: theme.spacing(2),
+    display: 'flex',
+  },
+  archivedSwitchLabel: {
+    fontSize: '1rem',
+    lineHeight: 2.4,
+  },
 }));
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const { numLinks, onChangeSearch, searchValue } = props;
+  const {
+    numLinks,
+    onChangeSearch,
+    searchValue,
+    archived,
+    onArchiveChange,
+  } = props;
 
   return (
     <Toolbar className={classes.root}>
@@ -234,6 +258,23 @@ const EnhancedTableToolbar = props => {
       <div className={classes.toolbarInfo}>
         <Typography className={classes.numLinks}>{numLinks} Links</Typography>
       </div>
+      <div className={classes.archivedSwitch}>
+        <Switch
+          checked={archived}
+          onChange={onArchiveChange}
+          color="primary"
+          inputProps={{ 'aria-label': 'Archived table selector' }}
+        />
+        {archived ? (
+          <Typography className={classes.archivedSwitchLabel}>
+            Archived
+          </Typography>
+        ) : (
+          <Typography className={classes.archivedSwitchLabel}>
+            Not Archived
+          </Typography>
+        )}
+      </div>
     </Toolbar>
   );
 };
@@ -242,6 +283,8 @@ EnhancedTableToolbar.propTypes = {
   numLinks: PropTypes.number.isRequired,
   onChangeSearch: PropTypes.func,
   searchValue: PropTypes.string,
+  archived: PropTypes.bool,
+  onArchiveChange: PropTypes.func,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -316,7 +359,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable({ tableData, onChangeSelected }) {
+export default function EnhancedTable({
+  tableData,
+  onChangeSelected,
+  archived,
+  onArchiveChange,
+  onArchive,
+}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');
@@ -379,6 +428,9 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
   EnhancedTable.propTypes = {
     tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
     onChangeSelected: PropTypes.func,
+    archived: PropTypes.bool,
+    onArchiveChange: PropTypes.func,
+    onArchive: PropTypes.func,
   };
 
   let emptyRows;
@@ -456,6 +508,19 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
                   {row.createdAt
                     ? moment(row.createdAt).format('YYYY-M-D h:mma')
                     : 'N/A'}
+                </TableCell>
+                <TableCell className={classes.tableCell}>
+                  <IconButton
+                    aria-label="archive"
+                    onClick={e => {
+                      e.stopPropagation();
+                      e.nativeEvent.stopImmediatePropagation();
+                      onArchive(row._id);
+                      console.log('after archive link');
+                    }}
+                  >
+                    {!row.archived ? <Archive /> : <Unarchive />}
+                  </IconButton>
                 </TableCell>
               </TableRow>
             );
@@ -552,6 +617,19 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
                     ? moment(row.createdAt).format('YYYY-M-D h:mma')
                     : 'N/A'}
                 </TableCell>
+                <TableCell className={classes.tableCell}>
+                  <IconButton
+                    aria-label="archive"
+                    onClick={e => {
+                      e.stopPropagation();
+                      e.nativeEvent.stopImmediatePropagation();
+                      onArchive(row._id);
+                      console.log('after archive link');
+                    }}
+                  >
+                    {!row.archived ? <Archive /> : <Unarchive />}
+                  </IconButton>
+                </TableCell>
               </TableRow>
             );
           })}
@@ -589,6 +667,8 @@ export default function EnhancedTable({ tableData, onChangeSelected }) {
           numLinks={tableData.length}
           onChangeSearch={handleSearch}
           searchValue={searchValue}
+          archived={archived}
+          onArchiveChange={onArchiveChange}
         />
         <div className={classes.tableWrapper}>
           <Table

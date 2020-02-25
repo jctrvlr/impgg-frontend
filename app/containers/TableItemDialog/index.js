@@ -86,6 +86,7 @@ import {
   logSocialMediaShare,
   getLinkInfo,
   archiveLink,
+  deleteLink,
 } from './actions';
 
 import reducer from './reducer';
@@ -1149,7 +1150,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(archiveLink());
     },
     onDelete: () => {
-      // dispatch(deleteLink());
+      dispatch(deleteLink());
     },
   };
 }
