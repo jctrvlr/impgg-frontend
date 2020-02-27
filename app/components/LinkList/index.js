@@ -54,8 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 function LinkList({ uriHistory }) {
   const classes = useStyles();
-  const host = window.location.hostname;
-  const baseUrl = `http://${host}:3001/`;
+  const baseUrl = `https://api.impgg.dev`;
 
   const content = [...uriHistory].reverse().map((item, i) => {
     if (uriHistory.length - 1 === i) {

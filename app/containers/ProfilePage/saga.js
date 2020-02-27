@@ -14,8 +14,7 @@ import { makeSelectFirstName, makeSelectLastName } from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
 
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+const baseUrl = `https://api.impgg.dev`;
 
 /**
  * Remove Profile picture handler

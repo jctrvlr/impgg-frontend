@@ -12,8 +12,8 @@ import { fetchUrlSuccess, fetchUrlError } from './actions';
 
 import { makeSelectURI, makeSelectURIHistory } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+
+const baseUrl = `https://api.impgg.dev`;
 /**
  * Registration for user request/response handler
  */

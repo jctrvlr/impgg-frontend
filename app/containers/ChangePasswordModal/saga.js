@@ -16,8 +16,7 @@ import {
   updatePasswordError,
 } from './actions';
 import { AUTH_USER, UPDATE_PASSWORD } from './constants';
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+const baseUrl = `https://api.impgg.dev`;
 
 /**
  * Authentication for user request/response handler

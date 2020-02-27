@@ -39,8 +39,7 @@ import {
 import { makeSelectSelectedData } from '../DashboardPage/selectors';
 import { makeSelectUserData } from '../App/selectors';
 
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+const baseUrl = `https://api.impgg.dev`;
 
 /**
  * Create link request/response handler

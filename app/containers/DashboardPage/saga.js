@@ -18,8 +18,7 @@ import {
 import { makeSelectUserData } from '../App/selectors';
 import { makeSelectTableArchive, makeSelectLinkId } from './selectors';
 
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+const baseUrl = `https://api.impgg.dev`;
 
 /**
  * Get table info

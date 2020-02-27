@@ -18,8 +18,7 @@ import {
   makeSelectPassword,
 } from './selectors';
 
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+const baseUrl = `https://api.impgg.dev`;
 
 /**
  * Registration for user request/response handler

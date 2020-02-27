@@ -15,8 +15,7 @@ import {
   makeSelectPassword,
 } from 'containers/SigninPage/selectors';
 
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+const baseUrl = `https://api.impgg.dev`;
 
 /**
  * Authentication for user request/response handler
