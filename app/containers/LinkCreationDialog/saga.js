@@ -25,7 +25,7 @@ import {
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Create link request/response handler

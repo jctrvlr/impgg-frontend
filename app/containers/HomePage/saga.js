@@ -13,7 +13,7 @@ import { fetchUrlSuccess, fetchUrlError } from './actions';
 import { makeSelectURI, makeSelectURIHistory } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 /**
  * Registration for user request/response handler
  */

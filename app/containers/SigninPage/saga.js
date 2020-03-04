@@ -15,7 +15,7 @@ import {
   makeSelectPassword,
 } from 'containers/SigninPage/selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Authentication for user request/response handler

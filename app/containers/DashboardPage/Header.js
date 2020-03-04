@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-start',
     position: 'relative',
-    minHeight: '85px',
+    minHeight: '115px',
   },
   toolbarTitle: {
     [theme.breakpoints.up(768)]: {
@@ -203,12 +203,12 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
             </IconButton>
             <Divider />
             <List>
-              <ListItem button component={RouterLink} to="/profile">
+              <ListItem button component={RouterLink} to="/domains">
                 <ListItemIcon>
                   <AccountBoxIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={<FormattedMessage {...messages.profile} />}
+                  primary={<FormattedMessage {...messages.domains} />}
                 />
               </ListItem>
               <ListItem button component={RouterLink} to="/settings">
@@ -273,11 +273,7 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
         className={classes.appBar}
       >
         <Toolbar className={classes.toolBar}>
-          <Link
-            component={RouterLink}
-            to="/dashboard"
-            className={classes.toolbarTitle}
-          >
+          <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
             <img
               alt="ImpGG logo. Your friendly neighborhood link shortener"
               src={logoB}

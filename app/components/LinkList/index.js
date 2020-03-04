@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 
 function LinkList({ uriHistory }) {
   const classes = useStyles();
-  const baseUrl = `https://api.impgg.dev`;
+  const baseUrl = `https://imp.gg`;
 
   const content = [...uriHistory].reverse().map((item, i) => {
     if (uriHistory.length - 1 === i) {

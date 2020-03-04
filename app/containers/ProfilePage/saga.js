@@ -14,7 +14,7 @@ import { makeSelectFirstName, makeSelectLastName } from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Remove Profile picture handler

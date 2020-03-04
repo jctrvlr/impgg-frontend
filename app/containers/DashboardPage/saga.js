@@ -18,7 +18,7 @@ import {
 import { makeSelectUserData } from '../App/selectors';
 import { makeSelectTableArchive, makeSelectLinkId } from './selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Get table info

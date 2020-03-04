@@ -39,7 +39,7 @@ import {
 import { makeSelectSelectedData } from '../DashboardPage/selectors';
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Create link request/response handler

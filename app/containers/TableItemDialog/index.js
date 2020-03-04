@@ -288,7 +288,8 @@ export function TableItemDialog({
         margin: 5,
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+        pointFormat:
+          '{series.name}: <b>{point.percentage:.1f}% - {point.count} clicks</b>',
       },
       plotOptions: {
         pie: {
@@ -313,6 +314,7 @@ export function TableItemDialog({
                 // eslint-disable-next-line no-underscore-dangle
                 name: s._id || 'Direct',
                 y: yc,
+                count: s.count,
               };
             });
             return data;
@@ -467,7 +469,7 @@ export function TableItemDialog({
       series: [
         {
           // Use the gb-all map with no data as a basemap
-          mapData: linkInfo.justUSA ? mapDataUSA : mapData,
+          mapData,
           borderColor: '#A0A0A0',
           nullColor: 'rgba(200, 200, 200, 0.3)',
           showInLegend: false,
@@ -601,7 +603,7 @@ export function TableItemDialog({
       tooltip: {
         headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
         pointFormat:
-          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b>  - {point.count} clicks<br/>',
       },
 
       series: [
@@ -617,6 +619,7 @@ export function TableItemDialog({
                 // eslint-disable-next-line no-underscore-dangle
                 name: s._id || 'Other',
                 y: yc,
+                count: s.count,
               };
             });
             return data;
@@ -665,7 +668,7 @@ export function TableItemDialog({
       tooltip: {
         headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
         pointFormat:
-          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b>  - {point.count} clicks<br/>',
       },
 
       series: [
@@ -681,6 +684,7 @@ export function TableItemDialog({
                 // eslint-disable-next-line no-underscore-dangle
                 name: s._id || 'Other',
                 y: yc,
+                count: s.count,
               };
             });
             return data;
@@ -729,7 +733,7 @@ export function TableItemDialog({
       tooltip: {
         headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
         pointFormat:
-          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b>  - {point.count} clicks<br/>',
       },
 
       series: [
@@ -745,6 +749,7 @@ export function TableItemDialog({
                 // eslint-disable-next-line no-underscore-dangle
                 name: s._id || 'Other',
                 y: yc,
+                count: s.count,
               };
             });
             return data;
@@ -792,7 +797,7 @@ export function TableItemDialog({
       tooltip: {
         headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
         pointFormat:
-          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+          '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> <br/>',
       },
 
       series: [

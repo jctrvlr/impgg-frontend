@@ -18,7 +18,7 @@ import {
   makeSelectPassword,
 } from './selectors';
 
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Registration for user request/response handler

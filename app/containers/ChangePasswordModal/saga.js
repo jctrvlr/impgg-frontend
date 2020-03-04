@@ -16,7 +16,7 @@ import {
   updatePasswordError,
 } from './actions';
 import { AUTH_USER, UPDATE_PASSWORD } from './constants';
-const baseUrl = `https://api.impgg.dev`;
+const baseUrl = `https://imp.gg`;
 
 /**
  * Authentication for user request/response handler
