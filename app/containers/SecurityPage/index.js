@@ -38,11 +38,15 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 import { logoutUser } from '../App/actions';
 
-import { makeSelectEmail } from './selectors';
+import {
+  makeSelectEmail,
+  makeSelectEmailValidation,
+  makeSelectError,
+} from './selectors';
 
 import reducer from './reducer';
 import saga from './saga';
-import { changeEmail } from './actions';
+import { changeEmail, editEmailSubmit, validateEmail } from './actions';
 import ChangePasswordModal from '../ChangePasswordModal';
 import SettingsTabs from '../../components/SettingsTabs';
 
@@ -119,9 +123,12 @@ export function SecurityPage({
   userData,
   loggedIn,
   email,
+  error,
+  emailValidation,
   onLogoutClick,
   onLoadUnauth,
   onChangeEmail,
+  onEditEmail,
 }) {
   useInjectReducer({ key: 'securityPage', reducer });
   useInjectSaga({ key: 'securityPage', saga });
@@ -133,9 +140,12 @@ export function SecurityPage({
   }
 
   useEffect(() => {
-    const evtOnce = { target: { value: userData.user.email } };
-    onChangeEmail(evtOnce);
-  }, []);
+    if (!email) {
+      const evtOnce = { target: { value: userData.user.email } };
+      onChangeEmail(evtOnce);
+      seteditEmail(false);
+    }
+  }, [email]);
 
   const [editEmail, seteditEmail] = React.useState(false);
 
@@ -198,6 +208,8 @@ export function SecurityPage({
             value={email}
             onChange={onChangeEmail}
             disabled={!editEmail}
+            error={!!emailValidation || !!error}
+            helperText={emailValidation || error}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -224,6 +236,8 @@ export function SecurityPage({
               variant="contained"
               color="primary"
               className={classes.saveButton}
+              onClick={onEditEmail}
+              disabled={!!emailValidation}
             >
               Save
             </Button>
@@ -261,15 +275,20 @@ SecurityPage.propTypes = {
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   email: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  emailValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   onLogoutClick: PropTypes.func,
   onLoadUnauth: PropTypes.func,
   onChangeEmail: PropTypes.func,
+  onEditEmail: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
   email: makeSelectEmail(),
+  error: makeSelectError(),
+  emailValidation: makeSelectEmailValidation(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -283,7 +302,11 @@ function mapDispatchToProps(dispatch) {
       dispatch(push('/'));
     },
     onChangeEmail: evt => {
+      dispatch(validateEmail(evt.target.value));
       dispatch(changeEmail(evt.target.value));
+    },
+    onEditEmail: () => {
+      dispatch(editEmailSubmit());
     },
   };
 }

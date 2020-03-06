@@ -11,14 +11,13 @@ import { registerUserSuccess, registerUserError } from 'containers/App/actions';
 import request from 'utils/request';
 import moment from 'moment';
 
+import { baseUrl } from 'vars';
 import {
   makeSelectFirstName,
   makeSelectLastName,
   makeSelectEmail,
   makeSelectPassword,
 } from './selectors';
-
-const baseUrl = `https://imp.gg`;
 
 /**
  * Registration for user request/response handler
@@ -41,7 +40,7 @@ export function* registerUser() {
     body: JSON.stringify({ email, password, profile }),
   };
 
-  const requestURL = `${baseUrl}/v1/auth/register`;
+  const requestURL = `${baseUrl}v1/auth/register`;
   // console.log(requestOptions);
 
   try {

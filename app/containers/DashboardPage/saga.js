@@ -6,6 +6,7 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
+import { baseUrl } from 'vars';
 import { GET_TABLEDATA, ARCHIVE_LINK } from './constants';
 import {
   tableDataSuccess,
@@ -17,8 +18,6 @@ import {
 
 import { makeSelectUserData } from '../App/selectors';
 import { makeSelectTableArchive, makeSelectLinkId } from './selectors';
-
-const baseUrl = `https://imp.gg`;
 
 /**
  * Get table info
@@ -38,7 +37,7 @@ export function* getTableInfo() {
     },
   };
 
-  const requestURL = `${baseUrl}/v1/links?creatorId=${creatorId}&archived=${tableArchive}`;
+  const requestURL = `${baseUrl}v1/links?creatorId=${creatorId}&archived=${tableArchive}`;
   try {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
@@ -57,7 +56,7 @@ export function* archiveLinkSaga() {
   const userData = yield select(makeSelectUserData());
   const selectedLinkId = yield select(makeSelectLinkId());
 
-  const requestURL = `${baseUrl}/v1/link/archive`;
+  const requestURL = `${baseUrl}v1/link/archive`;
   const requestOptions = {
     method: 'POST',
     headers: {

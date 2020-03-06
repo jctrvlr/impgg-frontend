@@ -33,7 +33,7 @@ function SettingsTabs({ tabValue }) {
 }
 
 SettingsTabs.propTypes = {
-  tabValue: PropTypes.string,
+  tabValue: PropTypes.number,
 };
 
 export default memo(SettingsTabs);

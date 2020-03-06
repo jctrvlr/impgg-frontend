@@ -19,6 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Input from '@material-ui/core/Input';
 import Divider from '@material-ui/core/Divider';
 import FileCopy from '@material-ui/icons/FileCopy';
+import { baseUrl } from 'vars';
 
 // import { FormattedMessage } from 'react-intl';
 // import messages from './messages';
@@ -54,7 +55,6 @@ const useStyles = makeStyles(theme => ({
 
 function LinkList({ uriHistory }) {
   const classes = useStyles();
-  const baseUrl = `https://imp.gg`;
 
   const content = [...uriHistory].reverse().map((item, i) => {
     if (uriHistory.length - 1 === i) {

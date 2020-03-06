@@ -7,6 +7,7 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
+import { baseUrl } from 'vars';
 import { FETCH_URL, GEN_SLINK } from './constants';
 
 import {
@@ -24,8 +25,6 @@ import {
   makeSelectSlink,
 } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
-
-const baseUrl = `https://imp.gg`;
 
 /**
  * Create link request/response handler
@@ -45,7 +44,7 @@ export function* fetchLink() {
   let requestURL = '';
 
   if (loggedIn) {
-    requestURL = `${baseUrl}/v1/link`;
+    requestURL = `${baseUrl}v1/link`;
     requestOptions = {
       method: 'POST',
       headers: {
@@ -55,7 +54,7 @@ export function* fetchLink() {
       body: JSON.stringify({ uri, linkDomain, sLink }),
     };
   } else {
-    requestURL = `${baseUrl}/juliet/link`;
+    requestURL = `${baseUrl}juliet/link`;
     requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -91,7 +90,7 @@ export function* genSlink() {
     .toString(36)
     .substr(7, 10);
 
-  const requestURL = `${baseUrl}/v1/link/slink`;
+  const requestURL = `${baseUrl}v1/link/slink`;
   const requestOptions = {
     method: 'POST',
     headers: {

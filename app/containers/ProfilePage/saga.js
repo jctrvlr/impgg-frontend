@@ -1,6 +1,7 @@
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 import request from 'utils/request';
 
+import { baseUrl } from 'vars';
 import { REMOVE_PROFILE_PICTURE, UPDATE_PROFILE_INFO } from './constants';
 
 import {
@@ -14,8 +15,6 @@ import { makeSelectFirstName, makeSelectLastName } from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = `https://imp.gg`;
-
 /**
  * Remove Profile picture handler
  */
@@ -26,7 +25,7 @@ export function* removeProfilePicture() {
   let requestOptions = {};
   let requestURL = '';
 
-  requestURL = `${baseUrl}/v1/users/profile/picture`;
+  requestURL = `${baseUrl}v1/users/profile/picture`;
   requestOptions = {
     method: 'DELETE',
     headers: {
@@ -78,7 +77,7 @@ export function* updateProfileInfo() {
     lastName,
   };
 
-  const requestURL = `${baseUrl}/v1/users/${userData.user.id}`;
+  const requestURL = `${baseUrl}v1/users/${userData.user.id}`;
   const requestOptions = {
     method: 'PATCH',
     headers: {

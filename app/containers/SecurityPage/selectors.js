@@ -16,6 +16,18 @@ const makeSelectEmail = () =>
     linkCreationState => linkCreationState.email,
   );
 
+const makeSelectEmailValidation = () =>
+  createSelector(
+    selectSecurityPageDomain,
+    linkCreationState => linkCreationState.emailValidation,
+  );
+
+const makeSelectError = () =>
+  createSelector(
+    selectSecurityPageDomain,
+    linkCreationState => linkCreationState.error,
+  );
+
 /**
  * Default selector used by SecurityPage
  */
@@ -27,4 +39,9 @@ const makeSelectSecurityPage = () =>
   );
 
 export default makeSelectSecurityPage;
-export { selectSecurityPageDomain, makeSelectEmail };
+export {
+  selectSecurityPageDomain,
+  makeSelectEmail,
+  makeSelectEmailValidation,
+  makeSelectError,
+};

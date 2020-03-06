@@ -8,6 +8,7 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
+import { baseUrl } from 'vars';
 import {
   UPDATE_LINK,
   GEN_SLINK,
@@ -39,8 +40,6 @@ import {
 import { makeSelectSelectedData } from '../DashboardPage/selectors';
 import { makeSelectUserData } from '../App/selectors';
 
-const baseUrl = `https://imp.gg`;
-
 /**
  * Create link request/response handler
  */
@@ -58,7 +57,7 @@ export function* fetchLink() {
   let requestOptions = {};
   let requestURL = '';
 
-  requestURL = `${baseUrl}/v1/link`;
+  requestURL = `${baseUrl}v1/link`;
   requestOptions = {
     method: 'PUT',
     headers: {
@@ -102,7 +101,7 @@ export function* genSlink() {
     .toString(36)
     .substr(7, 10);
 
-  const requestURL = `${baseUrl}/v1/link/slink`;
+  const requestURL = `${baseUrl}v1/link/slink`;
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -136,7 +135,7 @@ export function* getLinkInfo() {
   const userData = yield select(makeSelectUserData());
   const selectedData = yield select(makeSelectSelectedData());
 
-  const requestURL = `${baseUrl}/v1/dashboard/${selectedData[0]._id}`;
+  const requestURL = `${baseUrl}v1/dashboard/${selectedData[0]._id}`;
   const requestOptions = {
     method: 'GET',
     headers: {
@@ -166,7 +165,7 @@ export function* archiveLinkSaga() {
   const userData = yield select(makeSelectUserData());
   const selectedData = yield select(makeSelectSelectedData());
 
-  const requestURL = `${baseUrl}/v1/link/archive`;
+  const requestURL = `${baseUrl}v1/link/archive`;
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -195,7 +194,7 @@ export function* deleteLinkSaga() {
   const userData = yield select(makeSelectUserData());
   const selectedData = yield select(makeSelectSelectedData());
 
-  const requestURL = `${baseUrl}/v1/link/delete`;
+  const requestURL = `${baseUrl}v1/link/delete`;
   const requestOptions = {
     method: 'POST',
     headers: {
