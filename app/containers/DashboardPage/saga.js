@@ -27,7 +27,8 @@ export function* getTableInfo() {
   const userData = yield select(makeSelectUserData());
   let tableArchive = yield select(makeSelectTableArchive());
   if (!tableArchive) tableArchive = false;
-  const creatorId = userData.user.id;
+  // eslint-disable-next-line no-underscore-dangle
+  const creatorId = userData.user._id;
 
   const requestOptions = {
     method: 'GET',
@@ -65,7 +66,6 @@ export function* archiveLinkSaga() {
     },
     body: JSON.stringify({ linkId: selectedLinkId }),
   };
-  console.log(requestOptions);
 
   try {
     const ret = yield call(request, requestURL, requestOptions);

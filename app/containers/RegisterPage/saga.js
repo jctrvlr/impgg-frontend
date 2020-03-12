@@ -41,7 +41,6 @@ export function* registerUser() {
   };
 
   const requestURL = `${baseUrl}v1/auth/register`;
-  // console.log(requestOptions);
 
   try {
     // Call our request helper (see 'utils/request')

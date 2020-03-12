@@ -25,6 +25,7 @@ import {
   LOGOUT_USER,
   RESET_ERROR,
   EDIT_EMAIL_SUCCESS,
+  NEW_USER_DATA,
 } from './constants';
 
 /**
@@ -133,6 +134,20 @@ export function authUserError(error) {
   return {
     type: AUTHENTICATE_USER_ERROR,
     error,
+  };
+}
+
+/**
+ * Dispatched when updated userData is received
+ *
+ * @param {object} user The users data
+ *
+ * @return {object} An action object with a type of NEW_USER_DATA passing the updated user data
+ */
+export function newUserData(userData) {
+  return {
+    type: NEW_USER_DATA,
+    userData,
   };
 }
 

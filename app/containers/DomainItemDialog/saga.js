@@ -9,13 +9,7 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 import request from 'utils/request';
 
 import { baseUrl } from 'vars';
-import {
-  UPDATE_LINK,
-  GEN_SLINK,
-  GET_LINK_INFO,
-  ARCHIVE_LINK,
-  DELETE_LINK,
-} from './constants';
+import { ADD_DOMAIN } from './constants';
 
 import {
   generateShortLinkSuccess,
@@ -214,7 +208,7 @@ export function* deleteLinkSaga() {
 }
 
 /**
- * Root saga manages watcher lifecycle for link
+ * Root saga manages watcher lifecycle for domain
  */
 export default function* fetchLinkWatcher() {
   // Watches for AUTHENTICATE_USER actions and calls authUser when one comes in.
@@ -222,10 +216,7 @@ export default function* fetchLinkWatcher() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield all([
-    takeLatest(UPDATE_LINK, fetchLink),
+    takeLatest(ADD_DOMAIN, fetchLink),
     takeLatest(GEN_SLINK, genSlink),
-    takeLatest(GET_LINK_INFO, getLinkInfo),
-    takeLatest(ARCHIVE_LINK, archiveLinkSaga),
-    takeLatest(DELETE_LINK, deleteLinkSaga),
   ]);
 }

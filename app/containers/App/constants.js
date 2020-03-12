@@ -24,3 +24,4 @@ export const LOGOUT_USER = 'impgg/App/LOGOUT_USER';
 export const EMAIL_VALIDATION = 'impgg/App/EMAIL_VALIDATION';
 
 export const EDIT_EMAIL_SUCCESS = 'impgg/App/EDIT_EMAIL_SUCCESS';
+export const NEW_USER_DATA = 'impgg/App/NEW_USER_DATA';

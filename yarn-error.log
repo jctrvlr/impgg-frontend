@@ -1,20 +1,30 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @highcharts/map-collection
+  /usr/local/Cellar/node/13.6.0/bin/node /usr/local/Cellar/yarn/1.21.1/libexec/bin/yarn.js upgrade @material-ui/core
 
 PATH: 
-  C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Docker\Docker\Resources\bin;C:\Python38\Scripts\;C:\Python38\;C:\Python27\;C:\Python27\Scripts;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\Amazon\AWSCLI\bin\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\NVIDIA Corporation\NVIDIA NGX;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Users\Jack\AppData\Local\Microsoft\WindowsApps;C:\Users\Jack\AppData\Roaming\npm;C:\Users\Jack\AppData\Local\Yarn\bin;C:\Users\Jack\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\heroku\bin
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Wireshark.app/Contents/MacOS
 
 Yarn version: 
   1.21.1
 
 Node version: 
-  13.3.0
+  13.6.0
 
 Platform: 
-  win32 x64
+  darwin x64
 
 Trace: 
-  Error: EPERM: operation not permitted, copyfile 'C:\Users\Jack\AppData\Local\Yarn\Cache\v6\npm-moment-2.24.0-0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b-integrity\node_modules\moment\package.json' -> 'D:\dev\impgg\impgg-frontend\node_modules\moment\package.json'
+  Error: http://10.0.0.194:8000/@material-ui%2fcore: no such package available
+      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:66947:18)
+      at Request.self.callback (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:140665:22)
+      at Request.emit (events.js:321:20)
+      at Request.<anonymous> (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:141637:10)
+      at Request.emit (events.js:321:20)
+      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:141559:12)
+      at Object.onceWrapper (events.js:427:28)
+      at IncomingMessage.emit (events.js:333:22)
+      at endReadableNT (_stream_readable.js:1220:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21)
 
 npm manifest: 
   {
@@ -84,6 +94,7 @@ npm manifest:
     },
     "dependencies": {
       "@babel/polyfill": "7.4.3",
+      "@highcharts/map-collection": "^1.1.3",
       "@material-ui/core": "^4.1.3",
       "@material-ui/icons": "^4.2.1",
       "chalk": "^2.4.2",
@@ -147,6 +158,7 @@ npm manifest:
       "compression-webpack-plugin": "2.0.0",
       "coveralls": "3.0.3",
       "css-loader": "2.1.1",
+      "dotenv": "^8.2.0",
       "eslint": "5.16.0",
       "eslint-config-airbnb": "17.1.0",
       "eslint-config-airbnb-base": "13.1.0",
@@ -1032,6 +1044,11 @@ Lockfile:
     version "0.7.4"
     resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.4.tgz#a87b4b04e5ae14a88d48ebef15015f6b7d1f5677"
     integrity sha512-kBa+cDHOR9jpRJ+kcGMsysrls0leukrm68DmFQoMIWQcXdr2cZvyvypWuGYT7U+9kAExUE7+T7r6G3C3A6L8MQ==
+  
+  "@highcharts/map-collection@^1.1.3":
+    version "1.1.3"
+    resolved "https://registry.yarnpkg.com/@highcharts/map-collection/-/map-collection-1.1.3.tgz#2c483d8fc3dff77e521842ad6224d2a03ea55593"
+    integrity sha512-Kb31dEQc7Kf7dxkmJEUjYlZ2wtRftEumJR/bq3SwvcviZeEhz+t6vMLXqS9qxfeO0UzSOaTCLiNMBsg/W6d7/g==
   
   "@jest/console@^24.7.1", "@jest/console@^24.9.0":
     version "24.9.0"
@@ -3799,6 +3816,11 @@ Lockfile:
     integrity sha512-tUMXrxlExSW6U2EXiiKGSBVdYgtV8qlHL+C10TsW4PURY/ic+eaysnSkwB4kA/mBlCyy/IKDJ+Lc3wbWeaXtuQ==
     dependencies:
       is-obj "^1.0.0"
+  
+  dotenv@^8.2.0:
+    version "8.2.0"
+    resolved "http://10.0.0.194:8000/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+    integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
   
   download@^6.2.2:
     version "6.2.5"

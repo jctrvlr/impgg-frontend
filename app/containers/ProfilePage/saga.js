@@ -77,7 +77,8 @@ export function* updateProfileInfo() {
     lastName,
   };
 
-  const requestURL = `${baseUrl}v1/users/${userData.user.id}`;
+  // eslint-disable-next-line no-underscore-dangle
+  const requestURL = `${baseUrl}v1/users/${userData.user._id}`;
   const requestOptions = {
     method: 'PATCH',
     headers: {

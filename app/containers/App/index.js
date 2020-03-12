@@ -30,6 +30,7 @@ import DashboardPage from 'containers/DashboardPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import SecurityPage from 'containers/SecurityPage/Loadable';
 
+import DomainsPage from 'containers/DomainsPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 import reducer from './reducer';
@@ -61,6 +62,7 @@ export default function App() {
           path="/settings/security"
           component={SecurityPage}
         />
+        <PrivateRoute exact path="/domains" component={DomainsPage} />
 
         <Route component={NotFoundPage} />
       </Switch>

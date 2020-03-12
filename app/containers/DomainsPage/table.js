@@ -28,7 +28,11 @@ import FileCopy from '@material-ui/icons/FileCopy';
 import Archive from '@material-ui/icons/Archive';
 import Unarchive from '@material-ui/icons/Unarchive';
 
-import TableItemDialog from '../TableItemDialog';
+import Tooltip from '@material-ui/core/Tooltip';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import { green, yellow, red } from '@material-ui/core/colors';
+
+import DomainItemDialog from '../DomainItemDialog';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -61,43 +65,19 @@ const headCells = [
     id: 'url',
     numeric: false,
     disablePadding: false,
-    label: 'URL',
+    label: 'Domain',
   },
   {
-    id: 'pageTitle',
+    id: 'dateAdded',
     numeric: false,
     disablePadding: false,
-    label: 'Page Title',
+    label: 'Date Added',
   },
   {
-    id: 'shortLink',
+    id: 'status',
     numeric: false,
     disablePadding: false,
-    label: 'Generated Link',
-  },
-  {
-    id: 'numClicks',
-    numeric: false,
-    disablePadding: false,
-    label: 'Clicks (#)',
-  },
-  {
-    id: 'lastClick',
-    numeric: false,
-    disablePadding: false,
-    label: 'Last Click',
-  },
-  {
-    id: 'createdAt',
-    numeric: false,
-    disablePadding: false,
-    label: 'Created',
-  },
-  {
-    id: '',
-    numeric: false,
-    disablePadding: false,
-    label: 'Actions',
+    label: 'Status',
   },
 ];
 
@@ -215,7 +195,7 @@ const useToolbarStyles = makeStyles(theme => ({
     },
     marginLeft: 0,
   },
-  numLinks: {
+  numDomains: {
     fontSize: '1rem',
   },
   archivedSwitch: {
@@ -230,13 +210,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
   const classes = useToolbarStyles();
-  const {
-    numLinks,
-    onChangeSearch,
-    searchValue,
-    archived,
-    onArchiveChange,
-  } = props;
+  const { numDomains, onChangeSearch, searchValue } = props;
 
   return (
     <Toolbar className={classes.root}>
@@ -256,35 +230,18 @@ const EnhancedTableToolbar = props => {
         />
       </div>
       <div className={classes.toolbarInfo}>
-        <Typography className={classes.numLinks}>{numLinks} Links</Typography>
-      </div>
-      <div className={classes.archivedSwitch}>
-        <Switch
-          checked={archived}
-          onChange={onArchiveChange}
-          color="primary"
-          inputProps={{ 'aria-label': 'Archived table selector' }}
-        />
-        {archived ? (
-          <Typography className={classes.archivedSwitchLabel}>
-            Archived
-          </Typography>
-        ) : (
-          <Typography className={classes.archivedSwitchLabel}>
-            Not Archived
-          </Typography>
-        )}
+        <Typography className={classes.numDomains}>
+          {numDomains} Domains
+        </Typography>
       </div>
     </Toolbar>
   );
 };
 
 EnhancedTableToolbar.propTypes = {
-  numLinks: PropTypes.number.isRequired,
+  numDomains: PropTypes.number.isRequired,
   onChangeSearch: PropTypes.func,
   searchValue: PropTypes.string,
-  archived: PropTypes.bool,
-  onArchiveChange: PropTypes.func,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -359,19 +316,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable({
-  tableData,
-  onChangeSelected,
-  archived,
-  onArchiveChange,
-  onArchive,
-}) {
+export default function EnhancedTable({ domains, onChangeSelected }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');
   const [selected, setSelected] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState('');
-  const [filteredData, setFilteredData] = React.useState(tableData);
+  const [filteredData, setFilteredData] = React.useState(domains);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [moreInfoOpen, setMoreInfoOpen] = React.useState(false);
@@ -408,7 +359,7 @@ export default function EnhancedTable({
   function handleSearch(event) {
     setPage(0);
     let filteredDatas = [];
-    filteredDatas = tableData.filter(e => {
+    filteredDatas = domains.filter(e => {
       const matchItems = Object.values(e);
       let retVal = false;
       matchItems.forEach(ed => {
@@ -426,11 +377,8 @@ export default function EnhancedTable({
   const isSelected = name => selected.indexOf(name) !== -1;
 
   EnhancedTable.propTypes = {
-    tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+    domains: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
     onChangeSelected: PropTypes.func,
-    archived: PropTypes.bool,
-    onArchiveChange: PropTypes.func,
-    onArchive: PropTypes.func,
   };
 
   let emptyRows;
@@ -439,24 +387,23 @@ export default function EnhancedTable({
 
   if (filteredData === undefined || filteredData.length === 0) {
     emptyRows =
-      rowsPerPage -
-      Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
+      rowsPerPage - Math.min(rowsPerPage, domains.length - page * rowsPerPage);
     genRows = (
       <TableBody>
-        {stableSort(tableData, getSorting(order, orderBy))
+        {stableSort(domains, getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((row, index) => {
-            const isItemSelected = isSelected(row.shortLink);
+            const isItemSelected = isSelected(row.uri);
             const labelId = `enhanced-table-checkbox-${index}`;
 
             return (
               <TableRow
                 hover
-                onClick={event => handleClick(event, row.shortLink, row)}
+                onClick={event => handleClick(event, row.uri, row)}
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
-                key={row.shortLink}
+                key={row.uri}
                 selected={isItemSelected}
               >
                 <TableCell
@@ -466,43 +413,7 @@ export default function EnhancedTable({
                   scope="row"
                   padding="default"
                 >
-                  {row.url}
-                </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {row.pageTitle ? row.pageTitle : 'N/A'}
-                </TableCell>
-                <TableCell className={classes.tableCellCopy}>
-                  {`${row.domain.uri}/${row.shortLink}`}
-                  <CopyToClipboard
-                    text={`${row.domain.uri}/${row.shortLink}`}
-                    onCopy={() =>
-                      enqueueSnackbar('Copied link', {
-                        variant: 'success',
-                      })
-                    }
-                  >
-                    <IconButton
-                      aria-label="copy"
-                      onClick={e => {
-                        e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                      }}
-                    >
-                      <FileCopy />
-                    </IconButton>
-                  </CopyToClipboard>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  size="small"
-                  className={classes.tableCellNumeric}
-                >
-                  {row.numClicks ? row.numClicks.toString() : '0'}
-                </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {row.lastClick
-                    ? moment(row.lastClick.createdAt).format('YYYY-M-D h:mma')
-                    : 'N/A'}
+                  {row.uri}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
                   {row.createdAt
@@ -510,16 +421,26 @@ export default function EnhancedTable({
                     : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
-                  <IconButton
-                    aria-label="archive"
-                    onClick={e => {
-                      e.stopPropagation();
-                      e.nativeEvent.stopImmediatePropagation();
-                      onArchive(row._id);
-                    }}
-                  >
-                    {!row.archived ? <Archive /> : <Unarchive />}
-                  </IconButton>
+                  {row.status === 1 && (
+                    <React.Fragment>
+                      <Tooltip
+                        title="DNS verification in progress"
+                        aria-label="Verification in progress"
+                      >
+                        <FiberManualRecordIcon style={{ color: yellow[500] }} />
+                      </Tooltip>
+                    </React.Fragment>
+                  )}
+                  {row.status === 2 && (
+                    <React.Fragment>
+                      <Tooltip
+                        title="Domain is active"
+                        aria-label="Domain is active"
+                      >
+                        <FiberManualRecordIcon style={{ color: green[500] }} />
+                      </Tooltip>
+                    </React.Fragment>
+                  )}
                 </TableCell>
               </TableRow>
             );
@@ -535,7 +456,7 @@ export default function EnhancedTable({
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={tableData.length}
+        count={domains.length}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -563,11 +484,11 @@ export default function EnhancedTable({
             return (
               <TableRow
                 hover
-                onClick={event => handleClick(event, row.shortLink, row)}
+                onClick={event => handleClick(event, row.uri, row)}
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
-                key={row.shortLink}
+                key={row.uri}
                 selected={isItemSelected}
               >
                 <TableCell
@@ -577,39 +498,7 @@ export default function EnhancedTable({
                   scope="row"
                   padding="default"
                 >
-                  {row.url}
-                </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {row.pageTitle ? row.pageTitle : 'N/A'}
-                </TableCell>
-                <TableCell className={classes.tableCellCopy}>
-                  {`${row.domain.uri}/${row.shortLink}`}
-                  <CopyToClipboard
-                    text={`${row.domain.uri}/${row.shortLink}`}
-                    onCopy={() =>
-                      enqueueSnackbar('Copied link', {
-                        variant: 'success',
-                      })
-                    }
-                  >
-                    <IconButton
-                      aria-label="copy"
-                      onClick={e => {
-                        e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                      }}
-                    >
-                      <FileCopy />
-                    </IconButton>
-                  </CopyToClipboard>
-                </TableCell>
-                <TableCell align="center" className={classes.tableCellNumeric}>
-                  {row.numClicks ? row.numClicks.toString() : '0'}
-                </TableCell>
-                <TableCell className={classes.tableCell}>
-                  {row.lastClick
-                    ? moment(row.lastClick.createdAt).format('YYYY-M-D h:mma')
-                    : 'N/A'}
+                  {row.uri}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
                   {row.createdAt
@@ -617,16 +506,26 @@ export default function EnhancedTable({
                     : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
-                  <IconButton
-                    aria-label="archive"
-                    onClick={e => {
-                      e.stopPropagation();
-                      e.nativeEvent.stopImmediatePropagation();
-                      onArchive(row._id);
-                    }}
-                  >
-                    {!row.archived ? <Archive /> : <Unarchive />}
-                  </IconButton>
+                  {row.status === 1 && (
+                    <React.Fragment>
+                      <Tooltip
+                        title="DNS verification in progress"
+                        aria-label="Verification in progress"
+                      >
+                        <FiberManualRecordIcon style={{ color: yellow[500] }} />
+                      </Tooltip>
+                    </React.Fragment>
+                  )}
+                  {row.status === 2 && (
+                    <React.Fragment>
+                      <Tooltip
+                        title="Domain is active"
+                        aria-label="Domain is active"
+                      >
+                        <FiberManualRecordIcon style={{ color: green[500] }} />
+                      </Tooltip>
+                    </React.Fragment>
+                  )}
                 </TableCell>
               </TableRow>
             );
@@ -659,14 +558,12 @@ export default function EnhancedTable({
 
   return (
     <div className={classes.root}>
-      <TableItemDialog open={moreInfoOpen} setOpen={setMoreInfoOpen} />
+      {/* <DomainItemDialog open={moreInfoOpen} setOpen={setMoreInfoOpen} /> */}
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
-          numLinks={tableData.length}
+          numDomains={domains.length}
           onChangeSearch={handleSearch}
           searchValue={searchValue}
-          archived={archived}
-          onArchiveChange={onArchiveChange}
         />
         <div className={classes.tableWrapper}>
           <Table

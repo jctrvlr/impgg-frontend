@@ -4,5 +4,4 @@ if (process.env.NODE_ENV === 'production') {
 } else if (process.env.NODE_ENV === 'development') {
   baseUrli = 'http://localhost:3001/';
 }
-console.log(baseUrli);
 export const baseUrl = baseUrli;

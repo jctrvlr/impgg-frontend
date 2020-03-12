@@ -18,6 +18,7 @@ import {
   LOGOUT_USER,
   RESET_ERROR,
   EDIT_EMAIL_SUCCESS,
+  NEW_USER_DATA,
 } from './constants';
 let userDataR = {};
 let loggedInR = false;
@@ -100,6 +101,10 @@ const appReducer = (state = initialState, action) =>
       case EDIT_EMAIL_SUCCESS:
         draft.userData = action.userData;
         draft.currentUser = action.username;
+        break;
+
+      case NEW_USER_DATA:
+        draft.userData = action.userData;
         break;
     }
   });

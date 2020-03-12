@@ -30,8 +30,8 @@ export function* editEmail() {
     body: JSON.stringify({ email }),
   };
 
-  const requestURL = `${baseUrl}v1/users/${userData.user.id}`;
-  // console.log(requestOptions);
+  // eslint-disable-next-line no-underscore-dangle
+  const requestURL = `${baseUrl}v1/users/${userData.user._id}`;
 
   try {
     // Call our request helper (see 'utils/request')
