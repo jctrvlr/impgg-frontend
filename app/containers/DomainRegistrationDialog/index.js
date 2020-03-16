@@ -40,6 +40,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import Fade from '@material-ui/core/Fade';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 
@@ -57,8 +60,6 @@ import {
   makeSelectAddDomainSuccess,
   makeSelectAddDomainError,
 } from './selectors';
-
-import { makeSelectUserData } from '../App/selectors';
 
 import {
   addDomain,
@@ -146,7 +147,6 @@ export function DomainRegistrationDialog({
   handleModalClose,
   onChangeDomain,
   onChangeSubdomain,
-  userData,
   uriValidation,
   domain,
   subdomain,
@@ -175,7 +175,16 @@ export function DomainRegistrationDialog({
   };
 
   useEffect(() => {
-    if (addDomainSuccess && !loading) {
+    if (addDomainError) {
+      enqueueSnackbar('That domain is already registered', {
+        variant: 'error',
+      });
+      handleModalClose();
+    }
+  }, [addDomainError]);
+
+  useEffect(() => {
+    if (addDomainSuccess) {
       enqueueSnackbar('Your action is required.', { variant: 'success' });
       handleModalClose();
     }
@@ -210,7 +219,7 @@ export function DomainRegistrationDialog({
                 color="primary"
                 onClick={handleNext}
                 className={classes.button}
-                disabled={uriValidation || !domain}
+                disabled={!!uriValidation || !domain}
               >
                 Next
               </Button>
@@ -326,14 +335,26 @@ export function DomainRegistrationDialog({
               <Button onClick={handleBack} className={classes.button}>
                 Back
               </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={onSubmitForm}
-                className={classes.button}
-              >
-                Finish
-              </Button>
+              {loading ? (
+                <Fade
+                  in={loading}
+                  style={{
+                    transitionDelay: loading ? '800ms' : '0ms',
+                  }}
+                  unmountOnExit
+                >
+                  <CircularProgress />
+                </Fade>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={onSubmitForm}
+                  className={classes.button}
+                >
+                  Finish
+                </Button>
+              )}
             </div>
           </React.Fragment>
         );
@@ -392,7 +413,6 @@ DomainRegistrationDialog.propTypes = {
   handleModalClose: PropTypes.func,
   onChangeDomain: PropTypes.func,
   onChangeSubdomain: PropTypes.func,
-  userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   uriValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   domain: PropTypes.string,
   subdomain: PropTypes.string,
@@ -403,7 +423,6 @@ DomainRegistrationDialog.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  userData: makeSelectUserData(),
   domain: makeSelectDomain(),
   subdomain: makeSelectSubdomain(),
   loading: makeSelectLoading(),

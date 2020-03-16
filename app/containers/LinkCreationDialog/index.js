@@ -202,11 +202,13 @@ export function LinkCreationDialog({
               onChange={onChangeDomain}
               input={<Input id="domain-choice" />}
             >
-              {userData.user.domains.map(dom => (
-                <option value={dom.uri} key={dom.uri}>
-                  {dom.uri}
-                </option>
-              ))}
+              {userData.user.domains.map(dom =>
+                dom.status === 2 ? (
+                  <option value={dom.uri} key={dom.uri}>
+                    {dom.uri}
+                  </option>
+                ) : null,
+              )}
             </Select>
           </DialogContent>
           <DialogActions>
