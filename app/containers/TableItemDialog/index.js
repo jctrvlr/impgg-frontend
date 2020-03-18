@@ -942,7 +942,7 @@ export function TableItemDialog({
                   position="start"
                   className={classes.linkAdornment}
                 >
-                  {selectedData[0].domain ||
+                  {selectedData[0].domain.uri ||
                     userData.user.preferences.primaryDomain}
                   /
                 </InputAdornment>
