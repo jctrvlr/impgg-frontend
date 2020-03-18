@@ -472,9 +472,9 @@ export default function EnhancedTable({
                   {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCellCopy}>
-                  {`${row.domain}/${row.shortLink}`}
+                  {`${row.domain.uri}/${row.shortLink}`}
                   <CopyToClipboard
-                    text={`${row.domain}/${row.shortLink}`}
+                    text={`${row.domain.uri}/${row.shortLink}`}
                     onCopy={() =>
                       enqueueSnackbar('Copied link', {
                         variant: 'success',
@@ -497,7 +497,7 @@ export default function EnhancedTable({
                   size="small"
                   className={classes.tableCellNumeric}
                 >
-                  {row.numClicks.toString() ? row.numClicks.toString() : 'N/A'}
+                  {row.numClicks ? row.numClicks.toString() : '0'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
                   {row.lastClick
@@ -516,7 +516,6 @@ export default function EnhancedTable({
                       e.stopPropagation();
                       e.nativeEvent.stopImmediatePropagation();
                       onArchive(row._id);
-                      console.log('after archive link');
                     }}
                   >
                     {!row.archived ? <Archive /> : <Unarchive />}
@@ -584,9 +583,9 @@ export default function EnhancedTable({
                   {row.pageTitle ? row.pageTitle : 'N/A'}
                 </TableCell>
                 <TableCell className={classes.tableCellCopy}>
-                  {`${row.domain}/${row.shortLink}`}
+                  {`${row.domain.uri}/${row.shortLink}`}
                   <CopyToClipboard
-                    text={`${row.domain}/${row.shortLink}`}
+                    text={`${row.domain.uri}/${row.shortLink}`}
                     onCopy={() =>
                       enqueueSnackbar('Copied link', {
                         variant: 'success',
@@ -605,7 +604,7 @@ export default function EnhancedTable({
                   </CopyToClipboard>
                 </TableCell>
                 <TableCell align="center" className={classes.tableCellNumeric}>
-                  {row.numClicks.toString() ? row.numClicks.toString() : 'N/A'}
+                  {row.numClicks ? row.numClicks.toString() : '0'}
                 </TableCell>
                 <TableCell className={classes.tableCell}>
                   {row.lastClick
@@ -624,7 +623,6 @@ export default function EnhancedTable({
                       e.stopPropagation();
                       e.nativeEvent.stopImmediatePropagation();
                       onArchive(row._id);
-                      console.log('after archive link');
                     }}
                   >
                     {!row.archived ? <Archive /> : <Unarchive />}

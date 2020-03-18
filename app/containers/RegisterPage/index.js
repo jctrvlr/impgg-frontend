@@ -64,7 +64,7 @@ import {
   validateEmail,
 } from './actions';
 
-import { registerUser } from '../App/actions';
+import { registerUser, resetError } from '../App/actions';
 
 import reducer from './reducer';
 import saga from './saga';
@@ -213,8 +213,8 @@ export function RegisterPage({
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  error={!!emailValidation}
-                  helperText={emailValidation}
+                  error={!!emailValidation || !!error}
+                  helperText={emailValidation || error}
                   onChange={onChangeEmail}
                 />
               </Grid>
@@ -258,7 +258,7 @@ export function RegisterPage({
             >
               Sign Up
             </Button>
-            <ErrorMessageHolder error={error} />
+            {/* <ErrorMessageHolder error={error} /> */}
             <Grid container justify="flex-end">
               <Grid item>
                 <Link component={RouterLink} to="/login" variant="body2">
@@ -315,6 +315,7 @@ function mapDispatchToProps(dispatch) {
     onChangeEmail: evt => {
       dispatch(validateEmail(evt.target.value));
       dispatch(changeEmail(evt.target.value));
+      dispatch(resetError());
     },
     onChangePassword: evt => dispatch(changePassword(evt.target.value)),
     onChangeFirstName: evt => dispatch(changeFirstName(evt.target.value)),

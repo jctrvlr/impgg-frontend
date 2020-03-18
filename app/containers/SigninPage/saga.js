@@ -15,8 +15,7 @@ import {
   makeSelectPassword,
 } from 'containers/SigninPage/selectors';
 
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+import { baseUrl } from 'vars';
 
 /**
  * Authentication for user request/response handler
@@ -31,7 +30,7 @@ export function* authUser() {
     body: JSON.stringify({ email, password }),
   };
 
-  const requestURL = `${baseUrl}/v1/auth/login`;
+  const requestURL = `${baseUrl}v1/auth/login`;
 
   try {
     // Call our request helper (see 'utils/request')

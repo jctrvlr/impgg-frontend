@@ -7,13 +7,13 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
+import { baseUrl } from 'vars';
 import { FETCH_URL } from './constants';
 import { fetchUrlSuccess, fetchUrlError } from './actions';
 
 import { makeSelectURI, makeSelectURIHistory } from './selectors';
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
+
 /**
  * Registration for user request/response handler
  */
@@ -28,7 +28,7 @@ export function* fetchLink() {
   let requestURL = '';
 
   if (loggedIn) {
-    requestURL = `${baseUrl}/v1/link`;
+    requestURL = `${baseUrl}v1/link`;
     requestOptions = {
       method: 'POST',
       headers: {
@@ -38,7 +38,7 @@ export function* fetchLink() {
       body: JSON.stringify({ uri }),
     };
   } else {
-    requestURL = `${baseUrl}/juliet/link`;
+    requestURL = `${baseUrl}juliet/link`;
     requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

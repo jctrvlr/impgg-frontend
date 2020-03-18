@@ -6,6 +6,7 @@ import { all, call, put, select, takeLatest } from 'redux-saga/effects';
 
 import request from 'utils/request';
 
+import { baseUrl } from 'vars';
 import { makeSelectLoginEmail, makeSelectPassword } from './selectors';
 import { makeSelectUserData } from '../App/selectors';
 
@@ -16,8 +17,6 @@ import {
   updatePasswordError,
 } from './actions';
 import { AUTH_USER, UPDATE_PASSWORD } from './constants';
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
 
 /**
  * Authentication for user request/response handler
@@ -36,7 +35,7 @@ export function* authUser() {
     },
     body: JSON.stringify({ email, password }),
   };
-  const requestURL = `${baseUrl}/v1/auth`;
+  const requestURL = `${baseUrl}v1/auth`;
 
   try {
     // Call our request helper (see 'utils/request')
@@ -67,7 +66,7 @@ export function* updatePassword() {
     },
     body: JSON.stringify({ password }),
   };
-  const requestURL = `${baseUrl}/v1/users/password`;
+  const requestURL = `${baseUrl}v1/users/password`;
 
   try {
     // Call our request helper (see 'utils/request')

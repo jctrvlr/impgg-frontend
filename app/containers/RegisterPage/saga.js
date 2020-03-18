@@ -11,15 +11,13 @@ import { registerUserSuccess, registerUserError } from 'containers/App/actions';
 import request from 'utils/request';
 import moment from 'moment';
 
+import { baseUrl } from 'vars';
 import {
   makeSelectFirstName,
   makeSelectLastName,
   makeSelectEmail,
   makeSelectPassword,
 } from './selectors';
-
-const host = window.location.hostname;
-const baseUrl = `http://${host}:3001`;
 
 /**
  * Registration for user request/response handler
@@ -42,8 +40,7 @@ export function* registerUser() {
     body: JSON.stringify({ email, password, profile }),
   };
 
-  const requestURL = `${baseUrl}/v1/auth/register`;
-  // console.log(requestOptions);
+  const requestURL = `${baseUrl}v1/auth/register`;
 
   try {
     // Call our request helper (see 'utils/request')

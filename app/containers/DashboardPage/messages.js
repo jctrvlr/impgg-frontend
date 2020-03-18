@@ -13,9 +13,9 @@ export default defineMessages({
     id: `${scope}.home`,
     defaultMessage: 'Home',
   },
-  profile: {
-    id: `${scope}.profile`,
-    defaultMessage: 'Profile',
+  domains: {
+    id: `${scope}.domains`,
+    defaultMessage: 'Domains',
   },
   settings: {
     id: `${scope}.settings`,

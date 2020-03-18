@@ -16,6 +16,9 @@ import {
   REGISTER_USER_SUCCESS,
   REGISTER_USER_ERROR,
   LOGOUT_USER,
+  RESET_ERROR,
+  EDIT_EMAIL_SUCCESS,
+  NEW_USER_DATA,
 } from './constants';
 let userDataR = {};
 let loggedInR = false;
@@ -56,6 +59,7 @@ const appReducer = (state = initialState, action) =>
         draft.userData = action.userData;
         draft.loading = false;
         draft.currentUser = action.username;
+        draft.error = false;
         break;
 
       case AUTHENTICATE_USER_ERROR:
@@ -74,6 +78,7 @@ const appReducer = (state = initialState, action) =>
         draft.loggedIn = true;
         draft.userData = action.userData;
         draft.loading = false;
+        draft.error = false;
         draft.currentUser = action.username;
         break;
 
@@ -82,11 +87,24 @@ const appReducer = (state = initialState, action) =>
         draft.loading = false;
         break;
 
+      case RESET_ERROR:
+        draft.error = false;
+        break;
+
       case LOGOUT_USER:
         draft.loading = false;
         draft.error = false;
         draft.userData = false;
         draft.loggedIn = false;
+        break;
+
+      case EDIT_EMAIL_SUCCESS:
+        draft.userData = action.userData;
+        draft.currentUser = action.username;
+        break;
+
+      case NEW_USER_DATA:
+        draft.userData = action.userData;
         break;
     }
   });

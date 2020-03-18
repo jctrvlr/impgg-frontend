@@ -23,7 +23,21 @@ import {
   REGISTER_USER_SUCCESS,
   REGISTER_USER_ERROR,
   LOGOUT_USER,
+  RESET_ERROR,
+  EDIT_EMAIL_SUCCESS,
+  NEW_USER_DATA,
 } from './constants';
+
+/**
+ * Reset error
+ *
+ * @return {object} An action object with a type of RESET_ERROR
+ */
+export function resetError() {
+  return {
+    type: RESET_ERROR,
+  };
+}
 
 /**
  * Register the user, this action starts the request saga
@@ -33,6 +47,22 @@ import {
 export function registerUser() {
   return {
     type: REGISTER_USER,
+  };
+}
+
+/**
+ * Dispatched when the user is successfully changed emails
+ *
+ * @param  {array} userData The users data
+ * @param  {string} username The current users username
+ *
+ * @return {object}      An action object with a type of REGISTER_USER_SUCCESS passing the newly registered users data
+ */
+export function editEmailSuccessApp(userData, username) {
+  return {
+    type: EDIT_EMAIL_SUCCESS,
+    userData,
+    username,
   };
 }
 
@@ -104,6 +134,20 @@ export function authUserError(error) {
   return {
     type: AUTHENTICATE_USER_ERROR,
     error,
+  };
+}
+
+/**
+ * Dispatched when updated userData is received
+ *
+ * @param {object} user The users data
+ *
+ * @return {object} An action object with a type of NEW_USER_DATA passing the updated user data
+ */
+export function newUserData(userData) {
+  return {
+    type: NEW_USER_DATA,
+    userData,
   };
 }
 

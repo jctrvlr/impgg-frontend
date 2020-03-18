@@ -204,12 +204,12 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               )}
             </IconButton>
             <List>
-              <ListItem button component={RouterLink} to="/profile">
+              <ListItem button component={RouterLink} to="/domains">
                 <ListItemIcon>
                   <AccountBoxIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary={<FormattedMessage {...messages.profile} />}
+                  primary={<FormattedMessage {...messages.domains} />}
                 />
               </ListItem>
               <ListItem button component={RouterLink} to="/settings">
@@ -376,17 +376,17 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               >
                 <MenuItem
                   component={RouterLink}
-                  to="/settings/profile"
+                  to="/domains"
                   onClick={handleClose}
                 >
-                  Profile
+                  Domains
                 </MenuItem>
                 <MenuItem
                   component={RouterLink}
-                  to="/account"
+                  to="/settings"
                   onClick={handleClose}
                 >
-                  My account
+                  Settings
                 </MenuItem>
                 <MenuItem onClick={logoutUser}>Log out</MenuItem>
               </Menu>
