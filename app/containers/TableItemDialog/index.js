@@ -258,7 +258,7 @@ export function TableItemDialog({
   };
 
   const shareDom =
-    selectedData[0].domain || userData.user.preferences.primaryDomain;
+    selectedData[0].domain.uri || userData.user.preferences.primaryDomain;
   const shareUrl = `${shareDom}/${selectedData[0].shortLink}`;
   const title = selectedData[0].pageTitle ? selectedData[0].pageTitle : '';
 
