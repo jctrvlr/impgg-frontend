@@ -4,10 +4,11 @@
  *
  */
 
-import { DEFAULT_ACTION } from './constants';
+import { CHANGE_SELECTED_DOMAIN } from './constants';
 
-export function defaultAction() {
+export function changeSelectedDomain(selectedDomain) {
   return {
-    type: DEFAULT_ACTION,
+    type: CHANGE_SELECTED_DOMAIN,
+    selectedDomain,
   };
 }

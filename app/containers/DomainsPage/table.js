@@ -5,13 +5,11 @@
 /* eslint-disable indent */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSnackbar } from 'notistack';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import moment from 'moment';
+
 import { lighten, fade, makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
+
 import Table from '@material-ui/core/Table';
-import Switch from '@material-ui/core/Switch';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -24,9 +22,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-import FileCopy from '@material-ui/icons/FileCopy';
-import Archive from '@material-ui/icons/Archive';
-import Unarchive from '@material-ui/icons/Unarchive';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
@@ -326,7 +321,6 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [moreInfoOpen, setMoreInfoOpen] = React.useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -526,6 +520,16 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
                       </Tooltip>
                     </React.Fragment>
                   )}
+                  {row.status === -1 && (
+                    <React.Fragment>
+                      <Tooltip
+                        title="Domain is disabled"
+                        aria-label="Domain is disabled"
+                      >
+                        <FiberManualRecordIcon style={{ color: red[500] }} />
+                      </Tooltip>
+                    </React.Fragment>
+                  )}
                 </TableCell>
               </TableRow>
             );
@@ -558,7 +562,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
 
   return (
     <div className={classes.root}>
-      {/* <DomainItemDialog open={moreInfoOpen} setOpen={setMoreInfoOpen} /> */}
+      <DomainItemDialog open={moreInfoOpen} setOpen={setMoreInfoOpen} />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numDomains={domains.length}

@@ -10,6 +10,11 @@ const selectDomainsPageDomain = state => state.domainsPage || initialState;
 /**
  * Other specific selectors
  */
+const makeSelectSelectedDomain = () =>
+  createSelector(
+    selectDomainsPageDomain,
+    domainsPageState => domainsPageState.selectedDomain,
+  );
 
 /**
  * Default selector used by DomainsPage
@@ -22,4 +27,4 @@ const makeSelectDomainsPage = () =>
   );
 
 export default makeSelectDomainsPage;
-export { selectDomainsPageDomain };
+export { selectDomainsPageDomain, makeSelectSelectedDomain };

@@ -5,63 +5,41 @@
  */
 
 import {
-  ADD_DOMAIN,
-  URI_VALIDATION,
-  ADD_DOMAIN_SUCCESS,
-  ADD_DOMAIN_ERROR,
+  DELETE_DOMAIN,
+  DELETE_DOMAIN_SUCCESS,
+  DELETE_DOMAIN_ERROR,
 } from './constants';
 
 /**
- * Validate URI to ensure it is a valid URI
+ * Deletes domain
  *
- * @return {object} An action object with a type of URI_VALIDATION
+ * @return {object} An action object with a type of DELETE_DOMAIN
  */
-export function validateURI(uri) {
-  /* eslint-disable no-useless-escape */
-  const uriRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
-  let uriValidation = '';
-
-  if (uriRegex.test(uri)) {
-    uriValidation = false;
-  } else {
-    uriValidation = 'Enter a valid URL';
-  }
+export function deleteDomain() {
   return {
-    type: URI_VALIDATION,
-    uriValidation,
+    type: DELETE_DOMAIN,
   };
 }
 
 /**
- * Adds unconfirmed Domain
+ * Delete domain success
  *
- * @return {object} An action object with a type of ADD_DOMAIN
+ * @return {object} An action object with a type of DELETE_DOMAIN_SUCCESS
  */
-export function addDomain() {
+export function deleteDomainSuccess() {
   return {
-    type: ADD_DOMAIN,
+    type: DELETE_DOMAIN_SUCCESS,
   };
 }
 
 /**
- * Add domain success
+ * Delete domain error
  *
- * @return {object} An action object with a type of ADD_DOMAIN
+ * @return {object} An action object with a type of DELETE_DOMAIN_ERROR
  */
-export function addDomainSuccess() {
+export function deleteDomainError(err) {
   return {
-    type: ADD_DOMAIN_SUCCESS,
-  };
-}
-
-/**
- * Add domain error
- *
- * @return {object} An action object with a type of ADD_DOMAIN
- */
-export function addDomainError(err) {
-  return {
-    type: ADD_DOMAIN_ERROR,
+    type: DELETE_DOMAIN_ERROR,
     err,
   };
 }
