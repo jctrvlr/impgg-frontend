@@ -13,7 +13,7 @@ import { ADD_DOMAIN } from './constants';
 
 import { addDomainSuccess, addDomainError } from './actions';
 import { newUserData } from '../App/actions';
-import { makeSelectDomain } from './selectors';
+import { makeSelectDomain, makeSelectSubdomain } from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
 
@@ -24,8 +24,14 @@ export function* addDomainSaga() {
   // Select Domain and userData from store
   const userData = yield select(makeSelectUserData());
   let domain = yield select(makeSelectDomain());
+  let subdomain = yield select(makeSelectSubdomain());
 
   domain = domain || null;
+  subdomain = subdomain || null;
+
+  if (subdomain) {
+    domain = `${subdomain}.${domain}`;
+  }
 
   let requestOptions = {};
   let requestURL = '';

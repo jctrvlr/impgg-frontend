@@ -258,7 +258,8 @@ export function TableItemDialog({
   };
 
   const shareDom =
-    selectedData[0].domain.uri || userData.user.preferences.primaryDomain;
+    (selectedData && selectedData[0].domain && selectedData[0].domain.uri) ||
+    userData.user.preferences.primaryDomain;
   const shareUrl = `${shareDom}/${selectedData[0].shortLink}`;
   const title = selectedData[0].pageTitle ? selectedData[0].pageTitle : '';
 
@@ -942,7 +943,7 @@ export function TableItemDialog({
                   position="start"
                   className={classes.linkAdornment}
                 >
-                  {selectedData[0].domain.uri ||
+                  {(selectedData[0].domain && selectedData[0].domain.uri) ||
                     userData.user.preferences.primaryDomain}
                   /
                 </InputAdornment>

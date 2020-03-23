@@ -5,42 +5,37 @@
  */
 import produce from 'immer';
 import {
-  ADD_DOMAIN,
-  ADD_DOMAIN_SUCCESS,
-  ADD_DOMAIN_ERROR,
-  URI_VALIDATION,
+  DELETE_DOMAIN,
+  DELETE_DOMAIN_SUCCESS,
+  DELETE_DOMAIN_ERROR,
 } from './constants';
 
 export const initialState = {
-  domain: '',
-  uriValidation: false,
   loading: false,
-  addDomainSuccess: false,
-  addDomainError: false,
+  deleteDomainSuccess: false,
+  deleteDomainError: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
-const tableItemDialogReducer = (state = initialState, action) =>
+const domainItemDialogReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
-      case ADD_DOMAIN:
-        draft.domain = action.domain;
-        draft.addDomainSuccess = false;
+      case DELETE_DOMAIN:
+        draft.loading = true;
+        draft.deleteDomainSuccess = false;
+        draft.deleteDomainError = false;
         break;
 
-      case ADD_DOMAIN_SUCCESS:
-        draft.addDomainSuccess = true;
+      case DELETE_DOMAIN_SUCCESS:
+        draft.loading = false;
+        draft.deleteDomainSuccess = action.success;
         break;
 
-      case ADD_DOMAIN_ERROR:
-        draft.addDomainSuccess = false;
-        draft.addDomainError = action.err;
-        break;
-
-      case URI_VALIDATION:
-        draft.uriValidation = action.uriValidation;
+      case DELETE_DOMAIN_ERROR:
+        draft.loading = false;
+        draft.deleteDomainError = action.error;
         break;
     }
   });
 
-export default tableItemDialogReducer;
+export default domainItemDialogReducer;

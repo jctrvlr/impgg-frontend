@@ -4,4 +4,4 @@
  *
  */
 
-export const DEFAULT_ACTION = 'app/DomainsPage/DEFAULT_ACTION';
+export const CHANGE_SELECTED_DOMAIN = 'app/DomainsPage/CHANGE_SELECTED_DOMAIN';
