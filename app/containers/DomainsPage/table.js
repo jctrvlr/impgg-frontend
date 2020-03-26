@@ -27,7 +27,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { green, yellow, red } from '@material-ui/core/colors';
 
+import { baseUrl } from 'vars';
+
 import DomainItemDialog from '../DomainItemDialog';
+
+const baseUrli = baseUrl.substring(0, baseUrl.length - 1);
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -312,6 +316,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function EnhancedTable({ domains, onChangeSelected }) {
+  // eslint-disable-next-line no-param-reassign
+  domains = domains.filter(i => i.uri !== baseUrli);
+  console.log(domains);
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');

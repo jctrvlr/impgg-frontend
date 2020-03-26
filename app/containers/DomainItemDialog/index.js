@@ -163,7 +163,7 @@ export function DomainItemDialog({
         </IconButton>
         <DialogContent className={classes.deleteDialogContent}>
           <Typography variant="body1" color="textSecondary">
-            You will have to re-add the domain to ImpGG
+            This will delete all links that currently use this domain.
           </Typography>
         </DialogContent>
         <DialogActions>
