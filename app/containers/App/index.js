@@ -17,6 +17,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 
 // Public routes
 import HomePage from 'containers/HomePage/Loadable';
+import AboutPage from 'containers/AboutPage/Loadable';
 import PricingPage from 'containers/PricingPage';
 import FeaturesPage from 'containers/FeaturesPage';
 import TermsPage from 'containers/TermsPage';
@@ -44,6 +45,7 @@ export default function App() {
       <CssBaseline />
       <Switch>
         <Route exact path="/" component={HomePage} />
+        <Route exact path="/about" component={AboutPage} />
         <Route exact path="/pricing" component={PricingPage} />
         <Route exact path="/features" component={FeaturesPage} />
         <Route exact path="/terms" component={TermsPage} />

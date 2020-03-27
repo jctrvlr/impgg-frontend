@@ -139,7 +139,7 @@ export function HomePage({
   return (
     <React.Fragment>
       <Helmet>
-        <title>ImpGG - URL Shortener, Mischievous link helper</title>
+        <title>ImpGG - URL shortener, mischievous link helper</title>
         <meta
           name="description"
           content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
