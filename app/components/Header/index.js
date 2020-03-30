@@ -150,9 +150,6 @@ function Header({ loggedIn, userData, logoutUser, background }) {
         <ListItem button component={RouterLink} to="/about">
           <ListItemText primary={<FormattedMessage {...messages.about} />} />
         </ListItem>
-        <ListItem button component={RouterLink} to="/features">
-          <ListItemText primary={<FormattedMessage {...messages.features} />} />
-        </ListItem>
         <ListItem button component={RouterLink} to="/pricing">
           <ListItemText primary={<FormattedMessage {...messages.pricing} />} />
         </ListItem>
@@ -178,7 +175,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               variant="contained"
               className={classes.linkNoBackground}
             >
-              Dashboard
+              <FormattedMessage {...messages.dashboard} />
             </Button>
             <IconButton
               className={classes.iconbutton}
@@ -239,7 +236,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               variant="contained"
               className={classes.linkNoBackground}
             >
-              Sign in
+              <FormattedMessage {...messages.signIn} />
             </Button>
             <Button
               component={RouterLink}
@@ -248,7 +245,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               variant="contained"
               className={classes.linkNoBackground}
             >
-              Register an account
+              <FormattedMessage {...messages.register} />
             </Button>
           </React.Fragment>
         )}
@@ -300,15 +297,6 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               variant="button"
               color="textPrimary"
               component={RouterLink}
-              to="/features"
-              className={classes.linkNoBackground}
-            >
-              <FormattedMessage {...messages.features} />
-            </Link>
-            <Link
-              variant="button"
-              color="textPrimary"
-              component={RouterLink}
               to="/pricing"
               className={classes.linkNoBackground}
             >
@@ -334,7 +322,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 variant="contained"
                 className={classes.linkNoBackground}
               >
-                Dashboard
+                <FormattedMessage {...messages.dashboard} />
               </Button>
               <IconButton
                 className={classes.iconbutton}
@@ -379,16 +367,18 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                   to="/domains"
                   onClick={handleClose}
                 >
-                  Domains
+                  <FormattedMessage {...messages.domains} />
                 </MenuItem>
                 <MenuItem
                   component={RouterLink}
                   to="/settings"
                   onClick={handleClose}
                 >
-                  Settings
+                  <FormattedMessage {...messages.settings} />
                 </MenuItem>
-                <MenuItem onClick={logoutUser}>Log out</MenuItem>
+                <MenuItem onClick={logoutUser}>
+                  <FormattedMessage {...messages.logOut} />
+                </MenuItem>
               </Menu>
             </React.Fragment>
           ) : (
@@ -400,7 +390,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 variant="contained"
                 className={classes.linkNoBackground}
               >
-                Sign in
+                <FormattedMessage {...messages.signIn} />
               </Button>
               <Button
                 component={RouterLink}
@@ -409,7 +399,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 variant="contained"
                 className={classes.linkNoBackground}
               >
-                Register an account
+                <FormattedMessage {...messages.register} />
               </Button>
             </React.Fragment>
           )}

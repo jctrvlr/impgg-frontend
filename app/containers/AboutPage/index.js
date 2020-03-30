@@ -39,6 +39,8 @@ import saga from './saga';
 
 import messages from './messages';
 
+import madeEasyImage from '../../images/madeeasy.png';
+
 const useStyles = makeStyles(theme => ({
   heroContent: {
     padding: theme.spacing(8, 0, 6),
@@ -56,8 +58,10 @@ const useStyles = makeStyles(theme => ({
   sectionColumn: {
     [theme.breakpoints.down(769)]: {
       width: '100%',
+      margin: theme.spacing(5, 0),
     },
     width: '50%',
+    textAlign: 'center',
   },
 }));
 
@@ -70,7 +74,7 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
   return (
     <React.Fragment>
       <Helmet>
-        <title>ImpGG - URL shortener, mischievous link helper</title>
+        <title>About | ImpGG</title>
         <meta
           name="description"
           content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
@@ -96,11 +100,54 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
 
         <div className={classes.section2}>
           <div className={classes.sectionColumn}>
+            <img
+              src={madeEasyImage}
+              alt="ImpGG makes making links easy."
+              width="90%"
+            />
+          </div>
+          <div className={classes.sectionColumn}>
             <Typography component="h3" variant="h4" align="left" gutterBottom>
-              <FormattedMessage {...messages.levelUpHeader} />
+              <FormattedMessage {...messages.platformHeader} />
             </Typography>
-            <Typography component="h2" variant="h6" align="left">
-              <FormattedMessage {...messages.whoWeAre} />
+            <Typography component="h4" variant="body1" align="left">
+              <FormattedMessage {...messages.platformBody} />
+            </Typography>
+          </div>
+        </div>
+
+        <div className={classes.section2}>
+          <div className={classes.sectionColumn}>
+            <Typography component="h3" variant="h4" align="left" gutterBottom>
+              <FormattedMessage {...messages.analyticsHeader} />
+            </Typography>
+            <Typography component="h4" variant="body1" align="left">
+              <FormattedMessage {...messages.analyticsBody} />
+            </Typography>
+          </div>
+          <div className={classes.sectionColumn}>
+            <img
+              src={madeEasyImage}
+              alt="ImpGG makes making links easy."
+              width="90%"
+            />
+          </div>
+        </div>
+
+        <div className={classes.section2}>
+          <div className={classes.sectionColumn}>
+            <img
+              src={madeEasyImage}
+              alt="ImpGG makes making links easy."
+              width="90%"
+            />
+          </div>
+          <div className={classes.sectionColumn}>
+            <Typography component="h3" variant="h4" align="left" gutterBottom>
+              <FormattedMessage {...messages.customHeader} />
+            </Typography>
+            <Typography component="h4" variant="body1" align="left">
+              <FormattedMessage {...messages.customBody} />
             </Typography>
           </div>
         </div>

@@ -13,13 +13,13 @@ export default defineMessages({
     id: `${scope}.home`,
     defaultMessage: 'Home',
   },
+  dashboard: {
+    id: `${scope}.dashboard`,
+    defaultMessage: 'Dashboard',
+  },
   about: {
     id: `${scope}.about`,
     defaultMessage: 'About',
-  },
-  features: {
-    id: `${scope}.features`,
-    defaultMessage: 'Features',
   },
   pricing: {
     id: `${scope}.pricing`,
@@ -40,5 +40,13 @@ export default defineMessages({
   logOut: {
     id: `${scope}.logOut`,
     defaultMessage: 'Log out',
+  },
+  signIn: {
+    id: `${scope}.signIn`,
+    defaultMessage: 'Sign in',
+  },
+  register: {
+    id: `${scope}.register`,
+    defaultMessage: 'Register an account',
   },
 });

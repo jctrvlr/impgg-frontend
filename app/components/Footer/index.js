@@ -106,10 +106,10 @@ function Footer() {
             <li>
               <Link
                 className={classes.footerSecondaryColor}
-                to="/features"
+                to="/about"
                 component={RouterLink}
               >
-                <Typography variant="body2">Features</Typography>
+                <Typography variant="body2">About</Typography>
               </Link>
             </li>
             <li>
