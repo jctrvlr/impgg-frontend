@@ -8,6 +8,7 @@
  */
 import produce from 'immer';
 import moment from 'moment';
+import _ from 'lodash';
 
 import {
   AUTHENTICATE_USER_SUCCESS,
@@ -105,7 +106,8 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case NEW_USER_DATA:
-        draft.userData = action.userData;
+        _.set(draft.userData.user, 'domains', action.userData.user.domains);
+        // draft.userData = action.userData;
         break;
     }
   });

@@ -322,8 +322,8 @@ export default function EnhancedTable({
   handleDItemModalClose,
   handleDItemModalOpen,
 }) {
-  // eslint-disable-next-line no-param-reassign
-  const tempDomains = domains.filter(i => i.uri !== baseUrli);
+  const tempDomains = domains.filter(i => !baseUrli.includes(i.uri));
+
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');
@@ -332,6 +332,12 @@ export default function EnhancedTable({
   const [filteredData, setFilteredData] = React.useState(tempDomains);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  React.useEffect(() => {
+    if (domains) {
+      setFilteredData(tempDomains);
+    }
+  }, [domains]);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';

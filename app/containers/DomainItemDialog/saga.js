@@ -38,7 +38,6 @@ export function* deleteDomainSaga() {
 
   try {
     const ret = yield call(request, requestURL, requestOptions);
-
     userData.user = ret;
     userData.expires = moment
       .utc()
