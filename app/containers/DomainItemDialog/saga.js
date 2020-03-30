@@ -26,14 +26,14 @@ export function* deleteDomainSaga() {
   const userData = yield select(makeSelectUserData());
   const selectedDomain = yield select(makeSelectSelectedDomain());
 
-  const requestURL = `${baseUrl}v1/link/delete`;
+  const requestURL = `${baseUrl}v1/domain`;
   const requestOptions = {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${userData.token.accessToken}`,
     },
-    body: JSON.stringify({ linkId: selectedDomain[0]._id }),
+    body: JSON.stringify({ domainId: selectedDomain[0]._id }),
   };
 
   try {

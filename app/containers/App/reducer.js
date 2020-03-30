@@ -8,6 +8,7 @@
  */
 import produce from 'immer';
 import moment from 'moment';
+
 import {
   AUTHENTICATE_USER_SUCCESS,
   AUTHENTICATE_USER,

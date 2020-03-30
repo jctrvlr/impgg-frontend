@@ -134,6 +134,16 @@ export function DomainsPage({
     setOpenModal(false);
   };
 
+  const [openDItemModal, setOpenDItemModal] = React.useState(false);
+
+  const handleDItemModalOpen = () => {
+    setOpenDItemModal(true);
+  };
+
+  const handleDItemModalClose = () => {
+    setOpenDItemModal(false);
+  };
+
   const classes = useStyles();
 
   return (
@@ -168,6 +178,9 @@ export function DomainsPage({
         <Table
           domains={userData.user.domains}
           onChangeSelected={onChangeSelected}
+          openDItemModal={openDItemModal}
+          handleDItemModalClose={handleDItemModalClose}
+          handleDItemModalOpen={handleDItemModalOpen}
         />
       </Container>
       <Footer />
