@@ -29,7 +29,7 @@ export default defineMessages({
   },
   analyticsHeader: {
     id: `${scope}.analyticsHeader`,
-    defaultMessage: 'Put your links to work!',
+    defaultMessage: 'Put your links to work',
   },
   analyticsBody: {
     id: `${scope}.analyticsBody`,
@@ -38,11 +38,19 @@ export default defineMessages({
   },
   customHeader: {
     id: `${scope}.customHeader`,
-    defaultMessage: 'B.Y.O.B - Bring your own branding!',
+    defaultMessage: 'B.Y.O.B - Bring your own branding',
   },
   customBody: {
     id: `${scope}.customBody`,
     defaultMessage:
       'Use any domain name you already own (or even are currently using), connecting both your recognizable domain and our powerful analytics platform.',
+  },
+  ctaHeader: {
+    id: `${scope}.ctaHeader`,
+    defaultMessage: 'Start creating links worth clicking today',
+  },
+  ctaButton: {
+    id: `${scope}.ctaButton`,
+    defaultMessage: 'Learn more',
   },
 });

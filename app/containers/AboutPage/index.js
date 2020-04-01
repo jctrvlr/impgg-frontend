@@ -8,6 +8,8 @@ import React, { memo } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
+import { Link as RouterLink } from 'react-router-dom';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -29,6 +31,8 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
+import Button from '@material-ui/core/Button';
+
 import makeSelectAboutPage from './selectors';
 
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
@@ -40,6 +44,8 @@ import saga from './saga';
 import messages from './messages';
 
 import madeEasyImage from '../../images/madeeasy.png';
+import metricsImage from '../../images/metrics.png';
+import byobImage from '../../images/byob.png';
 
 const useStyles = makeStyles(theme => ({
   heroContent: {
@@ -54,6 +60,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     margin: theme.spacing(8, 5, 10),
+  },
+  section3: {
+    margin: theme.spacing(0, 0, 10),
+    textAlign: 'center',
   },
   sectionColumn: {
     [theme.breakpoints.down(769)]: {
@@ -127,8 +137,8 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
           </div>
           <div className={classes.sectionColumn}>
             <img
-              src={madeEasyImage}
-              alt="ImpGG makes making links easy."
+              src={metricsImage}
+              alt="Use metrics to learn about your audience"
               width="90%"
             />
           </div>
@@ -137,8 +147,8 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
         <div className={classes.section2}>
           <div className={classes.sectionColumn}>
             <img
-              src={madeEasyImage}
-              alt="ImpGG makes making links easy."
+              src={byobImage}
+              alt="Use your own domain to create recognizable links"
               width="90%"
             />
           </div>
@@ -150,6 +160,21 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
               <FormattedMessage {...messages.customBody} />
             </Typography>
           </div>
+        </div>
+
+        <div className={classes.section3}>
+          <Typography component="h3" variant="h4" align="center" gutterBottom>
+            <FormattedMessage {...messages.ctaHeader} />
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            component={RouterLink}
+            to="/register"
+          >
+            <FormattedMessage {...messages.ctaButton} />
+          </Button>
         </div>
       </Container>
       <Footer />
