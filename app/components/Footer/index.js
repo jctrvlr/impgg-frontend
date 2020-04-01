@@ -101,15 +101,15 @@ function Footer() {
       </section>
       <section className={classes.footerMain}>
         <div className={classes.footerMainItem}>
-          <Typography variant="h4">About</Typography>
+          <Typography variant="h4">ImpGG</Typography>
           <ul>
             <li>
               <Link
                 className={classes.footerSecondaryColor}
-                to="/features"
+                to="/about"
                 component={RouterLink}
               >
-                <Typography variant="body2">Features</Typography>
+                <Typography variant="body2">About</Typography>
               </Link>
             </li>
             <li>
@@ -130,6 +130,24 @@ function Footer() {
                 <Typography variant="body2">Blog</Typography>
               </Link>
             </li>
+            <li>
+              <Link
+                className={classes.footerSecondaryColor}
+                to="/terms"
+                component={RouterLink}
+              >
+                <Typography variant="body2">Terms</Typography>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={classes.footerSecondaryColor}
+                to="/privacy"
+                component={RouterLink}
+              >
+                <Typography variant="body2">Privacy</Typography>
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -143,14 +161,6 @@ function Footer() {
                 component={RouterLink}
               >
                 <Typography variant="body2">Docs</Typography>
-              </Link>
-            </li>
-            <li>
-              <Link
-                className={classes.footerSecondaryColor}
-                href="https://blog.impgg.com"
-              >
-                <Typography variant="body2">Blog</Typography>
               </Link>
             </li>
           </ul>

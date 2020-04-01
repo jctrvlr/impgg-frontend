@@ -1,6 +1,6 @@
 /**
  *
- * Tests for Features
+ * Tests for AboutPage
  *
  * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
  *
@@ -8,15 +8,21 @@
 
 import React from 'react';
 import { render } from 'react-testing-library';
+import { IntlProvider } from 'react-intl';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import { FeaturesPage } from '../index';
+import { AboutPage } from '../index';
+import { DEFAULT_LOCALE } from '../../../i18n';
 
-describe('<Features />', () => {
+describe('<AboutPage />', () => {
   it('Expect to not log errors in console', () => {
     const spy = jest.spyOn(global.console, 'error');
     const dispatch = jest.fn();
-    render(<FeaturesPage dispatch={dispatch} />);
+    render(
+      <IntlProvider locale={DEFAULT_LOCALE}>
+        <AboutPage dispatch={dispatch} />
+      </IntlProvider>,
+    );
     expect(spy).not.toHaveBeenCalled();
   });
 
@@ -32,7 +38,11 @@ describe('<Features />', () => {
   it.skip('Should render and match the snapshot', () => {
     const {
       container: { firstChild },
-    } = render(<FeaturesPage />);
+    } = render(
+      <IntlProvider locale={DEFAULT_LOCALE}>
+        <AboutPage />
+      </IntlProvider>,
+    );
     expect(firstChild).toMatchSnapshot();
   });
 });

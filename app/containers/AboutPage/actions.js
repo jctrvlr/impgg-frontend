@@ -1,6 +1,6 @@
 /*
  *
- * Features actions
+ * AboutPage actions
  *
  */
 

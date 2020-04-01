@@ -1,6 +1,6 @@
 /*
  *
- * Features reducer
+ * AboutPage reducer
  *
  */
 import produce from 'immer';
@@ -9,7 +9,7 @@ import { DEFAULT_ACTION } from './constants';
 export const initialState = {};
 
 /* eslint-disable default-case, no-param-reassign */
-const featuresReducer = (state = initialState, action) =>
+const aboutPageReducer = (state = initialState, action) =>
   produce(state, (/* draft */) => {
     switch (action.type) {
       case DEFAULT_ACTION:
@@ -17,4 +17,4 @@ const featuresReducer = (state = initialState, action) =>
     }
   });
 
-export default featuresReducer;
+export default aboutPageReducer;

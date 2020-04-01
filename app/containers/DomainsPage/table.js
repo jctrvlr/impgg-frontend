@@ -315,19 +315,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function EnhancedTable({ domains, onChangeSelected }) {
-  // eslint-disable-next-line no-param-reassign
-  domains = domains.filter(i => i.uri !== baseUrli);
-  console.log(domains);
+export default function EnhancedTable({
+  domains,
+  onChangeSelected,
+  openDItemModal,
+  handleDItemModalClose,
+  handleDItemModalOpen,
+}) {
+  const tempDomains = domains.filter(i => !baseUrli.includes(i.uri));
+
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
   const [orderBy, setOrderBy] = React.useState('createdAt');
   const [selected, setSelected] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState('');
-  const [filteredData, setFilteredData] = React.useState(domains);
+  const [filteredData, setFilteredData] = React.useState(tempDomains);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [moreInfoOpen, setMoreInfoOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (domains) {
+      setFilteredData(tempDomains);
+    }
+  }, [domains]);
 
   function handleRequestSort(event, property) {
     const isDesc = orderBy === property && order === 'desc';
@@ -345,7 +355,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
 
     setSelected(newSelected);
     onChangeSelected(newSelectedData);
-    setMoreInfoOpen(true);
+    handleDItemModalOpen();
   }
 
   function handleChangePage(event, newPage) {
@@ -360,7 +370,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
   function handleSearch(event) {
     setPage(0);
     let filteredDatas = [];
-    filteredDatas = domains.filter(e => {
+    filteredDatas = tempDomains.filter(e => {
       const matchItems = Object.values(e);
       let retVal = false;
       matchItems.forEach(ed => {
@@ -380,6 +390,9 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
   EnhancedTable.propTypes = {
     domains: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
     onChangeSelected: PropTypes.func,
+    openDItemModal: PropTypes.bool,
+    handleDItemModalClose: PropTypes.func,
+    handleDItemModalOpen: PropTypes.func,
   };
 
   let emptyRows;
@@ -388,14 +401,16 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
 
   if (filteredData === undefined || filteredData.length === 0) {
     emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, domains.length - page * rowsPerPage);
+      rowsPerPage -
+      Math.min(rowsPerPage, tempDomains.length - page * rowsPerPage);
     genRows = (
       <TableBody>
-        {stableSort(domains, getSorting(order, orderBy))
+        {stableSort(tempDomains, getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((row, index) => {
             const isItemSelected = isSelected(row.uri);
             const labelId = `enhanced-table-checkbox-${index}`;
+            const keyNum = Math.floor(Math.random() * 100000000);
 
             return (
               <TableRow
@@ -404,7 +419,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
-                key={row.uri}
+                key={keyNum}
                 selected={isItemSelected}
               >
                 <TableCell
@@ -457,7 +472,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={domains.length}
+        count={tempDomains.length}
         rowsPerPage={rowsPerPage}
         page={page}
         backIconButtonProps={{
@@ -481,6 +496,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
           .map((row, index) => {
             const isItemSelected = isSelected(row.shortLink);
             const labelId = `enhanced-table-checkbox-${index}`;
+            const keyNum = Math.floor(Math.random() * 100000000);
 
             return (
               <TableRow
@@ -489,7 +505,7 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
-                key={row.uri}
+                key={keyNum}
                 selected={isItemSelected}
               >
                 <TableCell
@@ -569,10 +585,13 @@ export default function EnhancedTable({ domains, onChangeSelected }) {
 
   return (
     <div className={classes.root}>
-      <DomainItemDialog open={moreInfoOpen} setOpen={setMoreInfoOpen} />
+      <DomainItemDialog
+        open={openDItemModal}
+        handleModalClose={handleDItemModalClose}
+      />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
-          numDomains={domains.length}
+          numDomains={tempDomains.length}
           onChangeSearch={handleSearch}
           searchValue={searchValue}
         />

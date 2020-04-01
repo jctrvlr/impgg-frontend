@@ -2,81 +2,47 @@ import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
 /**
- * Direct selector to the tableItemDialog state domain
+ * Direct selector to the domainItemDialog state domain
  */
 
-const selectTableItemDialogDomain = state =>
-  state.tableItemDialog || initialState;
+const selectDomainItemDialogDomain = state =>
+  state.domainItemDialog || initialState;
 
 /**
  * Other specific selectors
  */
-const makeSelectURI = () =>
-  createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.uri,
-  );
-
-const makeSelectURIValidation = () =>
-  createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.uriValidation,
-  );
-
-const makeSelectLinkDomain = () =>
-  createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.linkDomain,
-  );
-
-const makeSelectSlink = () =>
-  createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.sLink,
-  );
-
 const makeSelectLoading = () =>
   createSelector(
-    selectTableItemDialogDomain,
+    selectDomainItemDialogDomain,
     linkCreationState => linkCreationState.loading,
   );
 
-const makeSelectsLinkError = () =>
+const makeSelectDeleteDomainSuccess = () =>
   createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.sLinkError,
+    selectDomainItemDialogDomain,
+    linkCreationState => linkCreationState.deleteDomainSuccess,
   );
 
-const makeSelectFetchLinkSuccess = () =>
+const makeSelectDeleteDomainError = () =>
   createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.fetchLinkSuccess,
+    selectDomainItemDialogDomain,
+    linkCreationState => linkCreationState.deleteDomainError,
   );
 
-const makeSelectLinkInfo = () =>
-  createSelector(
-    selectTableItemDialogDomain,
-    linkCreationState => linkCreationState.linkInfo,
-  );
 /**
- * Default selector used by TableItemDialog
+ * Default selector used by DomainItemDialog
  */
 
-const makeSelectTableItemDialog = () =>
+const makeSelectDomainItemDialog = () =>
   createSelector(
-    selectTableItemDialogDomain,
+    selectDomainItemDialogDomain,
     substate => substate,
   );
 
-export default makeSelectTableItemDialog;
+export default makeSelectDomainItemDialog;
 export {
-  selectTableItemDialogDomain,
-  makeSelectURI,
-  makeSelectURIValidation,
-  makeSelectLinkDomain,
-  makeSelectSlink,
+  selectDomainItemDialogDomain,
+  makeSelectDeleteDomainSuccess,
+  makeSelectDeleteDomainError,
   makeSelectLoading,
-  makeSelectsLinkError,
-  makeSelectFetchLinkSuccess,
-  makeSelectLinkInfo,
 };

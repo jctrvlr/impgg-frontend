@@ -137,9 +137,11 @@ const useStyles = makeStyles(theme => ({
     flexFlow: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: theme.spacing(3, 0),
   },
   halfChart: {
     flex: '1 0 50%',
+    padding: theme.spacing(3, 0),
   },
   qrCodeContainer: {
     display: 'flex',
@@ -465,7 +467,7 @@ export function TableItemDialog({
       colorAxis: {
         min: 0,
         minColor: '#E6E7E8',
-        maxColor: '#005645',
+        maxColor: '#F54336',
       },
       series: [
         {

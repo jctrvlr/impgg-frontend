@@ -28,7 +28,7 @@ const domainItemDialogReducer = (state = initialState, action) =>
 
       case DELETE_DOMAIN_SUCCESS:
         draft.loading = false;
-        draft.deleteDomainSuccess = action.success;
+        draft.deleteDomainSuccess = true;
         break;
 
       case DELETE_DOMAIN_ERROR:

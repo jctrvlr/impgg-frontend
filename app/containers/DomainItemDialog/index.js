@@ -5,8 +5,10 @@
  *
  */
 
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
+import { useSnackbar } from 'notistack';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -43,7 +45,11 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { makeSelectLoading } from './selectors';
+import {
+  makeSelectLoading,
+  makeSelectDeleteDomainSuccess,
+  makeSelectDeleteDomainError,
+} from './selectors';
 
 import { makeSelectUserData } from '../App/selectors';
 
@@ -109,7 +115,9 @@ const isSubdomain = url => {
 export function DomainItemDialog({
   selectedDomain,
   open,
-  setOpen,
+  deleteDomainSuccess,
+  deleteDomainError,
+  handleModalClose,
   loading,
   onDelete,
 }) {
@@ -121,8 +129,11 @@ export function DomainItemDialog({
 
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleClose = () => {
-    setOpen(false);
+    setOpenDeleteDialog(false);
+    handleModalClose();
   };
 
   const handleDeleteClick = () => {
@@ -139,6 +150,24 @@ export function DomainItemDialog({
     subdomain = domainSplit[0];
   }
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    if (deleteDomainError) {
+      enqueueSnackbar('Domain could not be deleted. Please try again.', {
+        variant: 'error',
+      });
+      handleClose();
+    }
+  }, [deleteDomainError]);
+
+  useEffect(() => {
+    if (deleteDomainSuccess) {
+      enqueueSnackbar('Domain and related links deleted successfully', {
+        variant: 'success',
+      });
+      handleClose();
+    }
+  }, [deleteDomainSuccess]);
 
   return (
     <React.Fragment>
@@ -244,14 +273,18 @@ export function DomainItemDialog({
 DomainItemDialog.propTypes = {
   selectedDomain: PropTypes.array,
   open: PropTypes.bool,
+  deleteDomainSuccess: PropTypes.bool,
+  deleteDomainError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   loading: PropTypes.bool,
-  setOpen: PropTypes.func,
+  handleModalClose: PropTypes.func,
   onDelete: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   userData: makeSelectUserData(),
   selectedDomain: makeSelectSelectedDomain(),
+  deleteDomainSuccess: makeSelectDeleteDomainSuccess(),
+  deleteDomainError: makeSelectDeleteDomainError(),
   loading: makeSelectLoading(),
 });
 

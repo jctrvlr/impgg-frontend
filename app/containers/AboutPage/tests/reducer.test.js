@@ -1,9 +1,9 @@
 // import produce from 'immer';
-import featuresReducer from '../reducer';
+import aboutPageReducer from '../reducer';
 // import { someAction } from '../actions';
 
 /* eslint-disable default-case, no-param-reassign */
-describe('featuresReducer', () => {
+describe('aboutPageReducer', () => {
   let state;
   beforeEach(() => {
     state = {
@@ -13,7 +13,7 @@ describe('featuresReducer', () => {
 
   it('returns the initial state', () => {
     const expectedResult = state;
-    expect(featuresReducer(undefined, {})).toEqual(expectedResult);
+    expect(aboutPageReducer(undefined, {})).toEqual(expectedResult);
   });
 
   /**
