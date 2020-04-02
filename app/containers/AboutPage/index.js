@@ -18,9 +18,6 @@ import { compose } from 'redux';
 
 import { push } from 'connected-react-router';
 
-import { useInjectSaga } from 'utils/injectSaga';
-import { useInjectReducer } from 'utils/injectReducer';
-
 import Header from 'components/Header/index';
 import Footer from 'components/Footer';
 
@@ -33,13 +30,8 @@ import Divider from '@material-ui/core/Divider';
 
 import Button from '@material-ui/core/Button';
 
-import makeSelectAboutPage from './selectors';
-
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 import { logoutUser } from '../App/actions';
-
-import reducer from './reducer';
-import saga from './saga';
 
 import messages from './messages';
 
@@ -76,9 +68,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function AboutPage({ userData, loggedIn, onLogoutClick }) {
-  useInjectReducer({ key: 'about', reducer });
-  useInjectSaga({ key: 'about', saga });
-
   const classes = useStyles();
 
   return (
@@ -189,7 +178,6 @@ AboutPage.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  aboutPage: makeSelectAboutPage(),
   loggedIn: makeSelectLoggedIn(),
   userData: makeSelectUserData(),
 });
