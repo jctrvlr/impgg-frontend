@@ -180,7 +180,6 @@ export function* archiveLinkSaga() {
 
     yield all([put(archiveLinkSuccess(ret)), put(getTableData())]);
   } catch (err) {
-    console.log(err);
     yield put(archiveLinkError(err));
   }
 }
@@ -208,7 +207,6 @@ export function* deleteLinkSaga() {
 
     yield all([put(deleteLinkSuccess(ret)), put(getTableData())]);
   } catch (err) {
-    console.log(err);
     yield put(deleteLinkError(err));
   }
 }

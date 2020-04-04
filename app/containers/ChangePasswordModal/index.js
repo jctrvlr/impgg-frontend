@@ -254,6 +254,7 @@ export function ChangePasswordModal({
                   variant="contained"
                   color="primary"
                   className={classes.submit}
+                  disabled={!password || !loginEmail}
                 >
                   Log In
                 </Button>
@@ -294,7 +295,7 @@ const mapStateToProps = createStructuredSelector({
   changeSuccess: makeSelectChangeSuccess(),
 });
 
-function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch) {
   return {
     onChangeLoginEmail: evt => {
       dispatch(changeLoginEmail(evt.target.value));

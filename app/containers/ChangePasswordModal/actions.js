@@ -42,9 +42,10 @@ export function updatePasswordSuccess() {
   };
 }
 
-export function updatePasswordError() {
+export function updatePasswordError(err) {
   return {
     type: UPDATE_PASSWORD_ERROR,
+    err,
   };
 }
 

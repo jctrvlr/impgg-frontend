@@ -8,86 +8,80 @@ import {
 } from '../selectors';
 describe('ChangePasswordModal Selectors', () => {
   describe('makeSelectLoginEmail', () => {
+    const selector = makeSelectLoginEmail();
     it('should select the loginEmail', () => {
-      const changePasswordState = {
-        loginEmail: 'user@email.com',
-      };
+      const loginEmail = 'user@email.com';
       const mockedState = {
-        changePasswordState,
+        changePasswordModal: {
+          loginEmail,
+        },
       };
-      expect(makeSelectLoginEmail()(mockedState)).toEqual(
-        changePasswordState.loginEmail,
-      );
+      expect(selector(mockedState)).toEqual(loginEmail);
     });
   });
 
   describe('makeSelectPassword', () => {
-    it('should select loading', () => {
-      const changePasswordState = {
-        password: 'Hunter2',
-      };
+    const selector = makeSelectPassword();
+    it('should select the password', () => {
+      const password = 'Hunter2';
       const mockedState = {
-        changePasswordState,
+        changePasswordModal: {
+          password,
+        },
       };
-      expect(makeSelectPassword()(mockedState)).toEqual(
-        changePasswordState.password,
-      );
+      expect(selector(mockedState)).toEqual(password);
     });
   });
 
   describe('makeSelectLoginError', () => {
-    it('should select loginError', () => {
-      const changePasswordState = {
-        loginError: 'error',
-      };
+    const selector = makeSelectLoginError();
+    it('should select the loginError', () => {
+      const loginError = 'error';
       const mockedState = {
-        changePasswordState,
+        changePasswordModal: {
+          loginError,
+        },
       };
-      expect(makeSelectLoginError()(mockedState)).toEqual(
-        changePasswordState.loginError,
-      );
+      expect(selector(mockedState)).toEqual(loginError);
     });
   });
 
   describe('makeSelectLoading', () => {
-    it('should select loading', () => {
-      const changePasswordState = {
-        loading: false,
-      };
+    const selector = makeSelectLoading();
+    it('should select the loading', () => {
+      const loading = false;
       const mockedState = {
-        changePasswordState,
+        changePasswordModal: {
+          loading,
+        },
       };
-      expect(makeSelectLoading()(mockedState)).toEqual(
-        changePasswordState.loading,
-      );
+      expect(selector(mockedState)).toEqual(loading);
     });
   });
 
   describe('makeSelectAuthSuccess', () => {
-    it('should select userData', () => {
-      const changePasswordState = {
-        authSuccess: false,
-      };
+    const selector = makeSelectAuthSuccess();
+    it('should select the authSuccess', () => {
+      const authSuccess = false;
       const mockedState = {
-        changePasswordState,
+        changePasswordModal: {
+          authSuccess,
+        },
       };
-      expect(makeSelectAuthSuccess()(mockedState)).toEqual(
-        changePasswordState.authSuccess,
-      );
+      expect(selector(mockedState)).toEqual(authSuccess);
     });
   });
 
   describe('makeSelectChangeSuccess', () => {
-    it('should select userData', () => {
-      const changePasswordState = {
-        changeSuccess: false,
-      };
+    const selector = makeSelectChangeSuccess();
+    it('should select the changeSuccess', () => {
+      const changeSuccess = false;
       const mockedState = {
-        changePasswordState,
+        changePasswordModal: {
+          changeSuccess,
+        },
       };
-      expect(makeSelectChangeSuccess()(mockedState)).toEqual(
-        changePasswordState.changeSuccess,
-      );
+      expect(selector(mockedState)).toEqual(changeSuccess);
     });
   });
 });

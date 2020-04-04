@@ -2,8 +2,9 @@
  * Test sagas
  */
 
-import { put, takeLatest } from 'redux-saga/effects';
+import { put, all, takeLatest } from 'redux-saga/effects';
 
+import { baseUrl } from 'vars';
 import { AUTH_USER, UPDATE_PASSWORD } from '../constants';
 import {
   authUserSuccess,
@@ -13,12 +14,15 @@ import {
 } from '../actions';
 import changePasswordWatcher, { authUser, updatePassword } from '../saga';
 
-const loginEmail = 'email@website.com';
+const email = 'email@website.com';
 const password = 'Hunter2';
 const userData = {
   user: {
     firstName: 'John',
     lastName: 'Cummings',
+  },
+  token: {
+    accessToken: '12345',
   },
 };
 
@@ -31,42 +35,80 @@ describe('authUser Saga', () => {
   beforeEach(() => {
     authUserGenerator = authUser();
 
-    const selectDescriptor = authUserGenerator.next().value;
-    expect(selectDescriptor).toMatchSnapshot();
+    const selectEmailDescriptor = authUserGenerator.next().value;
+    expect(selectEmailDescriptor).toMatchSnapshot();
 
-    const callDescriptor = authUserGenerator.next(
-      loginEmail,
+    const selectPasswordDescriptor = authUserGenerator.next().value;
+    expect(selectPasswordDescriptor).toMatchSnapshot();
+
+    const selectUserDataDescriptor = authUserGenerator.next().value;
+    expect(selectUserDataDescriptor).toMatchSnapshot();
+
+    const callDescriptor = authUserGenerator.next({
+      email,
       password,
       userData,
-    ).value;
+      baseUrl,
+    }).value;
     expect(callDescriptor).toMatchSnapshot();
   });
 
-  it('should dispatch the reposLoaded action if it requests the data successfully', () => {
-    const response = [
-      {
-        name: 'First repo',
-      },
-      {
-        name: 'Second repo',
-      },
-    ];
-    const putDescriptor = getReposGenerator.next(response).value;
-    expect(putDescriptor).toEqual(put(reposLoaded(response, username)));
+  it('should dispatch the authUserSuccess action if the user is authed successfully', () => {
+    const response = { authenticated: true };
+    const putDescriptor = authUserGenerator.next(response).value;
+    expect(putDescriptor).toEqual(put(authUserSuccess(response)));
   });
 
-  it('should call the repoLoadingError action if the response errors', () => {
+  it('should call the authUserError action if the response errors', () => {
     const response = new Error('Some error');
-    const putDescriptor = getReposGenerator.throw(response).value;
-    expect(putDescriptor).toEqual(put(repoLoadingError(response)));
+
+    const putDescriptor = authUserGenerator.throw(response).value;
+    expect(putDescriptor).toEqual(put(authUserError(response)));
   });
 });
 
-describe('githubDataSaga Saga', () => {
-  const githubDataSaga = githubData();
+describe('updatePassword Saga', () => {
+  let updatePasswordGenerator;
 
-  it('should start task to watch for LOAD_REPOS action', () => {
-    const takeLatestDescriptor = githubDataSaga.next().value;
-    expect(takeLatestDescriptor).toEqual(takeLatest(LOAD_REPOS, getRepos));
+  // We have to test twice, once for a successful load and once for an unsuccessful one
+  // so we do all the stuff that happens beforehand automatically in the beforeEach
+  beforeEach(() => {
+    updatePasswordGenerator = updatePassword();
+
+    const selectPasswordDescriptor = updatePasswordGenerator.next().value;
+    expect(selectPasswordDescriptor).toMatchSnapshot();
+
+    const selectUserDataDescriptor = updatePasswordGenerator.next().value;
+    expect(selectUserDataDescriptor).toMatchSnapshot();
+
+    const callDescriptor = updatePasswordGenerator.next({ password, userData })
+      .value;
+    expect(callDescriptor).toMatchSnapshot();
+  });
+
+  it('should dispatch the updatePasswordSuccess action if the user is authed successfully', () => {
+    const response = { authenticated: true };
+    const putDescriptor = updatePasswordGenerator.next(response).value;
+    expect(putDescriptor).toEqual(put(updatePasswordSuccess()));
+  });
+
+  it('should call the updatePasswordError action if the response errors', () => {
+    const response = new Error('Some error');
+    const putDescriptor = updatePasswordGenerator.throw(response).value;
+    expect(putDescriptor).toEqual(put(updatePasswordError(response)));
+  });
+});
+
+describe('changePasswordWatcher Saga', () => {
+  const changePasswordWatcherSaga = changePasswordWatcher();
+
+  it('should start task to watch for AUTH_USER action and UPDATE_PASSWORD action', () => {
+    const takeLatestDescriptor = changePasswordWatcherSaga.next().value;
+    expect(takeLatestDescriptor).toEqual(
+      all([
+        takeLatest(AUTH_USER, authUser),
+        takeLatest(UPDATE_PASSWORD, updatePassword),
+      ]),
+    );
   });
 });

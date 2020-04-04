@@ -27,11 +27,13 @@ export function* authUser() {
   const password = yield select(makeSelectPassword());
   const userData = yield select(makeSelectUserData());
 
+  const accessToken = userData && userData.token && userData.token.accessToken;
+
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${userData.token.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({ email, password }),
   };
@@ -42,11 +44,15 @@ export function* authUser() {
     // eslint-disable-next-line no-unused-vars
     const ret = yield call(request, requestURL, requestOptions);
 
-    yield put(authUserSuccess());
+    yield put(authUserSuccess(ret));
   } catch (err) {
-    const jres = yield err.response.json();
-    const authUserErrorMess = jres.message;
-    yield put(authUserError(authUserErrorMess));
+    if (err && err.response) {
+      const jres = yield err.response.json();
+      const authUserErrorMess = jres.message;
+      yield put(authUserError(authUserErrorMess));
+    } else {
+      yield put(authUserError(err));
+    }
   }
 }
 
@@ -58,11 +64,13 @@ export function* updatePassword() {
   const password = yield select(makeSelectPassword());
   const userData = yield select(makeSelectUserData());
 
+  const accessToken = userData && userData.token && userData.token.accessToken;
+
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${userData.token.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify({ password }),
   };
@@ -75,9 +83,13 @@ export function* updatePassword() {
 
     yield put(updatePasswordSuccess());
   } catch (err) {
-    const jres = yield err.response.json();
-    const authUserErrorMess = jres.message;
-    yield put(updatePasswordError(authUserErrorMess));
+    if (err && err.response) {
+      const jres = yield err.response.json();
+      const updatePasswordErrorMess = jres.message;
+      yield put(updatePasswordError(updatePasswordErrorMess));
+    } else {
+      yield put(updatePasswordError(err));
+    }
   }
 }
 
