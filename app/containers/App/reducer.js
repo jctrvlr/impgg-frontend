@@ -107,7 +107,6 @@ const appReducer = (state = initialState, action) =>
 
       case NEW_USER_DATA:
         _.set(draft.userData.user, 'domains', action.userData.user.domains);
-        // draft.userData = action.userData;
         break;
     }
   });

@@ -67,8 +67,6 @@ export function* fetchLink() {
     // ret should be ['creatorId', 'url', 'type', 'shortLink']
     const ret = yield call(request, requestURL, requestOptions);
 
-    console.log(ret);
-
     // Return linkData
     yield all([put(fetchUrlSuccess(ret)), put(getTableData())]);
   } catch (err) {

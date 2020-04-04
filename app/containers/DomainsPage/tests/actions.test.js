@@ -1,13 +1,15 @@
-import { defaultAction } from '../actions';
-import { DEFAULT_ACTION } from '../constants';
+import { changeSelectedDomain } from '../actions';
+import { CHANGE_SELECTED_DOMAIN } from '../constants';
 
 describe('DomainsPage actions', () => {
   describe('Default Action', () => {
-    it('has a type of DEFAULT_ACTION', () => {
+    it('should return type of CHANGE_SELECTED_DOMAIN and pass selectedDomain', () => {
+      const fixture = ['domain'];
       const expected = {
-        type: DEFAULT_ACTION,
+        type: CHANGE_SELECTED_DOMAIN,
+        selectedDomain: fixture,
       };
-      expect(defaultAction()).toEqual(expected);
+      expect(changeSelectedDomain(fixture)).toEqual(expected);
     });
   });
 });

@@ -44,7 +44,6 @@ export function* getTableInfo() {
     const ret = yield call(request, requestURL, requestOptions);
     yield put(tableDataSuccess(ret));
   } catch (err) {
-    console.log('error here', err);
     yield put(tableDataError(err));
   }
 }
@@ -72,7 +71,6 @@ export function* archiveLinkSaga() {
 
     yield all([put(archiveLinkSuccess(ret)), put(getTableData())]);
   } catch (err) {
-    console.log(err);
     yield put(archiveLinkError(err));
   }
 }

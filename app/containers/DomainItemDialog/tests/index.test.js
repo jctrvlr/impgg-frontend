@@ -11,16 +11,16 @@ import { render } from 'react-testing-library';
 import { IntlProvider } from 'react-intl';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import { TableItemDialog } from '../index';
+import { DomainItemDialog } from '../index';
 import { DEFAULT_LOCALE } from '../../../i18n';
 
-describe('<TableItemDialog />', () => {
+describe('<DomainItemDialog />', () => {
   it('Expect to not log errors in console', () => {
     const spy = jest.spyOn(global.console, 'error');
     const dispatch = jest.fn();
     render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <TableItemDialog dispatch={dispatch} />
+        <DomainItemDialog dispatch={dispatch} />
       </IntlProvider>,
     );
     expect(spy).not.toHaveBeenCalled();
@@ -40,7 +40,7 @@ describe('<TableItemDialog />', () => {
       container: { firstChild },
     } = render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <TableItemDialog />
+        <DomainItemDialog />
       </IntlProvider>,
     );
     expect(firstChild).toMatchSnapshot();

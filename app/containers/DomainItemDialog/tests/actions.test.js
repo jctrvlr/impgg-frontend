@@ -1,13 +1,41 @@
-import { defaultAction } from '../actions';
-import { DEFAULT_ACTION } from '../constants';
+import {
+  deleteDomain,
+  deleteDomainSuccess,
+  deleteDomainError,
+} from '../actions';
+import {
+  DELETE_DOMAIN,
+  DELETE_DOMAIN_SUCCESS,
+  DELETE_DOMAIN_ERROR,
+} from '../constants';
 
-describe('TableItemDialog actions', () => {
-  describe('Default Action', () => {
-    it('has a type of DEFAULT_ACTION', () => {
+describe('DomainItemDialog actions', () => {
+  describe('deleteDomain action', () => {
+    it('has a type of DELETE_DOMAIN', () => {
       const expected = {
-        type: DEFAULT_ACTION,
+        type: DELETE_DOMAIN,
       };
-      expect(defaultAction()).toEqual(expected);
+      expect(deleteDomain()).toEqual(expected);
+    });
+  });
+
+  describe('deleteDomainSuccess action', () => {
+    it('has a type of DELETE_DOMAIN', () => {
+      const expected = {
+        type: DELETE_DOMAIN_SUCCESS,
+      };
+      expect(deleteDomainSuccess()).toEqual(expected);
+    });
+  });
+
+  describe('deleteDomainError action', () => {
+    it('has a type of DELETE_DOMAIN_ERROR', () => {
+      const fixture = 'error';
+      const expected = {
+        type: DELETE_DOMAIN_ERROR,
+        err: fixture,
+      };
+      expect(deleteDomainError(fixture)).toEqual(expected);
     });
   });
 });

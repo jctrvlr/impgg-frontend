@@ -52,7 +52,7 @@ export function validateURI(uri) {
 /**
  * Logs social media share events
  *
- * @return {object} An action object with a type of LOG_EVENT
+ * @return {object} An action object with a type of LOG_SOCIAL_SHARE
  */
 export function logSocialMediaShare(media) {
   // eslint-disable-next-line no-console
@@ -77,7 +77,7 @@ export function generateShortLink() {
 /**
  * Dispatched when generating a short link is successful
  * @param {String} sLink
- * @returns {object} An action object with type GEN_SLINK_ERROR
+ * @returns {object} An action object with type GEN_SLINK_SUCCESS
  */
 export function generateShortLinkSuccess(sLink) {
   return {
@@ -159,7 +159,7 @@ export function updateURL() {
 /**
  * Dispatched when fetching the URL is successful
  *
- * @param  {array} linkData The link data
+ * @param  {object} linkData The link data
  *
  * @return {object} An action object with a type of FETCH_URL_SUCCESS passing the URL's information along
  */
@@ -173,7 +173,7 @@ export function updateURLSuccess(currentLink) {
 /**
  * Dispatched when registering the user fails
  *
- * @param  {object} error The error
+ * @param  {string} error The error
  *
  * @return {object} An action object with a type of REGISTER_USER_ERROR passing the error
  */

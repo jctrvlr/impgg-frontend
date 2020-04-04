@@ -51,22 +51,6 @@ export function registerUser() {
 }
 
 /**
- * Dispatched when the user is successfully changed emails
- *
- * @param  {array} userData The users data
- * @param  {string} username The current users username
- *
- * @return {object}      An action object with a type of REGISTER_USER_SUCCESS passing the newly registered users data
- */
-export function editEmailSuccessApp(userData, username) {
-  return {
-    type: EDIT_EMAIL_SUCCESS,
-    userData,
-    username,
-  };
-}
-
-/**
  * Dispatched when the user is successfully registered
  *
  * @param  {array} userData The users data
@@ -93,6 +77,22 @@ export function registerUserError(error) {
   return {
     type: REGISTER_USER_ERROR,
     error,
+  };
+}
+
+/**
+ * Dispatched when the user is successfully changed emails
+ *
+ * @param  {array} userData The users data
+ * @param  {string} username The current users username
+ *
+ * @return {object}      An action object with a type of REGISTER_USER_SUCCESS passing the newly registered users data
+ */
+export function editEmailSuccessApp(userData, username) {
+  return {
+    type: EDIT_EMAIL_SUCCESS,
+    userData,
+    username,
   };
 }
 
