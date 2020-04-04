@@ -63,7 +63,7 @@ describe('<ChangePasswordModal />', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should have button disabled if email or password is an empty string', () => {
+  it('should have log in button disabled if email or password is an empty string', () => {
     const submitSpy = jest.fn();
     const text = 'Log In';
 
@@ -120,7 +120,43 @@ describe('<ChangePasswordModal />', () => {
     expect(submitSpy).not.toHaveBeenCalled();
   });
 
-  it.todo('should not call onSubmitPasswordForm');
+  it('"Save password" button should not exist if authSuccess is not true', () => {
+    const submitSpy = jest.fn();
+    const text = 'Save password';
+
+    const { queryByText } = render(
+      <Provider store={store}>
+        <IntlProvider locale="en">
+          <ChangePasswordModal
+            authSuccess={false}
+            onChangeLoginEmail={() => {}}
+            onSubmitPasswordForm={submitSpy}
+            openModal
+          />
+        </IntlProvider>
+      </Provider>,
+    );
+    expect(queryByText(text)).toBeNull();
+  });
+
+  it('"Save password" button should exist if authSuccess is true', () => {
+    const submitSpy = jest.fn();
+    const text = 'Save password';
+
+    const { queryByText } = render(
+      <Provider store={store}>
+        <IntlProvider locale="en">
+          <ChangePasswordModal
+            authSuccess
+            onChangeLoginEmail={() => {}}
+            onSubmitPasswordForm={submitSpy}
+            openModal
+          />
+        </IntlProvider>
+      </Provider>,
+    );
+    expect(queryByText(text)).not.toBeNull();
+  });
 
   describe('mapDispatchToProps', () => {
     describe('onChangeLoginEmail', () => {
