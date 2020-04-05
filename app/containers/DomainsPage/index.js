@@ -3,7 +3,7 @@
  * DomainsPage
  *
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -36,7 +36,7 @@ import { logoutUser } from '../App/actions';
 
 import reducer from './reducer';
 import saga from './saga';
-import { changeSelectedDomain } from './actions';
+import { changeSelectedDomain, reloadUser } from './actions';
 
 // import messages from './messages';
 import DomainRegistrationDialog from '../DomainRegistrationDialog';
@@ -113,6 +113,7 @@ export function DomainsPage({
   onLogoutClick,
   onLoadUnauth,
   onChangeSelected,
+  newUserData,
 }) {
   useInjectReducer({ key: 'domainsPage', reducer });
   useInjectSaga({ key: 'domainsPage', saga });
@@ -123,6 +124,17 @@ export function DomainsPage({
   if (!loggedIn) {
     onLoadUnauth();
   }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      newUserData();
+    }, 1800000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    newUserData();
+  }, []);
 
   const [openModal, setOpenModal] = React.useState(false);
 
@@ -194,6 +206,7 @@ DomainsPage.propTypes = {
   onLogoutClick: PropTypes.func,
   onLoadUnauth: PropTypes.func,
   onChangeSelected: PropTypes.func,
+  newUserData: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -213,6 +226,9 @@ function mapDispatchToProps(dispatch) {
     },
     onChangeSelected: selectedDomain => {
       dispatch(changeSelectedDomain(selectedDomain));
+    },
+    newUserData: () => {
+      dispatch(reloadUser());
     },
   };
 }
