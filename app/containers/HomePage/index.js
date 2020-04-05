@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import ReactGA from 'react-ga';
 import { Helmet } from 'react-helmet';
 // import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
@@ -180,6 +181,12 @@ export function HomePage({
               to="/register"
               variant="contained"
               className={classes.heroButton}
+              onClick={() =>
+                ReactGA.event({
+                  category: 'Sign Up',
+                  action: 'User pressed hero register button',
+                })
+              }
             >
               Create a free account
             </Button>
