@@ -20,6 +20,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 
+import Tooltip from '@material-ui/core/Tooltip';
+
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -27,6 +29,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import FileCopy from '@material-ui/icons/FileCopy';
 import Archive from '@material-ui/icons/Archive';
 import Unarchive from '@material-ui/icons/Unarchive';
+
+import CachedIcon from '@material-ui/icons/Cached';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import TableItemDialog from '../TableItemDialog';
 
@@ -226,6 +232,9 @@ const useToolbarStyles = makeStyles(theme => ({
     fontSize: '1rem',
     lineHeight: 2.4,
   },
+  reloadButton: {
+    marginLeft: theme.spacing(5),
+  },
 }));
 
 const EnhancedTableToolbar = props => {
@@ -236,6 +245,8 @@ const EnhancedTableToolbar = props => {
     searchValue,
     archived,
     onArchiveChange,
+    reloadLinks,
+    loading,
   } = props;
 
   return (
@@ -275,6 +286,17 @@ const EnhancedTableToolbar = props => {
           </Typography>
         )}
       </div>
+      <div className={classes.reloadButton}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Tooltip title="Refresh now">
+            <IconButton onClick={reloadLinks} size="medium">
+              <CachedIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </div>
     </Toolbar>
   );
 };
@@ -282,9 +304,11 @@ const EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
   numLinks: PropTypes.number.isRequired,
   onChangeSearch: PropTypes.func,
+  loading: PropTypes.bool,
   searchValue: PropTypes.string,
   archived: PropTypes.bool,
   onArchiveChange: PropTypes.func,
+  reloadLinks: PropTypes.func,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -365,6 +389,8 @@ export default function EnhancedTable({
   archived,
   onArchiveChange,
   onArchive,
+  reloadLinks,
+  loading,
 }) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('desc');
@@ -431,6 +457,8 @@ export default function EnhancedTable({
     archived: PropTypes.bool,
     onArchiveChange: PropTypes.func,
     onArchive: PropTypes.func,
+    reloadLinks: PropTypes.func,
+    loading: PropTypes.bool,
   };
 
   let emptyRows;
@@ -667,6 +695,8 @@ export default function EnhancedTable({
           searchValue={searchValue}
           archived={archived}
           onArchiveChange={onArchiveChange}
+          reloadLinks={reloadLinks}
+          loading={loading}
         />
         <div className={classes.tableWrapper}>
           <Table

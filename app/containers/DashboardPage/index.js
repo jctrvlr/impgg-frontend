@@ -19,7 +19,6 @@ import { useInjectReducer } from 'utils/injectReducer';
 
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 // import Typography from '@material-ui/core/Typography';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -159,6 +158,10 @@ export function DashboardPage({
   const classes = useStyles();
 
   useEffect(() => {
+    onLoad();
+  }, []);
+
+  useEffect(() => {
     if (newLink) {
       onLoad();
     }
@@ -209,19 +212,15 @@ export function DashboardPage({
           openModal={openModal}
           handleModalClose={handleModalClose}
         />
-        {loading ? (
-          <div>
-            <CircularProgress />
-          </div>
-        ) : (
-          <Table
-            tableData={tableData}
-            onChangeSelected={onChangeSelected}
-            archived={tableArchived}
-            onArchiveChange={onArchiveChange}
-            onArchive={onArchive}
-          />
-        )}
+        <Table
+          tableData={tableData}
+          onChangeSelected={onChangeSelected}
+          archived={tableArchived}
+          onArchiveChange={onArchiveChange}
+          onArchive={onArchive}
+          reloadLinks={onLoad}
+          loading={loading}
+        />
       </Container>
       <Footer />
     </React.Fragment>
