@@ -11,6 +11,7 @@ import '@babel/polyfill';
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactGA from 'react-ga';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'utils/history';
@@ -40,7 +41,6 @@ import 'file-loader?name=.htaccess!./.htaccess';
 /* eslint-enable import/no-unresolved, import/extensions */
 
 import configureStore from './configureStore';
-
 // Import i18n messages
 import { translationMessages } from './i18n';
 
@@ -54,6 +54,18 @@ const notistackRef = React.createRef();
 const onClickDismiss = key => () => {
   notistackRef.current.closeSnackbar(key);
 };
+
+// Initialize google analytics
+const trackingId = 'UA-162826909-1';
+ReactGA.initialize(trackingId, {
+  debug: false,
+});
+
+// Initialize google analytics page view tracking
+history.listen(location => {
+  ReactGA.set({ page: location.pathname }); // Update users current page
+  ReactGA.pageview(location.pathname); // Record a pageview for given page
+});
 
 const render = messages => {
   ReactDOM.render(
@@ -109,5 +121,5 @@ if (!window.Intl) {
 // it's not most important operation and if main code fails,
 // we do not want it installed
 if (process.env.NODE_ENV === 'production') {
-  require('offline-plugin/runtime').install(); // eslint-disable-line global-require
+  // require('offline-plugin/runtime').install(); // eslint-disable-line global-require
 }

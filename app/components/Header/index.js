@@ -7,6 +7,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
+import ReactGA from 'react-ga';
 
 import DarkToggle from 'components/DarkToggle';
 import AppBar from '@material-ui/core/AppBar';
@@ -243,6 +244,12 @@ function Header({ loggedIn, userData, logoutUser, background }) {
               to="/register"
               color="primary"
               variant="contained"
+              onClick={() =>
+                ReactGA.event({
+                  category: 'Sign Up',
+                  action: 'User pressed header register button',
+                })
+              }
               className={classes.linkNoBackground}
             >
               <FormattedMessage {...messages.register} />
@@ -397,6 +404,12 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                 to="/register"
                 color="primary"
                 variant="contained"
+                onClick={() =>
+                  ReactGA.event({
+                    category: 'Sign Up',
+                    action: 'User pressed header register button',
+                  })
+                }
                 className={classes.linkNoBackground}
               >
                 <FormattedMessage {...messages.register} />

@@ -1,9 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 /**
  * logs in user
  */
 
 import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
+import ReactGA from 'react-ga';
 import { AUTHENTICATE_USER } from 'containers/App/constants';
 import { authUserSuccess, authUserError } from 'containers/App/actions';
 
@@ -44,6 +46,10 @@ export function* authUser() {
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
     localStorage.setItem('userData', JSON.stringify(ret));
+
+    ReactGA.set({
+      userId: ret.user._id,
+    });
 
     yield put(authUserSuccess(ret, email));
     yield put(push('/'));

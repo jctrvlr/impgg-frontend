@@ -1,9 +1,12 @@
+/* eslint-disable no-underscore-dangle */
 /**
  * Gets the repositories of the user from Github
  */
 
 import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
+
+import ReactGA from 'react-ga';
 
 import { REGISTER_USER } from 'containers/App/constants';
 import { registerUserSuccess, registerUserError } from 'containers/App/actions';
@@ -55,6 +58,9 @@ export function* registerUser() {
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
     localStorage.setItem('userData', JSON.stringify(ret));
 
+    ReactGA.set({
+      userId: ret.user._id,
+    });
     yield put(registerUserSuccess(ret, email));
     yield put(push('/'));
   } catch (err) {
