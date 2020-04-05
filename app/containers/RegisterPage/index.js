@@ -150,6 +150,7 @@ export function RegisterPage({
   }
 
   const [showPassword, setShowPassword] = React.useState(false);
+  const [agreeTerms, setAgreeTerms] = React.useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -157,6 +158,10 @@ export function RegisterPage({
 
   const handleMouseDownPassword = event => {
     event.preventDefault();
+  };
+
+  const onChangeTerms = event => {
+    setAgreeTerms(!agreeTerms);
   };
 
   return (
@@ -245,7 +250,11 @@ export function RegisterPage({
                 />
               </Grid>
               <Grid item xs={12}>
-                <Checkbox value="allowExtraEmails" color="primary" />
+                <Checkbox
+                  onChange={onChangeTerms}
+                  checked={agreeTerms}
+                  color="primary"
+                />
                 <TermsAndPrivacy />
               </Grid>
             </Grid>
@@ -255,6 +264,9 @@ export function RegisterPage({
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={
+                !agreeTerms || !firstName || !lastName || !email || !password
+              }
             >
               Sign Up
             </Button>
