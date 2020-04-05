@@ -180,6 +180,7 @@ export function DomainRegistrationDialog({
         variant: 'error',
       });
       handleModalClose();
+      setActiveStep(0);
     }
   }, [addDomainError]);
 
