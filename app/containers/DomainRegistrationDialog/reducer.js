@@ -29,21 +29,25 @@ const domainRegistrationDialogReducer = (state = initialState, action) =>
       case CHANGE_DOMAIN:
         draft.domain = action.domain;
         draft.addDomainSuccess = false;
+        draft.addDomainError = false;
         break;
 
       case CHANGE_SUBDOMAIN:
         draft.subdomain = action.subdomain;
         draft.addDomainSuccess = false;
+        draft.addDomainError = false;
         break;
 
       case ADD_DOMAIN:
         draft.addDomainSuccess = false;
+        draft.addDomainError = false;
         draft.loading = true;
         break;
 
       case ADD_DOMAIN_SUCCESS:
         draft.addDomainSuccess = true;
         draft.loading = false;
+        draft.addDomainError = false;
         break;
 
       case ADD_DOMAIN_ERROR:
