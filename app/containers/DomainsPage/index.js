@@ -4,6 +4,8 @@
  *
  */
 import React, { useEffect } from 'react';
+import { Route, Link as RouterLink } from 'react-router-dom';
+
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -108,6 +110,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function DomainsPage({
+  match,
   userData,
   loggedIn,
   onLogoutClick,
@@ -136,16 +139,6 @@ export function DomainsPage({
     newUserData();
   }, []);
 
-  const [openModal, setOpenModal] = React.useState(false);
-
-  const handleModalOpen = () => {
-    setOpenModal(true);
-  };
-
-  const handleModalClose = () => {
-    setOpenModal(false);
-  };
-
   const [openDItemModal, setOpenDItemModal] = React.useState(false);
 
   const handleDItemModalOpen = () => {
@@ -171,7 +164,8 @@ export function DomainsPage({
         className={classes.newLinkButton}
         variant="contained"
         color="primary"
-        onClick={handleModalOpen}
+        to="/domains/new"
+        component={RouterLink}
       >
         New Domain
       </Button>
@@ -183,10 +177,6 @@ export function DomainsPage({
       />
       <Container maxWidth="xl" component="main" className={classes.heroContent}>
         {/* Table */}
-        <DomainRegistrationDialog
-          openModal={openModal}
-          handleModalClose={handleModalClose}
-        />
         <Table
           domains={userData.user.domains}
           onChangeSelected={onChangeSelected}
@@ -196,11 +186,16 @@ export function DomainsPage({
         />
       </Container>
       <Footer />
+      <Route
+        path={`${match.url}/new`}
+        render={props => <DomainRegistrationDialog {...props} openModal />}
+      />
     </React.Fragment>
   );
 }
 
 DomainsPage.propTypes = {
+  match: PropTypes.object,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   loggedIn: PropTypes.bool,
   onLogoutClick: PropTypes.func,

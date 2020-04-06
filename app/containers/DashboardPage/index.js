@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { Route, Link as RouterLink } from 'react-router-dom';
 
 // import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
@@ -139,6 +140,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function DashboardPage({
+  match,
   userData,
   tableData,
   loggedIn,
@@ -171,16 +173,6 @@ export function DashboardPage({
     onLoadUnauth();
   }
 
-  const [openModal, setOpenModal] = React.useState(false);
-
-  const handleModalOpen = () => {
-    setOpenModal(true);
-  };
-
-  const handleModalClose = () => {
-    setOpenModal(false);
-  };
-
   return (
     <React.Fragment>
       <Helmet>
@@ -194,7 +186,8 @@ export function DashboardPage({
         className={classes.newLinkButton}
         variant="contained"
         color="primary"
-        onClick={handleModalOpen}
+        to="/dashboard/create"
+        component={RouterLink}
       >
         +
       </Button>
@@ -208,10 +201,6 @@ export function DashboardPage({
 
       {/* Start of dashboard main */}
       <Container maxWidth="xl" component="main" className={classes.formContent}>
-        <LinkCreationDialog
-          openModal={openModal}
-          handleModalClose={handleModalClose}
-        />
         <Table
           tableData={tableData}
           onChangeSelected={onChangeSelected}
@@ -223,11 +212,16 @@ export function DashboardPage({
         />
       </Container>
       <Footer />
+      <Route
+        path={`${match.url}/create`}
+        render={props => <LinkCreationDialog {...props} openModal />}
+      />
     </React.Fragment>
   );
 }
 
 DashboardPage.propTypes = {
+  match: PropTypes.object,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loggedIn: PropTypes.bool,

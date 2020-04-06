@@ -11,6 +11,7 @@ import {
   URI_VALIDATION,
   CHANGE_DOMAIN,
   CHANGE_SUBDOMAIN,
+  RESET_STATE,
 } from './constants';
 
 export const initialState = {
@@ -58,6 +59,15 @@ const domainRegistrationDialogReducer = (state = initialState, action) =>
 
       case URI_VALIDATION:
         draft.uriValidation = action.uriValidation;
+        break;
+
+      case RESET_STATE:
+        draft.domain = '';
+        draft.subdomain = '';
+        draft.uriValidation = false;
+        draft.loading = false;
+        draft.addDomainSuccess = false;
+        draft.addDomainError = false;
         break;
     }
   });

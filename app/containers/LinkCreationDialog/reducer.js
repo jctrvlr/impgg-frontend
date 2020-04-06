@@ -15,6 +15,7 @@ import {
   GEN_SLINK,
   GEN_SLINK_SUCCESS,
   GEN_SLINK_ERROR,
+  RESET_STATE,
 } from './constants';
 
 export const initialState = {
@@ -85,6 +86,16 @@ const linkCreationDialogReducer = (state = initialState, action) =>
         draft.currentLink = false;
         draft.fetchLinkSuccess = false;
         break;
+
+      case RESET_STATE:
+        draft.uri = '';
+        draft.sLink = false;
+        draft.linkDomain = '';
+        draft.uriValidation = false;
+        draft.sLinkError = false;
+        draft.currentLink = false;
+        draft.loading = false;
+        draft.fetchLinkSuccess = false;
     }
   });
 

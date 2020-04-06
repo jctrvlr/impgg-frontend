@@ -11,6 +11,7 @@ import {
   ADD_DOMAIN_ERROR,
   CHANGE_DOMAIN,
   CHANGE_SUBDOMAIN,
+  RESET_STATE,
 } from './constants';
 
 /**
@@ -31,6 +32,17 @@ export function validateURI(uri) {
   return {
     type: URI_VALIDATION,
     uriValidation,
+  };
+}
+
+/**
+ * Reset state
+ *
+ * @return {object} An action object with type of RESET_STATE
+ */
+export function resetState() {
+  return {
+    type: RESET_STATE,
   };
 }
 

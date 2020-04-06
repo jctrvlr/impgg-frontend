@@ -14,3 +14,4 @@ export const CHANGE_SLINK = 'app/LinkCreationDialog/CHANGE_SLINK';
 export const GEN_SLINK = 'app/LinkCreationDialog/GEN_SLINK';
 export const GEN_SLINK_SUCCESS = 'app/LinkCreationDialog/GEN_SLINK_SUCCESS';
 export const GEN_SLINK_ERROR = 'app/LinkCreationDialog/GEN_SLINK_ERROR';
+export const RESET_STATE = 'app/LinkCreationDialog/RESET_STATE';

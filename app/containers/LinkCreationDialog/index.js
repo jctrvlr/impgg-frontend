@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 // import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
+import { push } from 'connected-react-router';
 
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -54,6 +55,7 @@ import {
   fetchUrl,
   changeSLink,
   generateShortLink,
+  resetState,
 } from './actions';
 
 import { getTableData } from '../DashboardPage/actions';
@@ -94,7 +96,6 @@ const useStyles = makeStyles(theme => ({
 export function LinkCreationDialog({
   openModal,
   userData,
-  handleModalClose,
   uriValidation,
   uri,
   sLink,
@@ -108,6 +109,7 @@ export function LinkCreationDialog({
   onChangeSLink,
   onSubmitForm,
   onValidURI,
+  modalClose,
 }) {
   useInjectReducer({ key: 'linkCreationDialog', reducer });
   useInjectSaga({ key: 'linkCreationDialog', saga });
@@ -117,6 +119,11 @@ export function LinkCreationDialog({
   const { enqueueSnackbar } = useSnackbar();
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleModalClose = () => {
+    // Redirect user to /domains
+    modalClose();
+  };
 
   useEffect(() => {
     onChangeDomainFirst(userData.user.preferences.primaryDomain);
@@ -241,7 +248,7 @@ export function LinkCreationDialog({
 LinkCreationDialog.propTypes = {
   openModal: PropTypes.bool,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  handleModalClose: PropTypes.func,
+  modalClose: PropTypes.func,
   uriValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   uri: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   domain: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
@@ -295,6 +302,10 @@ function mapDispatchToProps(dispatch) {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(fetchUrl());
       dispatch(getTableData());
+    },
+    modalClose: () => {
+      dispatch(resetState());
+      dispatch(push('/dashboard'));
     },
   };
 }
