@@ -5,6 +5,7 @@
 
 // import { push } from 'connected-react-router';
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 
 import request from 'utils/request';
 
@@ -43,7 +44,7 @@ import { makeSelectUserData } from '../App/selectors';
 /**
  * Create link request/response handler
  */
-export function* fetchLink() {
+export function* updateLink() {
   // Select URL and userData from store
   const uri = yield select(makeSelectURI());
   const selectedData = yield select(makeSelectSelectedData());
@@ -78,7 +79,11 @@ export function* fetchLink() {
     const ret = yield call(request, requestURL, requestOptions);
 
     // Return linkData
-    yield all([put(updateURLSuccess(ret)), put(getTableData())]);
+    yield all([
+      put(updateURLSuccess(ret)),
+      put(push('/dashboard')),
+      put(getTableData()),
+    ]);
   } catch (err) {
     const jres = yield err.response.json();
     let sLinkError;
@@ -222,7 +227,7 @@ export default function* fetchLinkWatcher() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield all([
-    takeLatest(UPDATE_LINK, fetchLink),
+    takeLatest(UPDATE_LINK, updateLink),
     takeLatest(GEN_SLINK, genSlink),
     takeLatest(GET_LINK_INFO, getLinkInfo),
     takeLatest(ARCHIVE_LINK, archiveLinkSaga),

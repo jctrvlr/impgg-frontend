@@ -27,3 +27,4 @@ export const ARCHIVE_LINK_ERROR = 'app/TableItemDialog/ARCHIVE_LINK_ERROR';
 export const DELETE_LINK = 'app/TableItemDialog/DELETE_LINK';
 export const DELETE_LINK_SUCCESS = 'app/TableItemDialog/DELETE_LINK_SUCCESS';
 export const DELETE_LINK_ERROR = 'app/TableItemDialog/DELETE_LINK_ERROR';
+export const RESET_STATE = 'app/TableItemDialog/RESET_STATE';

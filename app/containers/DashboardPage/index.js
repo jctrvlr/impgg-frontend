@@ -1,10 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 /**
  *
  * Dashboard
  *
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
@@ -47,8 +48,10 @@ import {
   changeTableArchive,
   archiveLink,
 } from './actions';
+
 import { logoutUser } from '../App/actions';
 
+import TableItemDialog from '../TableItemDialog';
 import LinkCreationDialog from '../LinkCreationDialog';
 // import messages from './messages';
 
@@ -216,6 +219,10 @@ export function DashboardPage({
         path={`${match.url}/create`}
         render={props => <LinkCreationDialog {...props} openModal />}
       />
+      <Route
+        path={`${match.url}/link/:id`}
+        render={props => <TableItemDialog {...props} open />}
+      />
     </React.Fragment>
   );
 }
@@ -263,6 +270,7 @@ function mapDispatchToProps(dispatch) {
     },
     onChangeSelected: selectedData => {
       dispatch(changeSelectedData(selectedData));
+      dispatch(push(`/dashboard/link/${selectedData[0]._id}`));
     },
     onArchiveChange: () => {
       dispatch(changeTableArchive());
@@ -279,4 +287,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(DashboardPage);
+export default compose(
+  withConnect,
+  memo,
+)(DashboardPage);

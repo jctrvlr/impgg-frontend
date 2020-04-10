@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /**
  *
@@ -8,6 +9,8 @@
 import React, { useEffect, memo, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
+import { push } from 'connected-react-router';
+
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import mapDataUSA from '@highcharts/map-collection/countries/us/us-all.geo.json';
@@ -22,14 +25,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-// import DialogContentText from '@material-ui/core/DialogContentText';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
+
 import IconButton from '@material-ui/core/IconButton';
-import Select from '@material-ui/core/Select';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-// import Typography from '@material-ui/core/Typography';
 
 import {
   FacebookShareButton,
@@ -45,7 +42,6 @@ import CropFreeIcon from '@material-ui/icons/CropFree';
 import EmailIcon from '@material-ui/icons/Email';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import CachedIcon from '@material-ui/icons/Cached';
 import CloseIcon from '@material-ui/icons/Close';
 
 import Fade from '@material-ui/core/Fade';
@@ -79,7 +75,6 @@ import {
   changeDomain,
   changeURI,
   changeSLink,
-  resetFields,
   validateURI,
   updateURL,
   generateShortLink,
@@ -87,12 +82,20 @@ import {
   getLinkInfo,
   archiveLink,
   deleteLink,
+  resetState,
 } from './actions';
+
+import { getTableData, changeSelectedData } from '../DashboardPage/actions';
 
 import reducer from './reducer';
 import saga from './saga';
-import { makeSelectSelectedData } from '../DashboardPage/selectors';
+import {
+  makeSelectSelectedData,
+  makeSelectTableData,
+} from '../DashboardPage/selectors';
 import iso2to3 from './iso2to3';
+
+import LinkEditForm from './LinkEditForm';
 
 // import messages from './messages';
 require('highcharts/modules/exporting')(Highcharts);
@@ -173,7 +176,6 @@ export function TableItemDialog({
   selectedData,
   linkInfo,
   open,
-  setOpen,
   sLinkError,
   onChangeSLink,
   onChangeURI,
@@ -190,8 +192,14 @@ export function TableItemDialog({
   onLoadModal,
   onSocialShare,
   onSelectedDataChange,
+  onChangeSelected,
   onArchive,
   onDelete,
+  modalClose,
+  tableData,
+  match,
+  onLoad,
+  linkNotFound,
 }) {
   useInjectReducer({ key: 'tableItemDialog', reducer });
   useInjectSaga({ key: 'tableItemDialog', saga });
@@ -208,7 +216,7 @@ export function TableItemDialog({
 
   const [openQrCode, setOpenQrCode] = React.useState(false);
   const [qrCodeLoading, setQrCodeLoading] = React.useState(true);
-
+  const [loaded, setLoaded] = React.useState(false);
   let qrcode;
 
   useEffect(() => {
@@ -225,24 +233,45 @@ export function TableItemDialog({
   }, [openQrCode, qrCodeRef.current]);
 
   useEffect(() => {
-    onLoadModal(selectedData[0].shortLink);
-  }, [open]);
+    if (tableData.length === 0) {
+      onLoad();
+      setTimeout(() => setLoaded(true), 5000);
+    }
+  }, []);
 
   useEffect(() => {
-    if (Object.keys(selectedData[0]).length !== 0) {
-      onSelectedDataChange();
+    if (
+      Object.keys(selectedData[0]).length === 0 &&
+      selectedData[0].constructor === Object &&
+      tableData.length > 0
+    ) {
+      const selected = tableData.filter(link => link._id === match.params.id);
+      if (selected.length === 0) {
+        enqueueSnackbar('Link not found', { variant: 'error' });
+        linkNotFound();
+      } else {
+        onChangeSelected(selected);
+      }
+    } else if (tableData.length === 0 && loaded) {
+      enqueueSnackbar('Link not found', { variant: 'error' });
+      linkNotFound();
     }
+  }, [tableData, loaded]);
+
+  useEffect(() => {
+    onSelectedDataChange();
+    onLoadModal(selectedData[0]);
   }, [selectedData]);
 
-  useEffect(() => {
-    if (fetchLinkSuccess && !loading) {
-      enqueueSnackbar('Link updated successfully', { variant: 'success' });
-      handleClose();
-    }
-  }, [fetchLinkSuccess]);
-
   const handleClose = () => {
-    setOpen(false);
+    // Redirect user to /domains
+    setLoaded(false);
+    modalClose();
+  };
+
+  const submitForm = () => {
+    setLoaded(false);
+    onSubmitForm();
   };
 
   const handleDeleteClick = () => {
@@ -917,88 +946,24 @@ export function TableItemDialog({
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent>
-          <TextField
-            margin="dense"
-            id="url"
-            label="URL"
-            value={uri || selectedData[0].url}
-            error={!!uriValidation}
-            helperText={uriValidation}
-            onChange={onChangeURI}
-            type="url"
-            key="url"
-            fullWidth
-          />
-          <TextField
-            margin="dense"
-            id="name"
-            label="Generated Link"
-            key="shortlink"
-            value={sLink}
-            error={!!sLinkError}
-            helperText={sLinkError}
-            onChange={onChangeSLink}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment
-                  position="start"
-                  className={classes.linkAdornment}
-                >
-                  {(selectedData[0].domain && selectedData[0].domain.uri) ||
-                    userData.user.preferences.primaryDomain}
-                  /
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={onClickGenShortlink}
-                  >
-                    <CachedIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <InputLabel htmlFor="domain-choice" shrink>
-            Domain
-          </InputLabel>
-          <Select
-            native
-            margin="dense"
-            key="domain"
-            value={domain || userData.user.preferences.primaryDomain}
-            onChange={onChangeDomain}
-            input={<Input id="domain-choice" />}
-          >
-            {userData.user.domains.map(dom =>
-              dom.status === 2 ? (
-                <option value={dom.uri} key={dom.uri}>
-                  {dom.uri}
-                </option>
-              ) : null,
-            )}
-          </Select>
-        </DialogContent>
-        <DialogActions>
-          {loading ? (
-            <Fade
-              in={loading}
-              style={{
-                transitionDelay: loading ? '800ms' : '0ms',
-              }}
-              unmountOnExit
-            >
-              <CircularProgress />
-            </Fade>
-          ) : (
-            <Button variant="contained" onClick={onSubmitForm} color="primary">
-              Update Link
-            </Button>
-          )}
-        </DialogActions>
+        <LinkEditForm
+          selectedData={selectedData}
+          uri={uri}
+          domain={domain}
+          userData={userData}
+          uriValidation={uriValidation}
+          validateURI={validateURI}
+          sLink={sLink}
+          loading={loading}
+          sLinkError={sLinkError}
+          onChangeURI={onChangeURI}
+          onChangeDomain={onChangeDomain}
+          onChangeSLink={onChangeSLink}
+          onSubmitForm={submitForm}
+          fetchLinkSuccess={fetchLinkSuccess}
+          onClickGenShortlink={onClickGenShortlink}
+          handleClose={handleClose}
+        />
         <DialogContent>
           <div className={classes.socialButtons}>
             <TwitterShareButton
@@ -1052,28 +1017,33 @@ export function TableItemDialog({
               constructorType="mapChart"
               highcharts={Highcharts}
               options={clickLocationOptions}
+              key="clickLocation"
             />
             <HighchartsReact
               highcharts={Highcharts}
               options={clickRefOptions}
+              key="clickRef"
             />
             <div className={classes.chartContainer}>
               <div className={classes.halfChart}>
                 <HighchartsReact
                   highcharts={Highcharts}
                   options={clickDevicesOptions}
+                  key="clickDev"
                 />
               </div>
               <div className={classes.halfChart}>
                 <HighchartsReact
                   highcharts={Highcharts}
                   options={clickPlatformsOptions}
+                  key="clickPlat"
                 />
               </div>
               <div className={classes.halfChart}>
                 <HighchartsReact
                   highcharts={Highcharts}
                   options={clickBrowsersOptions}
+                  key="clickBrows"
                 />
               </div>
             </div>
@@ -1097,13 +1067,13 @@ TableItemDialog.propTypes = {
     PropTypes.object,
   ]),
   loading: PropTypes.bool,
+  tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   sLinkError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   linkInfo: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   onChangeURI: PropTypes.func,
   onChangeDomain: PropTypes.func,
   onChangeSLink: PropTypes.func,
   onSubmitForm: PropTypes.func,
-  setOpen: PropTypes.func,
   fetchLinkSuccess: PropTypes.bool,
   onClickGenShortlink: PropTypes.func,
   onLoadModal: PropTypes.func,
@@ -1111,6 +1081,11 @@ TableItemDialog.propTypes = {
   onSelectedDataChange: PropTypes.func,
   onArchive: PropTypes.func,
   onDelete: PropTypes.func,
+  modalClose: PropTypes.func,
+  onChangeSelected: PropTypes.func,
+  match: PropTypes.object,
+  onLoad: PropTypes.func,
+  linkNotFound: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -1124,30 +1099,38 @@ const mapStateToProps = createStructuredSelector({
   sLinkError: makeSelectsLinkError(),
   uriValidation: makeSelectURIValidation(),
   linkInfo: makeSelectLinkInfo(),
+  tableData: makeSelectTableData(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    onChangeURI: evt => {
-      dispatch(validateURI(evt.target.value));
-      dispatch(changeURI(evt.target.value));
+    onChangeURI: uri => {
+      dispatch(changeURI(uri));
     },
     onClickGenShortlink: () => {
       dispatch(generateShortLink());
     },
-    onChangeDomain: evt => {
-      dispatch(changeDomain(evt.target.value));
+    onChangeDomain: domain => {
+      dispatch(changeDomain(domain));
     },
-    onChangeSLink: evt => {
-      dispatch(changeSLink(evt.target.value));
+    onChangeSLink: sLink => {
+      dispatch(changeSLink(sLink));
     },
-    onSubmitForm: evt => {
-      if (evt !== undefined && evt.preventDefault) evt.preventDefault();
+    onSubmitForm: () => {
       dispatch(updateURL());
     },
-    onLoadModal: sLink => {
-      dispatch(resetFields());
-      dispatch(changeSLink(sLink));
+    onChangeSelected: selectedData => {
+      dispatch(changeSelectedData(selectedData));
+    },
+    onLoadModal: selectedData => {
+      dispatch(changeSLink(selectedData.shortLink));
+      dispatch(changeURI(selectedData.url));
+    },
+    onLoad: () => {
+      dispatch(getTableData());
+    },
+    linkNotFound: () => {
+      dispatch(push('/dashboard'));
     },
     onSelectedDataChange: () => {
       dispatch(getLinkInfo());
@@ -1161,6 +1144,10 @@ function mapDispatchToProps(dispatch) {
     },
     onDelete: () => {
       dispatch(deleteLink());
+    },
+    modalClose: () => {
+      dispatch(resetState());
+      dispatch(push('/dashboard'));
     },
   };
 }
