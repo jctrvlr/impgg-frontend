@@ -19,6 +19,7 @@ import {
   GET_LINK_INFO,
   GET_LINK_INFO_SUCCESS,
   GET_LINK_INFO_ERROR,
+  RESET_STATE,
 } from './constants';
 
 export const initialState = {
@@ -38,6 +39,19 @@ export const initialState = {
 const tableItemDialogReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case RESET_STATE:
+        draft.uri = '';
+        draft.sLink = '';
+        draft.linkDomain = '';
+        draft.uriValidation = false;
+        draft.uriError = false;
+        draft.sLinkError = false;
+        draft.currentLink = false;
+        draft.loading = false;
+        draft.updateLinkSuccess = false;
+        draft.linkInfo = false;
+        break;
+
       case CHANGE_URI:
         draft.uri = action.uri;
         break;

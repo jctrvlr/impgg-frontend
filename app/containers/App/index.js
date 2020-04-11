@@ -47,7 +47,7 @@ export default function App() {
         <Route exact path="/login" component={SigninPage} />
         <Route exact path="/register" component={RegisterPage} />
 
-        <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+        <PrivateRoute path="/dashboard" component={DashboardPage} />
 
         <Redirect exact from="/settings" to="/settings/profile" />
         <Redirect exact from="/profile" to="/settings/profile" />
@@ -57,7 +57,7 @@ export default function App() {
           path="/settings/security"
           component={SecurityPage}
         />
-        <PrivateRoute exact path="/domains" component={DomainsPage} />
+        <PrivateRoute path="/domains" component={DomainsPage} />
 
         <Route component={NotFoundPage} />
       </Switch>

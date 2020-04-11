@@ -1,13 +1,15 @@
+/* eslint-disable no-underscore-dangle */
 /**
  *
  * Dashboard
  *
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { Route, Link as RouterLink } from 'react-router-dom';
 
 // import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
@@ -46,8 +48,10 @@ import {
   changeTableArchive,
   archiveLink,
 } from './actions';
+
 import { logoutUser } from '../App/actions';
 
+import TableItemDialog from '../TableItemDialog';
 import LinkCreationDialog from '../LinkCreationDialog';
 // import messages from './messages';
 
@@ -139,6 +143,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function DashboardPage({
+  match,
   userData,
   tableData,
   loggedIn,
@@ -171,16 +176,6 @@ export function DashboardPage({
     onLoadUnauth();
   }
 
-  const [openModal, setOpenModal] = React.useState(false);
-
-  const handleModalOpen = () => {
-    setOpenModal(true);
-  };
-
-  const handleModalClose = () => {
-    setOpenModal(false);
-  };
-
   return (
     <React.Fragment>
       <Helmet>
@@ -194,7 +189,8 @@ export function DashboardPage({
         className={classes.newLinkButton}
         variant="contained"
         color="primary"
-        onClick={handleModalOpen}
+        to="/dashboard/create"
+        component={RouterLink}
       >
         +
       </Button>
@@ -208,10 +204,6 @@ export function DashboardPage({
 
       {/* Start of dashboard main */}
       <Container maxWidth="xl" component="main" className={classes.formContent}>
-        <LinkCreationDialog
-          openModal={openModal}
-          handleModalClose={handleModalClose}
-        />
         <Table
           tableData={tableData}
           onChangeSelected={onChangeSelected}
@@ -223,11 +215,20 @@ export function DashboardPage({
         />
       </Container>
       <Footer />
+      <Route
+        path={`${match.url}/create`}
+        render={props => <LinkCreationDialog {...props} openModal />}
+      />
+      <Route
+        path={`${match.url}/link/:id`}
+        render={props => <TableItemDialog {...props} open />}
+      />
     </React.Fragment>
   );
 }
 
 DashboardPage.propTypes = {
+  match: PropTypes.object,
   userData: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   tableData: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   loggedIn: PropTypes.bool,
@@ -269,6 +270,7 @@ function mapDispatchToProps(dispatch) {
     },
     onChangeSelected: selectedData => {
       dispatch(changeSelectedData(selectedData));
+      dispatch(push(`/dashboard/link/${selectedData[0]._id}`));
     },
     onArchiveChange: () => {
       dispatch(changeTableArchive());
@@ -285,4 +287,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(DashboardPage);
+export default compose(
+  withConnect,
+  memo,
+)(DashboardPage);

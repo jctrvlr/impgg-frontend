@@ -26,6 +26,7 @@ import {
   DELETE_LINK,
   DELETE_LINK_SUCCESS,
   DELETE_LINK_ERROR,
+  RESET_STATE,
 } from './constants';
 
 /**
@@ -46,6 +47,17 @@ export function validateURI(uri) {
   return {
     type: URI_VALIDATION,
     uriValidation,
+  };
+}
+
+/**
+ * Reset state
+ *
+ * @return {object} An action object with type of RESET_STATE
+ */
+export function resetState() {
+  return {
+    type: RESET_STATE,
   };
 }
 

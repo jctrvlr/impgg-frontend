@@ -5,6 +5,7 @@
 /* eslint-disable indent */
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { useSnackbar } from 'notistack';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import moment from 'moment';
@@ -33,8 +34,6 @@ import Unarchive from '@material-ui/icons/Unarchive';
 import CachedIcon from '@material-ui/icons/Cached';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-import TableItemDialog from '../TableItemDialog';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -400,7 +399,6 @@ export default function EnhancedTable({
   const [filteredData, setFilteredData] = React.useState(tableData);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [moreInfoOpen, setMoreInfoOpen] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   function handleRequestSort(event, property) {
@@ -419,7 +417,6 @@ export default function EnhancedTable({
 
     setSelected(newSelected);
     onChangeSelected(newSelectedData);
-    setMoreInfoOpen(true);
   }
 
   function handleChangePage(event, newPage) {
@@ -687,7 +684,6 @@ export default function EnhancedTable({
 
   return (
     <div className={classes.root}>
-      <TableItemDialog open={moreInfoOpen} setOpen={setMoreInfoOpen} />
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
           numLinks={tableData.length}

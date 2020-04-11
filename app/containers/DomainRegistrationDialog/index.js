@@ -7,6 +7,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
+import { push } from 'connected-react-router';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -66,6 +67,7 @@ import {
   changeDomain,
   validateURI,
   changeSubdomain,
+  resetState,
 } from './actions';
 
 import reducer from './reducer';
@@ -144,7 +146,6 @@ const steps = [
 
 export function DomainRegistrationDialog({
   openModal,
-  handleModalClose,
   onChangeDomain,
   onChangeSubdomain,
   uriValidation,
@@ -154,6 +155,7 @@ export function DomainRegistrationDialog({
   addDomainSuccess,
   addDomainError,
   onSubmitForm,
+  modalClose,
 }) {
   useInjectReducer({ key: 'domainRegistrationDialog', reducer });
   useInjectSaga({ key: 'domainRegistrationDialog', saga });
@@ -167,6 +169,11 @@ export function DomainRegistrationDialog({
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [value, setValue] = React.useState(0);
+
+  const handleModalClose = () => {
+    // Redirect user to /domains
+    modalClose();
+  };
 
   const ip = '138.68.254.217';
 
@@ -411,7 +418,6 @@ export function DomainRegistrationDialog({
 
 DomainRegistrationDialog.propTypes = {
   openModal: PropTypes.bool,
-  handleModalClose: PropTypes.func,
   onChangeDomain: PropTypes.func,
   onChangeSubdomain: PropTypes.func,
   uriValidation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
@@ -421,6 +427,7 @@ DomainRegistrationDialog.propTypes = {
   addDomainSuccess: PropTypes.bool,
   addDomainError: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   onSubmitForm: PropTypes.func,
+  modalClose: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -444,6 +451,10 @@ function mapDispatchToProps(dispatch) {
     onSubmitForm: evt => {
       if (evt !== undefined && evt.preventDefault) evt.preventDefault();
       dispatch(addDomain());
+    },
+    modalClose: () => {
+      dispatch(resetState());
+      dispatch(push('/domains'));
     },
   };
 }

@@ -15,6 +15,7 @@ import {
   GEN_SLINK,
   GEN_SLINK_SUCCESS,
   GEN_SLINK_ERROR,
+  RESET_STATE,
 } from './constants';
 
 /**
@@ -35,6 +36,17 @@ export function validateURI(uri) {
   return {
     type: URI_VALIDATION,
     uriValidation,
+  };
+}
+
+/**
+ * Reset state
+ *
+ * @return {object} An action object with type of RESET_STATE
+ */
+export function resetState() {
+  return {
+    type: RESET_STATE,
   };
 }
 
