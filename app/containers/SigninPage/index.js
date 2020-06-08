@@ -200,7 +200,7 @@ export function SigninPage({
               <Grid item xs>
                 <Link
                   component={RouterLink}
-                  to="/passwordrecovery"
+                  to="/password/reset"
                   variant="body2"
                 >
                   Forgot password?

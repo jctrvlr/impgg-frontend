@@ -19,6 +19,8 @@ import AboutPage from 'containers/AboutPage/Loadable';
 import PricingPage from 'containers/PricingPage';
 import TermsPage from 'containers/TermsPage';
 import PrivacyPage from 'containers/PrivacyPage';
+import ResetPasswordPage from 'containers/ResetPasswordPage';
+
 // Authentication routes
 import SigninPage from 'containers/SigninPage/Loadable';
 import RegisterPage from 'containers/RegisterPage/Loadable';
@@ -46,6 +48,7 @@ export default function App() {
 
         <Route exact path="/login" component={SigninPage} />
         <Route exact path="/register" component={RegisterPage} />
+        <Route exact path="/password/reset" component={ResetPasswordPage} />
 
         <PrivateRoute path="/dashboard" component={DashboardPage} />
 
