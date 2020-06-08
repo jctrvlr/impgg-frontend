@@ -106,7 +106,7 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
       description: [
         'Everything included from Free tier',
         '2 users included in shared workspace',
-        'Export audience data',
+        'Export audience data to CSV',
         'Priority email support',
         'Support a basically free service (buy the dev a coffee)',
       ],
