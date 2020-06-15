@@ -50,7 +50,6 @@ export function* deleteDomainSaga() {
 
     yield all([put(deleteDomainSuccess(ret)), put(newUserData(userData))]);
   } catch (err) {
-    console.log(err);
     yield put(deleteDomainError(err));
   }
 }
