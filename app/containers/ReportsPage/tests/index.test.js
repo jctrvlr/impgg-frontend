@@ -1,6 +1,6 @@
 /**
  *
- * Tests for ChangePasswordModal
+ * Tests for ReportsPage
  *
  * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
  *
@@ -11,19 +11,23 @@ import { render } from 'react-testing-library';
 import { IntlProvider } from 'react-intl';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import { ChangePasswordModal } from '../index';
+import { ReportsPage } from '../index';
 import { DEFAULT_LOCALE } from '../../../i18n';
 
-describe('<ChangePasswordModal />', () => {
+describe('<ReportsPage />', () => {
   it('Expect to not log errors in console', () => {
     const spy = jest.spyOn(global.console, 'error');
     const dispatch = jest.fn();
     render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <ChangePasswordModal dispatch={dispatch} />
+        <ReportsPage dispatch={dispatch} />
       </IntlProvider>,
     );
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('Expect to have additional unit tests specified', () => {
+    expect(true).toEqual(false);
   });
 
   /**
@@ -36,7 +40,7 @@ describe('<ChangePasswordModal />', () => {
       container: { firstChild },
     } = render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <ChangePasswordModal />
+        <ReportsPage />
       </IntlProvider>,
     );
     expect(firstChild).toMatchSnapshot();

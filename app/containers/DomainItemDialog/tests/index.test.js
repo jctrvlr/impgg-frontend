@@ -1,6 +1,6 @@
 /**
  *
- * Tests for TableItemDialog
+ * Tests for DomainItemDialog
  *
  * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
  *
@@ -11,7 +11,7 @@ import { render } from 'react-testing-library';
 import { IntlProvider } from 'react-intl';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import { TableItemDialog } from '../index';
+import { DomainItemDialog } from '../index';
 import { DEFAULT_LOCALE } from '../../../i18n';
 
 describe('<TableItemDialog />', () => {
@@ -20,14 +20,10 @@ describe('<TableItemDialog />', () => {
     const dispatch = jest.fn();
     render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <TableItemDialog dispatch={dispatch} />
+        <DomainItemDialog dispatch={dispatch} />
       </IntlProvider>,
     );
     expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('Expect to have additional unit tests specified', () => {
-    expect(true).toEqual(false);
   });
 
   /**
@@ -40,7 +36,7 @@ describe('<TableItemDialog />', () => {
       container: { firstChild },
     } = render(
       <IntlProvider locale={DEFAULT_LOCALE}>
-        <TableItemDialog />
+        <DomainItemDialog />
       </IntlProvider>,
     );
     expect(firstChild).toMatchSnapshot();
