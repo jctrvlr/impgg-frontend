@@ -1,10 +1,14 @@
 import {
   getClickReport,
+  getClickReportSuccess,
+  getClickReportError,
   setClickCountOption,
   setClickLinkFilter,
 } from '../actions';
 import {
   GET_CLICK_REPORT,
+  GET_CLICK_REPORT_SUCCESS,
+  GET_CLICK_REPORT_ERROR,
   SET_CLICK_COUNT_OPTION,
   SET_CLICK_LINK_FILTER,
 } from '../constants';
@@ -16,6 +20,26 @@ describe('ReportsPage actions', () => {
         type: GET_CLICK_REPORT,
       };
       expect(getClickReport()).toEqual(expected);
+    });
+  });
+
+  describe('getClickReportSuccess Action', () => {
+    it('has a type of GET_CLICK_REPORT_SUCCESS', () => {
+      const expected = {
+        type: GET_CLICK_REPORT_SUCCESS,
+        resp: 'response',
+      };
+      expect(getClickReportSuccess('response')).toEqual(expected);
+    });
+  });
+
+  describe('getClickReportError Action', () => {
+    it('has a type of GET_CLICK_REPORT_ERROR', () => {
+      const expected = {
+        type: GET_CLICK_REPORT_ERROR,
+        err: 'error',
+      };
+      expect(getClickReportError('error')).toEqual(expected);
     });
   });
 

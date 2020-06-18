@@ -10,7 +10,17 @@ const selectReportsPageDomain = state => state.reportsPage || initialState;
 /**
  * Other specific selectors
  */
+const makeSelectClickCount = () =>
+  createSelector(
+    selectReportsPageDomain,
+    reportsState => reportsState.clickCount,
+  );
 
+const makeSelectClickLinkFilter = () =>
+  createSelector(
+    selectReportsPageDomain,
+    reportsState => reportsState.clickLinkFilter,
+  );
 /**
  * Default selector used by ReportsPage
  */
@@ -22,4 +32,8 @@ const makeSelectReportsPage = () =>
   );
 
 export default makeSelectReportsPage;
-export { selectReportsPageDomain };
+export {
+  selectReportsPageDomain,
+  makeSelectClickCount,
+  makeSelectClickLinkFilter,
+};

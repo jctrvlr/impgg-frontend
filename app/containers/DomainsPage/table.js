@@ -31,8 +31,6 @@ import { baseUrl } from 'vars';
 
 import DomainItemDialog from '../DomainItemDialog';
 
-const baseUrli = baseUrl.substring(0, baseUrl.length - 1);
-
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -322,6 +320,7 @@ export default function EnhancedTable({
   handleDItemModalClose,
   handleDItemModalOpen,
 }) {
+  const baseUrli = baseUrl.substring(0, baseUrl.length - 1);
   const tempDomains = domains.filter(i => !baseUrli.includes(i.uri));
 
   const classes = useStyles();

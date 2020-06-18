@@ -1,7 +1,13 @@
-// import { selectReportsPageDomain } from '../selectors';
+import { makeSelectClickCount } from '../selectors';
 
-describe('selectReportsPageDomain', () => {
-  it('Expect to have unit tests specified', () => {
-    expect(true).toEqual(false);
+describe('makeSelectClickCount', () => {
+  it('should select the clickCount', () => {
+    const router = {
+      clickCount: 100,
+    };
+    const mockedState = {
+      router,
+    };
+    expect(makeSelectClickCount()(mockedState)).toEqual(router.clickCount);
   });
 });

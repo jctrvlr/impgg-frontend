@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<App /> should render and match the snapshot 1`] = `
-<div>
+<React.Fragment>
+  <ForwardRef(WithStyles) />
   <Switch>
     <Route
       component={[Function]}
@@ -10,8 +11,107 @@ exports[`<App /> should render and match the snapshot 1`] = `
     />
     <Route
       component={[Function]}
+      exact={true}
+      path="/about"
+    />
+    <Route
+      component={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "WrappedComponent": [Function],
+          "compare": null,
+          "displayName": "Connect(PricingPage)",
+          "type": [Function],
+        }
+      }
+      exact={true}
+      path="/pricing"
+    />
+    <Route
+      component={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "WrappedComponent": [Function],
+          "compare": null,
+          "displayName": "Connect(TermsPage)",
+          "type": [Function],
+        }
+      }
+      exact={true}
+      path="/terms"
+    />
+    <Route
+      component={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "WrappedComponent": [Function],
+          "compare": null,
+          "displayName": "Connect(PrivacyPage)",
+          "type": [Function],
+        }
+      }
+      exact={true}
+      path="/privacy"
+    />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/login"
+    />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/register"
+    />
+    <Route
+      component={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "WrappedComponent": [Function],
+          "compare": null,
+          "displayName": "Connect(ResetPasswordPage)",
+          "type": [Function],
+        }
+      }
+      exact={true}
+      path="/password/reset"
+    />
+    <PrivateRoute
+      component={[Function]}
+      path="/dashboard"
+    />
+    <Redirect
+      exact={true}
+      from="/settings"
+      to="/settings/profile"
+    />
+    <Redirect
+      exact={true}
+      from="/profile"
+      to="/settings/profile"
+    />
+    <PrivateRoute
+      component={[Function]}
+      exact={true}
+      path="/settings/profile"
+    />
+    <PrivateRoute
+      component={[Function]}
+      exact={true}
+      path="/settings/security"
+    />
+    <PrivateRoute
+      component={[Function]}
+      path="/domains"
+    />
+    <PrivateRoute
+      component={[Function]}
+      path="/reports"
+    />
+    <Route
+      component={[Function]}
     />
   </Switch>
   <GlobalStyleComponent />
-</div>
+</React.Fragment>
 `;
