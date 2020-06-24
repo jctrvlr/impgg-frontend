@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  *
  * ProfilePage
@@ -245,6 +246,7 @@ export function ProfilePage({
             </Button>
           )}
         </div>
+        {/*
         <Divider variant="fullWidth" className={classes.divider} />
         <div className={classes.nameSection}>
           <Typography variant="h4" align="left" className={classes.heroText}>
@@ -281,7 +283,8 @@ export function ProfilePage({
               </Button>
             ) : null}
           </div>
-        </div>
+          </div>
+            */}
       </Container>
       <Footer />
     </React.Fragment>

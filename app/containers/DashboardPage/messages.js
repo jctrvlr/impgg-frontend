@@ -17,6 +17,10 @@ export default defineMessages({
     id: `${scope}.domains`,
     defaultMessage: 'Domains',
   },
+  reports: {
+    id: `${scope}.reports`,
+    defaultMessage: 'Reports',
+  },
   settings: {
     id: `${scope}.settings`,
     defaultMessage: 'Settings',

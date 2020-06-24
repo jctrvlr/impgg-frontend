@@ -10,6 +10,9 @@ import {
   GET_CLICK_REPORT_ERROR,
   SET_CLICK_COUNT_OPTION,
   SET_CLICK_LINK_FILTER,
+  GET_USERS_LINKS,
+  GET_USERS_LINKS_SUCCESS,
+  GET_USERS_LINKS_ERROR,
 } from './constants';
 
 /**
@@ -45,10 +48,10 @@ export function getClickReportError(err) {
  * Sets click report last count option
  * @param count [int] - How many clicks to include in report
  */
-export function setClickCountOption(count) {
+export function setClickCountOption(clickCount) {
   return {
     type: SET_CLICK_COUNT_OPTION,
-    count,
+    clickCount,
   };
 }
 
@@ -60,5 +63,34 @@ export function setClickLinkFilter(linkIds) {
   return {
     type: SET_CLICK_LINK_FILTER,
     linkIds,
+  };
+}
+
+/**
+ * Get users links
+ */
+export function getUsersLink() {
+  return {
+    type: GET_USERS_LINKS,
+  };
+}
+
+/**
+ * Get users links - Return success
+ */
+export function getUsersLinkSuccess(userLinks) {
+  return {
+    type: GET_USERS_LINKS_SUCCESS,
+    userLinks,
+  };
+}
+
+/**
+ * Get users links - Returns error
+ */
+export function getUsersLinkError(err) {
+  return {
+    type: GET_USERS_LINKS_ERROR,
+    err,
   };
 }

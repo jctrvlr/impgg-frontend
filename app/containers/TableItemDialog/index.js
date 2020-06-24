@@ -344,7 +344,7 @@ export function TableItemDialog({
               const yc = (s.count / sumCount) * 100;
               return {
                 // eslint-disable-next-line no-underscore-dangle
-                name: s._id || 'Direct',
+                name: s._id,
                 y: yc,
                 count: s.count,
               };

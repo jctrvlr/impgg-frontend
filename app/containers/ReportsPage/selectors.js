@@ -21,6 +21,19 @@ const makeSelectClickLinkFilter = () =>
     selectReportsPageDomain,
     reportsState => reportsState.clickLinkFilter,
   );
+
+const makeSelectUserLinks = () =>
+  createSelector(
+    selectReportsPageDomain,
+    reportsState => reportsState.userLinks,
+  );
+
+const makeSelectGetReport = () =>
+  createSelector(
+    selectReportsPageDomain,
+    reportsState => reportsState.getReport,
+  );
+
 /**
  * Default selector used by ReportsPage
  */
@@ -36,4 +49,6 @@ export {
   selectReportsPageDomain,
   makeSelectClickCount,
   makeSelectClickLinkFilter,
+  makeSelectUserLinks,
+  makeSelectGetReport,
 };

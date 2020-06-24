@@ -10,3 +10,7 @@ export const GET_CLICK_REPORT_SUCCESS =
 export const GET_CLICK_REPORT_ERROR = 'app/ReportsPage/GET_CLICK_REPORT_ERROR';
 export const SET_CLICK_COUNT_OPTION = 'app/ReportsPage/SET_CLICK_COUNT_OPTION';
 export const SET_CLICK_LINK_FILTER = 'app/ReportsPage/SET_CLICK_LINK_FILTER';
+export const GET_USERS_LINKS = 'app/ReportsPage/GET_USERS_LINKS';
+export const GET_USERS_LINKS_SUCCESS =
+  'app/ReportsPage/GET_USERS_LINKS_SUCCESS';
+export const GET_USERS_LINKS_ERROR = 'app/ReportsPage/GET_USERS_LINKS_ERROR';
