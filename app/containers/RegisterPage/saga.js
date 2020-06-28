@@ -7,6 +7,7 @@ import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 
 import ReactGA from 'react-ga';
+import Cookies from 'js-cookie';
 
 import { REGISTER_USER } from 'containers/App/constants';
 import { registerUserSuccess, registerUserError } from 'containers/App/actions';
@@ -56,7 +57,7 @@ export function* registerUser() {
       .toUTCString();
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('userData', JSON.stringify(ret));
+    Cookies.set('userData', JSON.stringify(ret), { secure: true });
 
     ReactGA.set({
       userId: ret.user._id,

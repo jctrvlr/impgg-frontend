@@ -14,6 +14,7 @@
  *        return { type: YOUR_ACTION_CONSTANT, var: var }
  *    }
  */
+import Cookies from 'js-cookie';
 
 import {
   AUTHENTICATE_USER_SUCCESS,
@@ -157,7 +158,7 @@ export function newUserData(userData) {
  * @return {object} An action object with a type of LOGOUT_USER
  */
 export function logoutUser() {
-  localStorage.removeItem('userData');
+  Cookies.remove('userData');
   return {
     type: LOGOUT_USER,
   };

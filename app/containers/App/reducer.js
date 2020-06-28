@@ -9,6 +9,7 @@
 import produce from 'immer';
 import moment from 'moment';
 import _ from 'lodash';
+import Cookies from 'js-cookie';
 
 import {
   AUTHENTICATE_USER_SUCCESS,
@@ -26,9 +27,9 @@ let userDataR = {};
 let loggedInR = false;
 
 // The initial state of the App
-if (localStorage.getItem('userData')) {
-  userDataR = JSON.parse(localStorage.getItem('userData'));
-  loggedInR = !!localStorage.getItem('userData');
+if (Cookies.get('userData')) {
+  userDataR = JSON.parse(Cookies.get('userData'));
+  loggedInR = !!Cookies.get('userData');
   const today = moment.utc();
   const expiresIn = moment.utc(userDataR.expires);
   if (expiresIn.isBefore(today)) {

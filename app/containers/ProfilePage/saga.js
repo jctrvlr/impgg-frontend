@@ -1,5 +1,6 @@
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 import request from 'utils/request';
+import Cookies from 'js-cookie';
 
 import { baseUrl } from 'vars';
 import { REMOVE_PROFILE_PICTURE, UPDATE_PROFILE_INFO } from './constants';
@@ -92,10 +93,10 @@ export function* updateProfileInfo() {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
 
-    const userDataR = JSON.parse(localStorage.getItem('userData'));
+    const userDataR = JSON.parse(Cookies.get('userData'));
     userDataR.user = ret;
 
-    localStorage.setItem('userData', JSON.stringify(userDataR));
+    Cookies.set('userData', JSON.stringify(userDataR), { secure: true });
 
     yield put(updateProfileInfoSuccess(userDataR));
   } catch (err) {

@@ -6,6 +6,7 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 
 import request from 'utils/request';
+import Cookies from 'js-cookie';
 
 import { baseUrl } from 'vars';
 import { RELOAD_USER } from './constants';
@@ -38,7 +39,7 @@ export function* reloadUser() {
     userData.user = ret;
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('userData', JSON.stringify(userData));
+    Cookies.set('userData', JSON.stringify(userData), { secure: true });
     // Return linkData
     yield put(newUserData(userData));
   } catch (err) {
