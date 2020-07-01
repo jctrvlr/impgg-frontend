@@ -50,6 +50,12 @@
     "> 1%",
     "IE 10"
   ],
+  "jest": {
+    "automock": false,
+    "setupFiles": [
+      "./setupJest.js"
+    ]
+  },
   "lint-staged": {
     "*.js": [
       "npm run lint:eslint:fix",
@@ -153,6 +159,7 @@
     "imports-loader": "0.8.0",
     "jest-cli": "24.7.1",
     "jest-dom": "3.1.3",
+    "jest-fetch-mock": "^3.0.3",
     "jest-styled-components": "6.3.1",
     "lint-staged": "8.1.5",
     "ngrok": "3.1.1",
@@ -165,6 +172,7 @@
     "react-app-polyfill": "0.2.2",
     "react-test-renderer": "16.8.6",
     "react-testing-library": "6.1.2",
+    "redux-saga-test-plan": "^4.0.0-rc.3",
     "rimraf": "2.6.3",
     "shelljs": "^0.8.3",
     "style-loader": "0.23.1",
