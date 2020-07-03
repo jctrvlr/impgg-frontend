@@ -18,11 +18,11 @@ import { GET_CLICK_REPORT, GET_USERS_LINKS } from './constants';
  */
 export function* getClickReport() {
   // Select userData from store
-  const userData = yield select(makeSelectUserData);
+  const userData = yield select(makeSelectUserData());
   // Select count from store
-  const count = yield select(makeSelectClickCount);
+  const count = yield select(makeSelectClickCount());
   // Select linkFilter
-  const linkFilter = yield select(makeSelectClickLinkFilter);
+  const linkFilter = yield select(makeSelectClickLinkFilter());
   // eslint-disable-next-line no-underscore-dangle
   const requestOptions = {
     method: 'POST',
@@ -50,7 +50,7 @@ export function* getClickReport() {
  */
 export function* getUsersLinks() {
   // Select userData from store
-  const userData = yield select(makeSelectUserData);
+  const userData = yield select(makeSelectUserData());
   // eslint-disable-next-line no-underscore-dangle
   const creatorId = userData.user._id;
 
