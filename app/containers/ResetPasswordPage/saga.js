@@ -36,10 +36,8 @@ export function* resetPassword() {
   try {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
-    console.log(ret);
     yield put(resetPasswordSuccess(ret.message));
   } catch (err) {
-    console.log(err);
     yield put(resetPasswordError(err.error));
   }
 }
@@ -64,10 +62,8 @@ export function* setNewPassword() {
   try {
     // Call our request helper (see 'utils/request')
     const ret = yield call(request, requestURL, requestOptions);
-    console.log(ret);
     yield put(resetPasswordSuccess(ret.message));
   } catch (err) {
-    console.log(err);
     yield put(resetPasswordError(err.error));
   }
 }

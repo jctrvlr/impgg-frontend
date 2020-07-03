@@ -27,6 +27,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -209,6 +210,14 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
                 </ListItemIcon>
                 <ListItemText
                   primary={<FormattedMessage {...messages.domains} />}
+                />
+              </ListItem>
+              <ListItem button component={RouterLink} to="/reports">
+                <ListItemIcon>
+                  <AssessmentIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={<FormattedMessage {...messages.reports} />}
                 />
               </ListItem>
               <ListItem button component={RouterLink} to="/settings">

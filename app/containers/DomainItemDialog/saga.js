@@ -8,6 +8,7 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import moment from 'moment';
 import request from 'utils/request';
+import Cookies from 'js-cookie';
 
 import { baseUrl } from 'vars';
 import { DELETE_DOMAIN } from './constants';
@@ -46,11 +47,10 @@ export function* deleteDomainSaga() {
       .toUTCString();
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('userData', JSON.stringify(userData));
+    Cookies.set('userData', JSON.stringify(userData), { secure: true });
 
     yield all([put(deleteDomainSuccess(ret)), put(newUserData(userData))]);
   } catch (err) {
-    console.log(err);
     yield put(deleteDomainError(err));
   }
 }

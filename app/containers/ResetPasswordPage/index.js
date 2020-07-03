@@ -131,7 +131,6 @@ export function ResetPasswordPage({
 
   useEffect(() => {
     const query = queryString.parse(location.search);
-    console.log(query);
     onChangeTok(query.tok);
   }, [location]);
 

@@ -7,6 +7,7 @@ import { call, put, select, takeLatest, all } from 'redux-saga/effects';
 
 import request from 'utils/request';
 import moment from 'moment';
+import Cookies from 'js-cookie';
 
 import { baseUrl } from 'vars';
 import { ADD_DOMAIN } from './constants';
@@ -60,7 +61,7 @@ export function* addDomainSaga() {
       .toUTCString();
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('userData', JSON.stringify(userData));
+    Cookies.set('userData', JSON.stringify(userData), { secure: true });
 
     // Return linkData
     yield all([put(addDomainSuccess(ret)), put(newUserData(userData))]);

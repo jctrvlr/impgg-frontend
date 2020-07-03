@@ -21,6 +21,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Button from '@material-ui/core/Button';
 
+// Import cookie provider
+import { CookiesProvider } from 'react-cookie';
+
 // Import root app
 import App from 'containers/App';
 
@@ -82,7 +85,9 @@ const render = messages => {
                   <Button onClick={onClickDismiss(key)}>Dismiss</Button>
                 )}
               >
-                <App />
+                <CookiesProvider>
+                  <App />
+                </CookiesProvider>
               </SnackbarProvider>
             </ThemeProvider>
           </ConnectedRouter>

@@ -47,12 +47,21 @@ describe('Dashboard actions', () => {
     });
   });
 
-  describe('validateURI', () => {
-    it('has a type of URI_VALIDATION', () => {
+  describe('validateURI Action', () => {
+    it('has a type of URI_VALIDATION and returns false if a valid URI', () => {
       const expected = {
         type: URI_VALIDATION,
+        uriValidation: false,
       };
-      expect(validateURI()).toEqual(expected);
+      expect(validateURI('https://www.google.com')).toEqual(expected);
+    });
+
+    it('has a type of URI_VALIDATION and returns error if an invalid URI', () => {
+      const expected = {
+        type: URI_VALIDATION,
+        uriValidation: 'Enter a valid URL',
+      };
+      expect(validateURI('wwwgooglecom')).toEqual(expected);
     });
   });
 

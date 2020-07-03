@@ -28,6 +28,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -210,6 +211,14 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                   primary={<FormattedMessage {...messages.domains} />}
                 />
               </ListItem>
+              <ListItem button component={RouterLink} to="/reports">
+                <ListItemIcon>
+                  <AssessmentIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={<FormattedMessage {...messages.reports} />}
+                />
+              </ListItem>
               <ListItem button component={RouterLink} to="/settings">
                 <ListItemIcon>
                   <SettingsIcon />
@@ -375,6 +384,13 @@ function Header({ loggedIn, userData, logoutUser, background }) {
                   onClick={handleClose}
                 >
                   <FormattedMessage {...messages.domains} />
+                </MenuItem>
+                <MenuItem
+                  component={RouterLink}
+                  to="/reports"
+                  onClick={handleClose}
+                >
+                  <FormattedMessage {...messages.reports} />
                 </MenuItem>
                 <MenuItem
                   component={RouterLink}

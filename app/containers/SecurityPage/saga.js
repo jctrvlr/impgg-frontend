@@ -5,6 +5,7 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 
 import request from 'utils/request';
+import Cookies from 'js-cookie';
 
 import { baseUrl } from 'vars';
 import { makeSelectEmail } from './selectors';
@@ -40,7 +41,7 @@ export function* editEmail() {
 
     userData.user.email = email;
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('userData', JSON.stringify(userData));
+    Cookies.set('userData', JSON.stringify(userData), { secure: true });
     yield put(editEmailSuccess(userData, email));
     yield put(editEmailSuccessApp(userData, email));
   } catch (err) {

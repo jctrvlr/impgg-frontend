@@ -29,8 +29,9 @@ import RegisterPage from 'containers/RegisterPage/Loadable';
 import DashboardPage from 'containers/DashboardPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import SecurityPage from 'containers/SecurityPage/Loadable';
-
 import DomainsPage from 'containers/DomainsPage/Loadable';
+import ReportsPage from 'containers/ReportsPage/Loadable';
+
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
@@ -61,6 +62,7 @@ export default function App() {
           component={SecurityPage}
         />
         <PrivateRoute path="/domains" component={DomainsPage} />
+        <PrivateRoute path="/reports" component={ReportsPage} />
 
         <Route component={NotFoundPage} />
       </Switch>
