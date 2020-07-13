@@ -24,6 +24,7 @@ import ResetPasswordPage from 'containers/ResetPasswordPage';
 // Authentication routes
 import SigninPage from 'containers/SigninPage/Loadable';
 import RegisterPage from 'containers/RegisterPage/Loadable';
+import OAuthCallback from 'containers/OAuthCallback/Loadable';
 
 // Protected routes
 import DashboardPage from 'containers/DashboardPage/Loadable';
@@ -50,6 +51,7 @@ export default function App() {
         <Route exact path="/login" component={SigninPage} />
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/password/reset" component={ResetPasswordPage} />
+        <Route exact path="/auth/callback/:service" component={OAuthCallback} />
 
         <PrivateRoute path="/dashboard" component={DashboardPage} />
 

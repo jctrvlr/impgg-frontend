@@ -5,7 +5,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -40,6 +40,7 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
+import OAuthPopup from 'react-oauth-popup';
 import {
   makeSelectSigninPage,
   makeSelectEmail,
@@ -111,6 +112,12 @@ export function SigninPage({
     loggedInRedirect();
   }
 
+  useEffect(() => {
+    if (loggedIn) {
+      loggedInRedirect();
+    }
+  }, [loggedIn]);
+
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => {
@@ -119,6 +126,10 @@ export function SigninPage({
 
   const handleMouseDownPassword = event => {
     event.preventDefault();
+  };
+
+  const onClose = () => {
+    window.location.reload();
   };
 
   return (
@@ -214,6 +225,17 @@ export function SigninPage({
               </Grid>
             </Grid>
           </form>
+          <Grid container>
+            <Grid item xs>
+              <OAuthPopup
+                url="http://localhost:3001/v1/auth/twitch"
+                title="ImpGG OAuth"
+                onClose={onClose}
+              >
+                <Button variant="contained">Login with Twitch</Button>
+              </OAuthPopup>
+            </Grid>
+          </Grid>
         </div>
         <Box mt={5}>
           <MadeWithLove />
@@ -250,7 +272,7 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    loggedInRedirect: evt => {
+    loggedInRedirect: () => {
       dispatch(push('/'));
     },
     onChangeEmail: evt => {

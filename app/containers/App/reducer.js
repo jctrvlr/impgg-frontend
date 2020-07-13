@@ -22,6 +22,9 @@ import {
   RESET_ERROR,
   EDIT_EMAIL_SUCCESS,
   NEW_USER_DATA,
+  OAUTH_LOGIN,
+  OAUTH_LOGIN_SUCCESS,
+  OAUTH_LOGIN_ERROR,
 } from './constants';
 let userDataR = {};
 let loggedInR = false;
@@ -66,6 +69,26 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case AUTHENTICATE_USER_ERROR:
+        draft.error = action.error;
+        draft.loading = false;
+        break;
+
+      case OAUTH_LOGIN:
+        draft.loggedIn = false;
+        draft.loading = true;
+        draft.error = false;
+        draft.userData = false;
+        break;
+
+      case OAUTH_LOGIN_SUCCESS:
+        draft.loggedIn = true;
+        draft.userData = action.userData;
+        draft.loading = false;
+        draft.currentUser = action.username;
+        draft.error = false;
+        break;
+
+      case OAUTH_LOGIN_ERROR:
         draft.error = action.error;
         draft.loading = false;
         break;
