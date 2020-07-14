@@ -20,11 +20,14 @@ import { push } from 'connected-react-router';
 
 import { makeStyles } from '@material-ui/core/styles';
 
+import Logo from 'images/impgg-withquestionmarks.png';
+
 import Footer from 'components/Footer';
 import Header from 'components/Header';
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 
 import { makeSelectUserData, makeSelectLoggedIn } from '../App/selectors';
 
@@ -45,12 +48,14 @@ const useStyles = makeStyles(theme => ({
       listStyle: 'none',
     },
   },
+  logo: {
+    height: 100,
+    margin: 10,
+  },
   heroContent: {
     padding: theme.spacing(8, 0, 6),
     height: '75vh',
-  },
-  heroHeadTopText: {
-    paddingTop: '25%',
+    textAlign: 'center',
   },
 }));
 export function NotFound({ userData, loggedIn, onLogoutClick }) {
@@ -72,6 +77,9 @@ export function NotFound({ userData, loggedIn, onLogoutClick }) {
         background
       />
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
+        <Link component={RouterLink} to="/">
+          <img alt="ImpGG logo" src={Logo} className={classes.logo} />
+        </Link>
         <Typography
           variant="h2"
           align="center"

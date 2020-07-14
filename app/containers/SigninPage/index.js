@@ -19,7 +19,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Logo from 'images/logo-withouttext.png';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, fade } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import ErrorMessageHolder from 'components/ErrorMessageHolder';
 
@@ -87,6 +87,16 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  oauthContainer: {
+    margin: theme.spacing(2),
+  },
+  twitchButton: {
+    backgroundColor: '#6441A4',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: fade('#6441A4', 0.75),
+    },
   },
 }));
 
@@ -225,14 +235,16 @@ export function SigninPage({
               </Grid>
             </Grid>
           </form>
-          <Grid container>
+          <Grid container className={classes.oauthContainer}>
             <Grid item xs>
               <OAuthPopup
                 url="http://localhost:3001/v1/auth/twitch"
                 title="ImpGG OAuth"
                 onClose={onClose}
               >
-                <Button variant="contained">Login with Twitch</Button>
+                <Button variant="contained" className={classes.twitchButton}>
+                  Login with Twitch
+                </Button>
               </OAuthPopup>
             </Grid>
           </Grid>

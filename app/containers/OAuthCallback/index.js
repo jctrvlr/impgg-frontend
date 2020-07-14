@@ -5,7 +5,7 @@
  */
 
 import React, { memo, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -15,7 +15,14 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
+import Logo from 'images/impgg-withquestionmarks.png';
+
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
+import HeartIcon from '@material-ui/icons/Favorite';
+import Link from '@material-ui/core/Link';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -24,17 +31,40 @@ import { oAuthLogin } from '../App/actions';
 import makeSelectOAuthCallback from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { makeSelectLoggedIn } from '../App/selectors';
+import { makeSelectLoggedIn, makeSelectError } from '../App/selectors';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   container: {
     width: '100%',
     marginTop: 'auto',
   },
+  logo: {
+    height: 100,
+    margin: 10,
+    marginBottom: 33,
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  textContainer: {
+    textAlign: 'center',
+  },
 }));
+
+function MadeWithLove() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Made with '} <HeartIcon /> {' on Earth'}
+    </Typography>
+  );
+}
 
 export function OAuthCallback({
   match,
+  error,
   setService,
   setCode,
   sendOAuthLogin,
@@ -52,7 +82,6 @@ export function OAuthCallback({
     setService(match.params.service);
 
     if (qStrings.code) {
-      console.log('The code is: ', qStrings.code);
       setCode(qStrings.code);
       sendOAuthLogin();
     }
@@ -68,9 +97,35 @@ export function OAuthCallback({
     <div className={classes.container}>
       <Helmet>
         <title>ImpGG - OAuth</title>
-        <meta name="description" content="Description of OAuthCallback" />
+        <meta name="description" content="ImpGG OAuth Callback Page" />
       </Helmet>
-      <LinearProgress />
+      <Container component="main" maxWidth="xs">
+        <div className={classes.paper}>
+          <Link component={RouterLink} to="/" className={classes.toolbarTitle}>
+            <img
+              alt="ImpGG logo. Your friendly neighborhood link shortener"
+              src={Logo}
+              className={classes.logo}
+            />
+          </Link>
+          {error ? (
+            <div className={classes.textContainer}>
+              <Typography variant="h4">
+                Sorry something went wrong{' '}
+                <span role="img" aria-label="sad face">
+                  😞
+                </span>
+              </Typography>
+              <Typography variant="body">{error}</Typography>
+            </div>
+          ) : (
+            <LinearProgress />
+          )}
+        </div>
+        <Box mt={5}>
+          <MadeWithLove />
+        </Box>
+      </Container>
     </div>
   );
 }
@@ -81,11 +136,13 @@ OAuthCallback.propTypes = {
   setCode: PropTypes.func,
   loggedIn: PropTypes.bool,
   sendOAuthLogin: PropTypes.func,
+  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
 };
 
 const mapStateToProps = createStructuredSelector({
   oAuthCallback: makeSelectOAuthCallback(),
   loggedIn: makeSelectLoggedIn(),
+  error: makeSelectError(),
 });
 
 function mapDispatchToProps(dispatch) {
