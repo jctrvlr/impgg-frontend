@@ -40,6 +40,8 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
+import { baseUrl } from 'vars';
+
 import OAuthPopup from 'react-oauth-popup';
 import {
   makeSelectSigninPage,
@@ -242,7 +244,7 @@ export function SigninPage({
           <Grid container className={classes.oauthContainer}>
             <Grid item xs>
               <OAuthPopup
-                url="http://localhost:3001/v1/auth/twitch"
+                url={`${baseUrl}v1/auth/twitch`}
                 title="ImpGG Twitch OAuth"
               >
                 <Button variant="contained" className={classes.twitchButton}>
@@ -253,7 +255,7 @@ export function SigninPage({
 
             <Grid item xs>
               <OAuthPopup
-                url="http://localhost:3001/v1/auth/google"
+                url={`${baseUrl}v1/auth/google`}
                 title="ImpGG Google OAuth"
               >
                 <Button variant="contained">
