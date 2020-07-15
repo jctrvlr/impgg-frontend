@@ -3,37 +3,34 @@
  * logs in user
  */
 
-import { push } from 'connected-react-router';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import ReactGA from 'react-ga';
-import { AUTHENTICATE_USER } from 'containers/App/constants';
+import { OAUTH_LOGIN } from 'containers/App/constants';
 import Cookies from 'js-cookie';
 
 import request from 'utils/request';
 import moment from 'moment';
 
 import {
-  makeSelectEmail,
-  makeSelectPassword,
-} from 'containers/SigninPage/selectors';
+  makeSelectService,
+  makeSelectCode,
+} from 'containers/OAuthCallback/selectors';
 
 import { baseUrl } from 'vars';
-import { authUserSuccess, authUserError } from '../App/actions';
+import { oAuthLoginSuccess, oAuthLoginError } from '../App/actions';
 
 /**
  * Authentication for user request/response handler
  */
-export function* authUser() {
-  // Select email/password from store
-  const email = yield select(makeSelectEmail());
-  const password = yield select(makeSelectPassword());
+export function* loginOauth() {
+  // Select service and code from store
+  const service = yield select(makeSelectService());
+  const code = yield select(makeSelectCode());
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    method: 'GET',
   };
 
-  const requestURL = `${baseUrl}v1/auth/login`;
+  const requestURL = `${baseUrl}v1/auth/${service}/callback?code=${code}`;
 
   try {
     // Call our request helper (see 'utils/request')
@@ -52,12 +49,11 @@ export function* authUser() {
       userId: ret.user._id,
     });
 
-    yield put(authUserSuccess(ret, email));
-    yield put(push('/'));
+    yield put(oAuthLoginSuccess(ret, ret.user.email));
   } catch (err) {
     const jres = yield err.response.json();
     const authUserErrorMess = jres.message;
-    yield put(authUserError(authUserErrorMess));
+    yield put(oAuthLoginError(authUserErrorMess));
   }
 }
 
@@ -69,5 +65,5 @@ export default function* authUserWatcher() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(AUTHENTICATE_USER, authUser);
+  yield takeLatest(OAUTH_LOGIN, loginOauth);
 }

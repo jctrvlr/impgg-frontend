@@ -20,6 +20,9 @@ import {
   AUTHENTICATE_USER_SUCCESS,
   AUTHENTICATE_USER,
   AUTHENTICATE_USER_ERROR,
+  OAUTH_LOGIN,
+  OAUTH_LOGIN_SUCCESS,
+  OAUTH_LOGIN_ERROR,
   REGISTER_USER,
   REGISTER_USER_SUCCESS,
   REGISTER_USER_ERROR,
@@ -93,6 +96,47 @@ export function registerUserSuccess(userData, username) {
 export function registerUserError(error) {
   return {
     type: REGISTER_USER_ERROR,
+    error,
+  };
+}
+
+/**
+ * Authenticate user with OAuth, this action starts the request saga
+ *
+ * @return {object} An action object with a type of AUTHENTICATE_USER
+ */
+export function oAuthLogin() {
+  return {
+    type: OAUTH_LOGIN,
+  };
+}
+
+/**
+ * Dispatched when the user is successfully logged in with OAuth
+ *
+ * @param  {array} userData The users data
+ * @param  {string} username The current users username
+ *
+ * @return {object}      An action object with a type of OAUTH_LOGIN_SUCCESS passing the authenticated users data
+ */
+export function oAuthLoginSuccess(userData, username) {
+  return {
+    type: OAUTH_LOGIN_SUCCESS,
+    userData,
+    username,
+  };
+}
+
+/**
+ * Dispatched when authenticating the user fails
+ *
+ * @param  {object} error The error
+ *
+ * @return {object}       An action object with a type of OAUTH_LOGIN_ERROR passing the error
+ */
+export function oAuthLoginError(error) {
+  return {
+    type: OAUTH_LOGIN_ERROR,
     error,
   };
 }

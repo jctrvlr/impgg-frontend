@@ -9102,6 +9102,11 @@ react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-is
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-oauth-popup@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-oauth-popup/-/react-oauth-popup-0.1.1.tgz#d917d4e696bbf8d3dcbbe1dda97ae466ee3dc1d9"
+  integrity sha512-FVQjgyrQkSg1ENuKE4nKMLZbz3i/Vwr9d4RmkwxbYzT5ZDRfxne4nt6bQATKzVUXQBC1UNGxxDdzt/JJHND76Q==
+
 react-redux@7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.0.2.tgz#34b280a3482aaf60e7d4a504b1295165cbe6b86a"

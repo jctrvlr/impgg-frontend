@@ -5,7 +5,7 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { push } from 'connected-react-router';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Logo from 'images/logo-withouttext.png';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, fade } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import ErrorMessageHolder from 'components/ErrorMessageHolder';
 
@@ -40,6 +40,7 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 
+import OAuthPopup from 'react-oauth-popup';
 import {
   makeSelectSigninPage,
   makeSelectEmail,
@@ -87,6 +88,28 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  oauthContainer: {
+    margin: theme.spacing(2),
+  },
+  googleBlue: {
+    color: '#4285F4',
+  },
+  googleRed: {
+    color: '#DB4437',
+  },
+  googleYellow: {
+    color: '#F4B400',
+  },
+  googleGreen: {
+    color: '#0F9D58',
+  },
+  twitchButton: {
+    backgroundColor: '#6441A4',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: fade('#6441A4', 0.75),
+    },
+  },
 }));
 
 export function SigninPage({
@@ -107,9 +130,11 @@ export function SigninPage({
 
   const classes = useStyles();
 
-  if (loggedIn) {
-    loggedInRedirect();
-  }
+  useEffect(() => {
+    if (loggedIn) {
+      loggedInRedirect();
+    }
+  }, [loggedIn]);
 
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -214,6 +239,35 @@ export function SigninPage({
               </Grid>
             </Grid>
           </form>
+          <Grid container className={classes.oauthContainer}>
+            <Grid item xs>
+              <OAuthPopup
+                url="http://localhost:3001/v1/auth/twitch"
+                title="ImpGG Twitch OAuth"
+              >
+                <Button variant="contained" className={classes.twitchButton}>
+                  Login with Twitch
+                </Button>
+              </OAuthPopup>
+            </Grid>
+
+            <Grid item xs>
+              <OAuthPopup
+                url="http://localhost:3001/v1/auth/google"
+                title="ImpGG Google OAuth"
+              >
+                <Button variant="contained">
+                  Login with&nbsp;
+                  <span className={classes.googleBlue}>G</span>
+                  <span className={classes.googleRed}>o</span>
+                  <span className={classes.googleYellow}>o</span>
+                  <span className={classes.googleBlue}>g</span>
+                  <span className={classes.googleGreen}>l</span>
+                  <span className={classes.googleRed}>e</span>
+                </Button>
+              </OAuthPopup>
+            </Grid>
+          </Grid>
         </div>
         <Box mt={5}>
           <MadeWithLove />
@@ -250,7 +304,7 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    loggedInRedirect: evt => {
+    loggedInRedirect: () => {
       dispatch(push('/'));
     },
     onChangeEmail: evt => {
