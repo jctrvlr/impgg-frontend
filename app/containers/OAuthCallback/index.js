@@ -89,6 +89,7 @@ export function OAuthCallback({
 
   useEffect(() => {
     if (loggedIn) {
+      window.opener.location.reload();
       window.close();
     }
   }, [loggedIn]);

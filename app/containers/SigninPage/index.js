@@ -91,6 +91,18 @@ const useStyles = makeStyles(theme => ({
   oauthContainer: {
     margin: theme.spacing(2),
   },
+  googleBlue: {
+    color: '#4285F4',
+  },
+  googleRed: {
+    color: '#DB4437',
+  },
+  googleYellow: {
+    color: '#F4B400',
+  },
+  googleGreen: {
+    color: '#0F9D58',
+  },
   twitchButton: {
     backgroundColor: '#6441A4',
     color: 'white',
@@ -118,10 +130,6 @@ export function SigninPage({
 
   const classes = useStyles();
 
-  if (loggedIn) {
-    loggedInRedirect();
-  }
-
   useEffect(() => {
     if (loggedIn) {
       loggedInRedirect();
@@ -136,10 +144,6 @@ export function SigninPage({
 
   const handleMouseDownPassword = event => {
     event.preventDefault();
-  };
-
-  const onClose = () => {
-    window.location.reload();
   };
 
   return (
@@ -239,11 +243,27 @@ export function SigninPage({
             <Grid item xs>
               <OAuthPopup
                 url="http://localhost:3001/v1/auth/twitch"
-                title="ImpGG OAuth"
-                onClose={onClose}
+                title="ImpGG Twitch OAuth"
               >
                 <Button variant="contained" className={classes.twitchButton}>
                   Login with Twitch
+                </Button>
+              </OAuthPopup>
+            </Grid>
+
+            <Grid item xs>
+              <OAuthPopup
+                url="http://localhost:3001/v1/auth/google"
+                title="ImpGG Google OAuth"
+              >
+                <Button variant="contained">
+                  Login with&nbsp;
+                  <span className={classes.googleBlue}>G</span>
+                  <span className={classes.googleRed}>o</span>
+                  <span className={classes.googleYellow}>o</span>
+                  <span className={classes.googleBlue}>g</span>
+                  <span className={classes.googleGreen}>l</span>
+                  <span className={classes.googleRed}>e</span>
                 </Button>
               </OAuthPopup>
             </Grid>
