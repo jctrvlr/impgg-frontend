@@ -19,6 +19,7 @@ import AboutPage from 'containers/AboutPage/Loadable';
 import PricingPage from 'containers/PricingPage';
 import TermsPage from 'containers/TermsPage';
 import PrivacyPage from 'containers/PrivacyPage';
+import ContactPage from 'containers/ContactPage';
 import ResetPasswordPage from 'containers/ResetPasswordPage';
 
 // Authentication routes
@@ -45,6 +46,7 @@ export default function App() {
         <Route exact path="/" component={HomePage} />
         <Route exact path="/about" component={AboutPage} />
         <Route exact path="/pricing" component={PricingPage} />
+        <Route exact path="/contact" component={ContactPage} />
         <Route exact path="/terms" component={TermsPage} />
         <Route exact path="/privacy" component={PrivacyPage} />
 
