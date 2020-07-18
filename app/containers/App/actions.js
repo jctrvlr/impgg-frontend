@@ -30,7 +30,24 @@ import {
   RESET_ERROR,
   EDIT_EMAIL_SUCCESS,
   NEW_USER_DATA,
+  EMAIL_VALIDATION,
 } from './constants';
+
+export function validateEmail(email) {
+  /* eslint-disable no-useless-escape */
+  const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  let emailValidation = '';
+
+  if (emailRegex.test(email)) {
+    emailValidation = false;
+  } else {
+    emailValidation = 'Enter a valid email';
+  }
+  return {
+    type: EMAIL_VALIDATION,
+    emailValidation,
+  };
+}
 
 /**
  * Reset error

@@ -38,6 +38,12 @@ const makeSelectUserData = () =>
     globalState => globalState.userData,
   );
 
+const makeSelectEmailValidation = () =>
+  createSelector(
+    selectGlobal,
+    globalState => globalState.emailValidation,
+  );
+
 export {
   selectGlobal,
   makeSelectLocation,
@@ -45,4 +51,5 @@ export {
   makeSelectLoggedIn,
   makeSelectError,
   makeSelectUserData,
+  makeSelectEmailValidation,
 };

@@ -25,6 +25,7 @@ import {
   OAUTH_LOGIN,
   OAUTH_LOGIN_SUCCESS,
   OAUTH_LOGIN_ERROR,
+  EMAIL_VALIDATION,
 } from './constants';
 let userDataR = {};
 let loggedInR = false;
@@ -132,6 +133,10 @@ const appReducer = (state = initialState, action) =>
       case NEW_USER_DATA:
         _.set(draft.userData.user, 'domains', action.userData.user.domains);
         // draft.userData = action.userData;
+        break;
+
+      case EMAIL_VALIDATION:
+        draft.emailValidation = action.emailValidation;
         break;
     }
   });
