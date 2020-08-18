@@ -18,6 +18,9 @@ import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
 import 'typeface-roboto';
 import CssBaseline from '@material-ui/core/CssBaseline';
+// Import Stripe
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 import Button from '@material-ui/core/Button';
 
@@ -70,6 +73,9 @@ history.listen(location => {
   ReactGA.pageview(location.pathname); // Record a pageview for given page
 });
 
+// Stripe
+const stripePromise = loadStripe('pk_test_718YWHihhE8y2izSBz8rhJRd00ed8ioaOZ');
+
 const render = messages => {
   ReactDOM.render(
     <div>
@@ -86,7 +92,9 @@ const render = messages => {
                 )}
               >
                 <CookiesProvider>
-                  <App />
+                  <Elements stripe={stripePromise}>
+                    <App />
+                  </Elements>
                 </CookiesProvider>
               </SnackbarProvider>
             </ThemeProvider>

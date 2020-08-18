@@ -147,6 +147,15 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
     left: true,
   });
 
+  const today = new Date();
+
+  const subscriptionActive =
+    userData &&
+    userData.user &&
+    userData.user.subscription &&
+    userData.user.subscription.active &&
+    new Date(userData.user.subscription.currentPeriodEnd) > today;
+
   const toggleDrawer = (side, sideOpen) => event => {
     if (
       event.type === 'keydown' &&
@@ -212,14 +221,16 @@ function Header({ loggedIn, userData, logoutUser, alerts }) {
                   primary={<FormattedMessage {...messages.domains} />}
                 />
               </ListItem>
-              <ListItem button component={RouterLink} to="/reports">
-                <ListItemIcon>
-                  <AssessmentIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={<FormattedMessage {...messages.reports} />}
-                />
-              </ListItem>
+              {subscriptionActive ? (
+                <ListItem button component={RouterLink} to="/reports">
+                  <ListItemIcon>
+                    <AssessmentIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={<FormattedMessage {...messages.reports} />}
+                  />
+                </ListItem>
+              ) : null}
               <ListItem button component={RouterLink} to="/settings">
                 <ListItemIcon>
                   <SettingsIcon />

@@ -31,8 +31,12 @@ import OAuthCallback from 'containers/OAuthCallback/Loadable';
 import DashboardPage from 'containers/DashboardPage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import SecurityPage from 'containers/SecurityPage/Loadable';
+import BillingPage from 'containers/BillingPage/Loadable';
+import UpdateBillingPage from 'containers/UpdateBillingPage/Loadable';
 import DomainsPage from 'containers/DomainsPage/Loadable';
 import ReportsPage from 'containers/ReportsPage/Loadable';
+import CheckoutFormPage from 'containers/CheckoutFormPage/Loadable';
+import SorryPage from 'containers/SorryPage/Loadable';
 
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
@@ -41,6 +45,7 @@ import GlobalStyle from '../../global-styles';
 export default function App() {
   return (
     <React.Fragment>
+      <GlobalStyle />
       <CssBaseline />
       <Switch>
         <Route exact path="/" component={HomePage} />
@@ -55,6 +60,8 @@ export default function App() {
         <Route exact path="/password/reset" component={ResetPasswordPage} />
         <Route exact path="/auth/callback/:service" component={OAuthCallback} />
 
+        <PrivateRoute exact path="/sorry" component={SorryPage} />
+
         <PrivateRoute path="/dashboard" component={DashboardPage} />
 
         <Redirect exact from="/settings" to="/settings/profile" />
@@ -65,6 +72,14 @@ export default function App() {
           path="/settings/security"
           component={SecurityPage}
         />
+        <PrivateRoute exact path="/settings/billing" component={BillingPage} />
+        <PrivateRoute
+          exact
+          path="/settings/billing/update"
+          component={UpdateBillingPage}
+        />
+
+        <PrivateRoute exact path="/upgrade" component={CheckoutFormPage} />
         <PrivateRoute path="/domains" component={DomainsPage} />
         <PrivateRoute path="/reports" component={ReportsPage} />
 

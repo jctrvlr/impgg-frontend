@@ -100,9 +100,9 @@ export function NotFound({ userData, loggedIn, onLogoutClick }) {
           className={classes.heroHeadText}
         >
           navigate back to&nbsp;
-          <RouterLink component={RouterLink} to="/">
+          <Link component={RouterLink} to="/">
             home
-          </RouterLink>
+          </Link>
         </Typography>
       </Container>
       <Footer />
