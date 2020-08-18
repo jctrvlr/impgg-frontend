@@ -102,19 +102,18 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
     {
       title: 'Pro',
       subheader: 'Most popular',
-      price: '5',
+      price: '1+',
       description: [
+        'Pay what you want',
         'Everything included from Free tier',
-        '2 users included in shared workspace',
+        // '2 users included in shared workspace',
         'Export audience data to CSV',
         'Priority email support',
         'Support a basically free service (buy the dev a coffee)',
       ],
       buttonText: 'Get started',
       buttonVariant: 'contained',
-      buttonHref: loggedIn
-        ? '/upgrade?type=pro&ref=pricing'
-        : '/register?type=pro',
+      buttonHref: loggedIn ? '/upgrade' : '/register?type=pro',
     },
     {
       title: 'Enterprise',
@@ -127,7 +126,7 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
       ],
       buttonText: 'Contact us',
       buttonVariant: 'outlined',
-      buttonHref: '/contact?type=enterprise&ref=pricing',
+      buttonHref: '/contact',
     },
   ];
 
@@ -137,7 +136,7 @@ export function PricingPage({ userData, loggedIn, onLogoutClick }) {
         <title>ImpGG - Pricing</title>
         <meta
           name="description"
-          content="Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
+          content="Checkout the pricing for ImpGG. Create shortened links that work for you and your business. ImpGG is your one stop shop for shortening links, creating QR codes, powerful link analytics, and custom branded domains. Try ImpGG for free now!"
         />
       </Helmet>
       <Header

@@ -184,6 +184,7 @@ export function ReportsPage({
   onChangeSetClickCount,
   onChangeLinkFilter,
   onGetClickReport,
+  redirectSubscription,
 }) {
   useInjectReducer({ key: 'reportsPage', reducer });
   useInjectSaga({ key: 'reportsPage', saga });
@@ -191,13 +192,25 @@ export function ReportsPage({
   // eslint-disable-next-line no-unused-vars
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
+  const today = new Date();
+
+  const subscriptionActive =
+    userData &&
+    userData.user &&
+    userData.user.subscription &&
+    userData.user.subscription.active &&
+    new Date(userData.user.subscription.currentPeriodEnd) > today;
 
   if (!loggedIn) {
     onLoadUnauth();
   }
 
   useEffect(() => {
-    onLoad();
+    if (!subscriptionActive) {
+      redirectSubscription();
+    } else {
+      onLoad();
+    }
   }, []);
 
   useEffect(() => {
@@ -317,6 +330,7 @@ ReportsPage.propTypes = {
   onLoad: PropTypes.func,
   onGetClickReport: PropTypes.func,
   onChangeLinkFilter: PropTypes.func,
+  redirectSubscription: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -333,6 +347,9 @@ function mapDispatchToProps(dispatch) {
     onLogoutClick: () => {
       dispatch(logoutUser());
       dispatch(push('/'));
+    },
+    redirectSubscription: () => {
+      dispatch(push('/dashboard'));
     },
     onLoadUnauth: () => {
       dispatch(logoutUser());

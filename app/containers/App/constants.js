@@ -29,3 +29,6 @@ export const EMAIL_VALIDATION = 'impgg/App/EMAIL_VALIDATION';
 
 export const EDIT_EMAIL_SUCCESS = 'impgg/App/EDIT_EMAIL_SUCCESS';
 export const NEW_USER_DATA = 'impgg/App/NEW_USER_DATA';
+
+export const SUBSCRIPTION_EVENT_SUCCESS =
+  'impgg/App/SUBSCRIPTION_EVENT_SUCCESS';

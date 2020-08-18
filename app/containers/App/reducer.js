@@ -26,6 +26,7 @@ import {
   OAUTH_LOGIN_SUCCESS,
   OAUTH_LOGIN_ERROR,
   EMAIL_VALIDATION,
+  SUBSCRIPTION_EVENT_SUCCESS,
 } from './constants';
 let userDataR = {};
 let loggedInR = false;
@@ -126,6 +127,11 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case EDIT_EMAIL_SUCCESS:
+        draft.userData = action.userData;
+        draft.currentUser = action.username;
+        break;
+
+      case SUBSCRIPTION_EVENT_SUCCESS:
         draft.userData = action.userData;
         draft.currentUser = action.username;
         break;

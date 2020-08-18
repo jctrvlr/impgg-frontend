@@ -36,7 +36,7 @@ export function* reloadUser() {
     // ret should be ['creatorId', 'url', 'type', 'shortLink']
     const ret = yield call(request, requestURL, requestOptions);
 
-    userData.user = ret;
+    userData.user = ret.user;
 
     // Store user details and jwt token in local storage to keep user logged in between page refreshes
     Cookies.set('userData', JSON.stringify(userData), { secure: true });

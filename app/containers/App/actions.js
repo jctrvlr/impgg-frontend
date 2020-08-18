@@ -31,6 +31,7 @@ import {
   EDIT_EMAIL_SUCCESS,
   NEW_USER_DATA,
   EMAIL_VALIDATION,
+  SUBSCRIPTION_EVENT_SUCCESS,
 } from './constants';
 
 export function validateEmail(email) {
@@ -68,6 +69,22 @@ export function resetError() {
 export function registerUser() {
   return {
     type: REGISTER_USER,
+  };
+}
+
+/**
+ * Dispatched when subscription event is returned
+ *
+ * @param  {array} userData The users data
+ * @param  {string} username The current users username
+ *
+ * @return {object}      An action object with a type of SUBSCRIPTION_EVENT_SUCCESS passing the newly registered users data
+ */
+export function subscriptionEventSuccessApp(userData, username) {
+  return {
+    type: SUBSCRIPTION_EVENT_SUCCESS,
+    userData,
+    username,
   };
 }
 
