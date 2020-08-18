@@ -74,7 +74,7 @@ history.listen(location => {
 });
 
 // Stripe
-const stripePromise = loadStripe('pk_test_718YWHihhE8y2izSBz8rhJRd00ed8ioaOZ');
+const stripePromise = loadStripe('pk_live_ZUXgDMldnTpDB6DdxH3io94d00lSfiqwz3');
 
 const render = messages => {
   ReactDOM.render(
