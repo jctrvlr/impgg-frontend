@@ -48,6 +48,7 @@ import {
   createSubscription,
   authenticationFailure,
   authenticationSuccess,
+  createSubscriptionRetryPayment,
 } from './actions';
 import reducer from './reducer';
 import saga from './saga';
@@ -111,6 +112,7 @@ export function CheckoutFormPage({
   setPaymentMethodId,
   callCreateSubscription,
   setInvoiceId,
+  callRetryPayment,
 }) {
   useInjectReducer({ key: 'checkoutFormPage', reducer });
   useInjectSaga({ key: 'checkoutFormPage', saga });
@@ -253,6 +255,7 @@ export function CheckoutFormPage({
                 retryPayment={retryPayment}
                 loading={loading}
                 userData={userData}
+                callRetryPayment={callRetryPayment}
               />
             </div>
           ) : null}
@@ -284,6 +287,7 @@ CheckoutFormPage.propTypes = {
   callCreateSubscription: PropTypes.func,
   setPaymentMethodId: PropTypes.func,
   setInvoiceId: PropTypes.func,
+  callRetryPayment: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -326,6 +330,9 @@ function mapDispatchToProps(dispatch) {
     },
     callCreateSubscription: () => {
       dispatch(createSubscription());
+    },
+    callRetryPayment: () => {
+      dispatch(createSubscriptionRetryPayment());
     },
     setPaymentMethodId: paymentMethodId => {
       dispatch(changePaymentMethodId(paymentMethodId));

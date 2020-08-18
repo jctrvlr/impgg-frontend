@@ -35,6 +35,7 @@ export default function CheckoutForm({
   setPaymentMethodId,
   setInvoiceId,
   userData,
+  callRetryPayment,
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -88,9 +89,9 @@ export default function CheckoutForm({
     });
 
     if (error) {
-      console.log('[createPaymentMethod error]', error);
+      // Set retryPayment error text
+      callRetryPayment();
     } else {
-      console.log('[PaymentMethod]', paymentMethod);
       const paymentMethodId = paymentMethod.id;
       setPaymentMethodId(paymentMethodId);
       if (
@@ -160,4 +161,5 @@ CheckoutForm.propTypes = {
   setInvoiceId: PropTypes.func,
   setPaymentMethodId: PropTypes.func,
   userData: PropTypes.object,
+  callRetryPayment: PropTypes.func,
 };
