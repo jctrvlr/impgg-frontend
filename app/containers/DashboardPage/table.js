@@ -155,8 +155,9 @@ EnhancedTableHead.propTypes = {
 
 const useToolbarStyles = makeStyles(theme => ({
   root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
   highlight:
     theme.palette.type === 'light'
@@ -185,6 +186,7 @@ const useToolbarStyles = makeStyles(theme => ({
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
+    minWidth: '200px',
     width: '80%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
@@ -215,6 +217,8 @@ const useToolbarStyles = makeStyles(theme => ({
     },
   },
   toolbarInfo: {
+    minWidth: '55px',
+    flexGrow: '1',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(7),
     },
@@ -224,10 +228,12 @@ const useToolbarStyles = makeStyles(theme => ({
     fontSize: '1rem',
   },
   archivedSwitch: {
+    minWidth: '175px',
     marginLeft: theme.spacing(2),
     display: 'flex',
   },
   archivedSwitchLabel: {
+    overflow: 'hidden',
     fontSize: '1rem',
     lineHeight: 2.4,
   },

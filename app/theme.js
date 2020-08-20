@@ -8,6 +8,7 @@ const themeDark = createMuiTheme({
     type: 'dark',
     primary: red,
     secondary: grey,
+    backgroundColor: '#000',
   },
   status: {
     danger: 'orange',
@@ -19,6 +20,7 @@ const themeLight = createMuiTheme({
     type: 'light',
     primary: red,
     secondary: grey,
+    backgroundColor: grey[200],
   },
   status: {
     danger: 'orange',
