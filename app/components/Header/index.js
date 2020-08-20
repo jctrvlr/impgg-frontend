@@ -97,6 +97,7 @@ const useStyles = makeStyles(theme => ({
   menuIconButton: {
     width: 40,
     height: 40,
+    color: '#fff',
   },
   menuIconButtonNoBackground: {
     width: 40,

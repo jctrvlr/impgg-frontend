@@ -127,8 +127,9 @@ EnhancedTableHead.propTypes = {
 
 const useToolbarStyles = makeStyles(theme => ({
   root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
   },
   highlight:
     theme.palette.type === 'light'
@@ -157,6 +158,7 @@ const useToolbarStyles = makeStyles(theme => ({
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
+    marginRight: theme.spacing(1),
     width: '80%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
