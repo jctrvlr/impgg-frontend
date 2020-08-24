@@ -16,7 +16,7 @@ export default defineMessages({
   whoWeAre: {
     id: `${scope}.whoWeAre`,
     defaultMessage:
-      'We are ImpGG, an idea sprouted from boredom. We built a platform that allows you to use links to build on your passion, and business.',
+      'We are ImpGG, your friendly neighborhood link shortener. We built a platform that allows you to use links to build on your passion, and business.',
   },
   platformHeader: {
     id: `${scope}.platformHeader`,
@@ -45,12 +45,21 @@ export default defineMessages({
     defaultMessage:
       'Use any domain name you already own (or even are currently using), connecting both your recognizable domain and our powerful analytics platform.',
   },
+  privacyHeader: {
+    id: `${scope}.privacyHeader`,
+    defaultMessage: 'Your data, your control',
+  },
+  privacyBody: {
+    id: `${scope}.privacyBody`,
+    defaultMessage:
+      'We will never sell any of your data. Why? Because its yours ofcourse! Also if you decide to leave us (and delete your account), we will remove all data related to you.',
+  },
   ctaHeader: {
     id: `${scope}.ctaHeader`,
     defaultMessage: 'Start creating links worth clicking today',
   },
   ctaButton: {
     id: `${scope}.ctaButton`,
-    defaultMessage: 'Learn more',
+    defaultMessage: 'Get started now',
   },
 });
