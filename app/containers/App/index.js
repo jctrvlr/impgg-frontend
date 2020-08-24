@@ -60,7 +60,7 @@ export default function App() {
         <Route exact path="/password/reset" component={ResetPasswordPage} />
         <Route exact path="/auth/callback/:service" component={OAuthCallback} />
 
-        <PrivateRoute exact path="/sorry" component={SorryPage} />
+        <Route exact path="/sorry" component={SorryPage} />
 
         <PrivateRoute path="/dashboard" component={DashboardPage} />
 

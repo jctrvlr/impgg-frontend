@@ -48,6 +48,7 @@ import reducer from './reducer';
 import saga from './saga';
 import { changeEmail, editEmailSubmit, validateEmail } from './actions';
 import ChangePasswordModal from '../ChangePasswordModal';
+import DeleteAccountModal from '../DeleteAccountModal';
 import SettingsTabs from '../../components/SettingsTabs';
 
 // import messages from './messages';
@@ -117,6 +118,15 @@ const useStyles = makeStyles(theme => ({
     display: 'block',
     margin: theme.spacing(2, 0),
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+  deleteDialogContent: {
+    textAlign: 'center',
+  },
 }));
 
 export function SecurityPage({
@@ -156,6 +166,8 @@ export function SecurityPage({
       onChangeEmail(evt);
     }
   };
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+
   const [openPasswordModal, setOpenPasswordModal] = React.useState(false);
 
   const handleModalOpen = () => {
@@ -164,6 +176,14 @@ export function SecurityPage({
 
   const handleModalClose = () => {
     setOpenPasswordModal(false);
+  };
+
+  const handleDeleteClick = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false);
   };
 
   const classes = useStyles();
@@ -265,6 +285,27 @@ export function SecurityPage({
           />
           {/* TODO: Two factor authentication */}
         </div>
+        <Divider variant="fullWidth" className={classes.divider} />
+        <div className={classes.nameSection}>
+          <Typography variant="h4" align="left" className={classes.heroText}>
+            Delete account
+          </Typography>
+          <Typography variant="caption" align="left">
+            Delete your account and all data that is associated with it
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.changePasswordButton}
+            onClick={handleDeleteClick}
+          >
+            Delete account and all data
+          </Button>
+        </div>
+        <DeleteAccountModal
+          openModal={openDeleteDialog}
+          handleModalClose={handleDeleteClose}
+        />
       </Container>
       <Footer />
     </React.Fragment>

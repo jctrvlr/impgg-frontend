@@ -110,11 +110,7 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
 
         <div className={classes.section2}>
           <div className={classes.sectionColumn}>
-            <img
-              src={madeEasyImage}
-              alt="ImpGG makes making links easy."
-              width="90%"
-            />
+            <img src={madeEasyImage} alt="Link creation modal" width="90%" />
           </div>
           <div className={classes.sectionColumn}>
             <Typography component="h3" variant="h4" align="left" gutterBottom>
@@ -160,6 +156,15 @@ export function AboutPage({ userData, loggedIn, onLogoutClick }) {
               <FormattedMessage {...messages.customBody} />
             </Typography>
           </div>
+        </div>
+
+        <div className={classes.section3}>
+          <Typography component="h3" variant="h4" align="center" gutterBottom>
+            <FormattedMessage {...messages.privacyHeader} />
+          </Typography>
+          <Typography component="h4" variant="body1" align="center">
+            <FormattedMessage {...messages.privacyBody} />
+          </Typography>
         </div>
 
         <div className={classes.section3}>
