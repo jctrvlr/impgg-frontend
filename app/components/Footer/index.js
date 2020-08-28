@@ -169,6 +169,7 @@ function Footer() {
         <div className={classes.footerMainItem}>
           <Typography variant="h4">Contact</Typography>
           <ul>
+            {/*
             <li>
               <Link
                 className={classes.footerSecondaryColor}
@@ -178,6 +179,7 @@ function Footer() {
                 <Typography variant="body2">Help</Typography>
               </Link>
             </li>
+            */}
             <li>
               <Link
                 className={classes.footerSecondaryColor}
