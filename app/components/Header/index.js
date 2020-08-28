@@ -165,11 +165,13 @@ function Header({ loggedIn, userData, logoutUser, background }) {
         <ListItem button component={RouterLink} to="/pricing">
           <ListItemText primary={<FormattedMessage {...messages.pricing} />} />
         </ListItem>
+        {/*
         <ListItem button component={RouterLink} to="/resources">
           <ListItemText
             primary={<FormattedMessage {...messages.resources} />}
           />
         </ListItem>
+        */}
       </List>
       <Divider />
       <List>
@@ -330,6 +332,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
             >
               <FormattedMessage {...messages.pricing} />
             </Link>
+            {/*
             <Link
               variant="button"
               color="textPrimary"
@@ -339,6 +342,7 @@ function Header({ loggedIn, userData, logoutUser, background }) {
             >
               <FormattedMessage {...messages.resources} />
             </Link>
+            */}
           </nav>
           <DarkToggle />
           {loggedIn ? (

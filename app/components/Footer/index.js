@@ -150,7 +150,7 @@ function Footer() {
             </li>
           </ul>
         </div>
-
+        {/*
         <div className={classes.footerMainItem}>
           <Typography variant="h4">Resources</Typography>
           <ul>
@@ -165,7 +165,7 @@ function Footer() {
             </li>
           </ul>
         </div>
-
+        */}
         <div className={classes.footerMainItem}>
           <Typography variant="h4">Contact</Typography>
           <ul>
