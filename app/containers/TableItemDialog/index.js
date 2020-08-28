@@ -57,6 +57,9 @@ import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import { baseUrl } from 'vars';
+import request from 'utils/request';
+
 import QRCode from './qrcode';
 import {
   makeSelectURI,
@@ -298,12 +301,14 @@ export function TableItemDialog({
 
   let clickRefOptions;
   let clickLocationOptions;
-  // let clickLiveOptions;
+  let clickLiveOptions;
 
   let clickDevicesOptions;
   let clickPlatformsOptions;
   let clickBrowsersOptions;
   // let clickSocialOptions;
+
+  const requestURL = `${baseUrl}v1/dashboard/live`;
 
   if (linkInfo) {
     clickRefOptions = {
@@ -355,15 +360,26 @@ export function TableItemDialog({
       ],
     };
 
-    /* clickLiveOptions = {
+    clickLiveOptions = {
       chart: {
         events: {
-          load() {
+          async load() {
             // set up the updating of the chart each second
-            const series = clickLiveOptions.series[0];
-            setInterval(() => {
+            // eslint-disable-next-line react/no-this-in-sfc
+            const series = this.series[0];
+            const initial = false;
+            setInterval(async () => {
+              const requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${userData.token.accessToken}`,
+                },
+                body: JSON.stringify({ initial }),
+              };
+              const response = await request(requestURL, requestOptions);
               const x = new Date().getTime(); // current time
-              const y = Math.round(Math.random() * 100);
+              const y = response;
               series.addPoint([x, y], true, true);
             }, 1000);
           },
@@ -374,53 +390,47 @@ export function TableItemDialog({
         useUTC: false,
       },
 
-      rangeSelector: {
-        buttons: [
-          {
-            count: 1,
-            type: 'minute',
-            text: '1M',
-          },
-          {
-            count: 5,
-            type: 'minute',
-            text: '5M',
-          },
-          {
-            type: 'all',
-            text: 'All',
-          },
-        ],
-        inputEnabled: false,
-        selected: 0,
-      },
-
       title: {
         text: 'Live random data',
-        margin: 5,
       },
 
       exporting: {
         enabled: false,
       },
 
+      legend: {
+        enabled: false,
+      },
+
+      xAxis: {
+        type: 'datetime',
+      },
+
       series: [
         {
-          name: 'Random data',
-          data: (() => {
-            // generate an array of random data
+          name: 'Clicks',
+          type: 'column',
+          data: (async () => {
             const data = [];
-            const time = new Date().getTime();
-            let i;
-
-            for (i = -999; i <= 0; i += 1) {
-              data.push([time + i * 1000, Math.round(Math.random() * 100)]);
-            }
+            const requestOptions = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userData.token.accessToken}`,
+              },
+              body: JSON.stringify({ initial: true }),
+            };
+            const response = await request(requestURL, requestOptions);
+            response.forEach(row => {
+              const x = row.time; // current time
+              const y = row.count;
+              data.push({ x, y });
+            });
             return data;
           })(),
         },
       ],
-    }; */
+    };
 
     clickLocationOptions = {
       chart: {
@@ -1013,6 +1023,11 @@ export function TableItemDialog({
         </DialogContent>
         {selectedData[0].numClicks > 0 ? (
           <DialogContent>
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={clickLiveOptions}
+              key="clickLive"
+            />
             <HighchartsReact
               constructorType="mapChart"
               highcharts={Highcharts}
