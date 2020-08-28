@@ -121,6 +121,7 @@ function Footer() {
                 <Typography variant="body2">Pricing</Typography>
               </Link>
             </li>
+            {/*
             <li>
               <Link
                 className={classes.footerSecondaryColor}
@@ -130,6 +131,7 @@ function Footer() {
                 <Typography variant="body2">Blog</Typography>
               </Link>
             </li>
+            */}
             <li>
               <Link
                 className={classes.footerSecondaryColor}
