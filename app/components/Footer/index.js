@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
   socialList: {
     display: 'flex',
     justifyContent: 'center',
-    borderTop: '1px #777 solid',
+    borderTop: '1px #fff solid',
     paddingTop: '1.25rem',
   },
   socialListItem: {
